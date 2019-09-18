@@ -19,6 +19,9 @@ namespace HV9003TE4
 
     public class MainWindowModel : INotifyPropertyChanged
     {
+        TestMesseages TestMesseagesNull = new TestMesseages();
+        public volatile byte[] TestRes;
+
         public PhysicalVariable SourceFrequency { get; set; } = "50.0 Hz";
         public PhysicalVariable SourceVoltage { get; set; } = "100.0 V";
         public PhysicalVariable SourceCurrent { get; set; } = "10 A";
@@ -63,9 +66,18 @@ namespace HV9003TE4
 
         private void TcpServer_DataReceived(object sender, AsyncEventArgs e)
         {
-
+            byte[] a = e._state.Buffer;
+            int length = e._state.RecLength;
+            var Temp = a.Skip(0).Take(length).ToArray();
+            if (Temp[0] == 0xfd)
+                TestClass.QueryTestResult(TcpTask.TcpServer, null, AnalysisData.DeelTestResult(TestRes));
+            if(Temp[0]==0xda)
+            {
+                TestClass.QueryTestResult(TcpTask.TcpServer, null, AnalysisData.DeelVolateAndFre(TestRes));
+            }
+            TestMesseagesNull.ReturnMessages(TcpTask.TcpServer, Temp);
         }
-
+        
         public void StartRecCom()
         {
             TestResult.WorkTest.StartTest();
@@ -76,6 +88,7 @@ namespace HV9003TE4
         {
             return (a is null) ? 0 : ((double)a);
         }
+
 
         private PhysicalVariable calcCap(PhysicalVariable Ix, PhysicalVariable AGx)
         {
@@ -197,9 +210,13 @@ namespace HV9003TE4
             Power2 = calcPower(Ix2, AG2);
             Power3 = calcPower(Ix3, AG3);
             Power4 = calcPower(Ix4, AG4);
-        }
+            TestRes = result;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+    }
+
+
+
+    public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
         {
             if (this.PropertyChanged != null)
@@ -370,7 +387,6 @@ namespace HV9003TE4
             Labels3 = Xvalue;
             SeriesCollection3 = new SeriesCollection { };
             SeriesCollection3.Add(t1);
-
         }
         public void SetChart4(double[] chartdata, List<string> Xvalue)
         {
@@ -389,38 +405,7 @@ namespace HV9003TE4
             SeriesCollection4.Add(t1);
 
         }
-
-        public void linestart()
-        {
-            Task.Factory.StartNew(() =>
-            {
-                var r = new Random();
-                while (true)
-                {
-                    Thread.Sleep(1000);
-                    _trend = r.Next(-500, 500);
-                    //通过Dispatcher在工作线程中更新窗体的UI元素
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        //更新横坐标时间DateTime.Now.ToString()
-                        Labels.Add(DateTime.Now.ToString());
-                        //Labels.Add("i");
-                        //Labels.Add("g");
-                        //Labels.Add("k");
-                        //Labels.Add("j");
-
-                        Labels.RemoveAt(0);
-                        //更新纵坐标数据
-                        SeriesCollection[0].Values.Add(_trend);
-                        SeriesCollection[0].Values.RemoveAt(0);
-                    });
-                }
-            });
-        }
-
         #endregion
-
-
         public MainWindowModel()
         {
             

@@ -227,7 +227,7 @@ namespace SCEEC.MI.High_Precision
             }
             catch(Exception ex)
             {
-                throw new Exception();
+                throw ex;
             }
         }
         #endregion

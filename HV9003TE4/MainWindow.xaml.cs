@@ -26,11 +26,12 @@ namespace HV9003TE4
         public MainWindow()
         {
             InitializeComponent();
-            (this.DataContext as MainWindowModel).StartRecCom();
-            (this.DataContext as MainWindowModel).SetFre(50);
-            (this.DataContext as MainWindowModel).T1.IsBackground = true;
-            (this.DataContext as MainWindowModel).T1.Start();
-            (this.DataContext as MainWindowModel).OutTestResult += MainWindow_OutTestResult;
+            //(this.DataContext as MainWindowModel).StartRecCom();
+            //(this.DataContext as MainWindowModel).SetFre(50);
+            //(this.DataContext as MainWindowModel).T1.IsBackground = true;
+            //(this.DataContext as MainWindowModel).T1.Start();
+            //(this.DataContext as MainWindowModel).OutTestResult += MainWindow_OutTestResult;
+            //(this.DataContext as MainWindowModel).StartTcp();
         }
 
         private void MainWindow_OutTestResult(byte[] data)
@@ -149,7 +150,15 @@ namespace HV9003TE4
             {
 
             }
+            try
+            {
 
+            }
+            catch
+            {
+
+                throw new Exception("波形数据处理出错");
+            }
             var Fre = (this.DataContext as MainWindowModel).HVFrequency.ToString();
             var Time = DateTime.Now.ToString();
 
@@ -291,114 +300,7 @@ namespace HV9003TE4
 
                 }
             }
-            #region
-            //if (Com1.SelectedIndex == 0)
-            //{
-            //    XVolate.Add(Volate);
-
-            //    if (Com2.SelectedIndex == 0)
-            //    {
-            //        YVolateAndCn.Add((double)Cn.value);
-            //        (this.DataContext as MainWindowModel).SetChart1(YVolateAndCn.ToArray(), XVolate);
-            //        (this.DataContext as MainWindowModel).SetChart2(YVolateAndCn.ToArray(), XVolate);
-            //        (this.DataContext as MainWindowModel).SetChart3(YVolateAndCn.ToArray(), XVolate);
-            //        (this.DataContext as MainWindowModel).SetChart4(YVolateAndCn.ToArray(), XVolate);
-
-            //    }
-            //    else if (Com2.SelectedIndex == 1)
-            //    {
-            //        YVolateAndCurrent.Add((double)Current.value);
-            //        (this.DataContext as MainWindowModel).SetChart1(YVolateAndCurrent.ToArray(), XVolate);
-            //        (this.DataContext as MainWindowModel).SetChart2(YVolateAndCurrent.ToArray(), XVolate);
-            //        (this.DataContext as MainWindowModel).SetChart3(YVolateAndCurrent.ToArray(), XVolate);
-            //        (this.DataContext as MainWindowModel).SetChart4(YVolateAndCurrent.ToArray(), XVolate);
-
-            //    }
-            //    else if (Com2.SelectedIndex == 2)
-            //    {
-            //        YVolateAndTan.Add((double)Tan.value);
-            //        (this.DataContext as MainWindowModel).SetChart1(YVolateAndTan.ToArray(), XVolate);
-            //        (this.DataContext as MainWindowModel).SetChart2(YVolateAndTan.ToArray(), XVolate);
-            //        (this.DataContext as MainWindowModel).SetChart3(YVolateAndTan.ToArray(), XVolate);
-            //        (this.DataContext as MainWindowModel).SetChart4(YVolateAndTan.ToArray(), XVolate);
-
-            //    }
-
-            //}
-            //if (Com1.SelectedIndex == 1)
-            //{
-            //    XFre.Add(Fre);
-            //    if (Com2.SelectedIndex == 0)
-            //    {
-            //        YVolateAndCn.Add((double)Cn.value);
-            //        (this.DataContext as MainWindowModel).SetChart1(YVolateAndCn.ToArray(), XFre);
-            //        (this.DataContext as MainWindowModel).SetChart2(YVolateAndCn.ToArray(), XFre);
-            //        (this.DataContext as MainWindowModel).SetChart3(YVolateAndCn.ToArray(), XFre);
-            //        (this.DataContext as MainWindowModel).SetChart4(YVolateAndCn.ToArray(), XFre);
-
-            //    }
-            //    else if (Com2.SelectedIndex == 1)
-            //    {
-            //        YVolateAndCurrent.Add((double)Current.value);
-            //        (this.DataContext as MainWindowModel).SetChart1(YVolateAndCurrent.ToArray(), XFre);
-            //        (this.DataContext as MainWindowModel).SetChart2(YVolateAndCurrent.ToArray(), XFre);
-            //        (this.DataContext as MainWindowModel).SetChart3(YVolateAndCurrent.ToArray(), XFre);
-            //        (this.DataContext as MainWindowModel).SetChart4(YVolateAndCurrent.ToArray(), XFre);
-
-            //    }
-            //    else
-            //    {
-            //        YVolateAndTan.Add((double)Tan.value);
-            //        (this.DataContext as MainWindowModel).SetChart1(YVolateAndTan.ToArray(), XFre);
-            //        (this.DataContext as MainWindowModel).SetChart2(YVolateAndTan.ToArray(), XFre);
-            //        (this.DataContext as MainWindowModel).SetChart3(YVolateAndTan.ToArray(), XFre);
-            //        (this.DataContext as MainWindowModel).SetChart4(YVolateAndTan.ToArray(), XFre);
-
-            //    }
-            //}
-            //if (Com1.SelectedIndex == 2)
-            //{
-            //    XFre.Add(Time);
-            //    if (Com2.SelectedIndex == 0)
-            //    {
-            //        YVolateAndCn.Add((double)Cn.value);
-            //        (this.DataContext as MainWindowModel).SetChart1(YVolateAndCn.ToArray(), XTime);
-            //        (this.DataContext as MainWindowModel).SetChart2(YVolateAndCn.ToArray(), XTime);
-            //        (this.DataContext as MainWindowModel).SetChart3(YVolateAndCn.ToArray(), XTime);
-            //        (this.DataContext as MainWindowModel).SetChart4(YVolateAndCn.ToArray(), XTime);
-
-            //    }
-            //    else if (Com2.SelectedIndex == 1)
-            //    {
-            //        YVolateAndCurrent.Add((double)Current.value);
-            //        (this.DataContext as MainWindowModel).SetChart1(YVolateAndCurrent.ToArray(), XTime);
-            //        (this.DataContext as MainWindowModel).SetChart2(YVolateAndCurrent.ToArray(), XTime);
-            //        (this.DataContext as MainWindowModel).SetChart3(YVolateAndCurrent.ToArray(), XTime);
-            //        (this.DataContext as MainWindowModel).SetChart4(YVolateAndCurrent.ToArray(), XTime);
-
-            //    }
-            //    else
-            //    {
-            //        YVolateAndTan.Add((double)Tan.value);
-            //        (this.DataContext as MainWindowModel).SetChart1(YVolateAndTan.ToArray(), XTime);
-            //        (this.DataContext as MainWindowModel).SetChart2(YVolateAndTan.ToArray(), XTime);
-            //        (this.DataContext as MainWindowModel).SetChart3(YVolateAndTan.ToArray(), XTime);
-            //        (this.DataContext as MainWindowModel).SetChart4(YVolateAndTan.ToArray(), XTime);
-
-            //    }
-            //}
             #endregion
-            #endregion
-
-            // (this.DataContext as MainWindowModel).HVVoltage;
-            // (this.DataContext as MainWindowModel).HVFrequency;
-            // DateTime.Now.ToString();
-
-            // (this.DataContext as MainWindowModel).Capacitance1;
-            // (this.DataContext as MainWindowModel).Current1;
-            //(this.DataContext as MainWindowModel).DissipationFactor1;
-
-
         }
 
         private void Delete_Click(object sender, RoutedEventArgs e)
@@ -418,7 +320,12 @@ namespace HV9003TE4
             if (YVolateAndTan2.Count > 0) YVolateAndTan2.RemoveAt(YVolateAndTan2.Count - 1);
             if (YVolateAndTan3.Count > 0) YVolateAndTan3.RemoveAt(YVolateAndTan3.Count - 1);
             if (YVolateAndTan4.Count > 0) YVolateAndTan4.RemoveAt(YVolateAndTan4.Count - 1);
+            UpdataWaveForm();
 
+        }
+
+        private void UpdataWaveForm()
+        {
             #region
             if (Com1.SelectedIndex == 0)
             {
@@ -508,8 +415,6 @@ namespace HV9003TE4
         }
 
 
-
-
         private void Power(object sender, RoutedEventArgs e)
         {
             NeedVolate = 0;
@@ -522,12 +427,12 @@ namespace HV9003TE4
                 else
                     (this.DataContext as MainWindowModel).ClosePower();
             }
-            catch 
+            catch
             {
 
                 throw new Exception("StartPower Is Failed");
             }
-           
+
             #region enable
             if (PowerState.IsChecked == false)
             {
@@ -644,13 +549,16 @@ namespace HV9003TE4
 
         private void Keyb_OutCnData(string cn)
         {
-          //  (this.DataContext as MainWindowModel).Cn = cn;
+            //  (this.DataContext as MainWindowModel).Cn = cn;
             CnTbx.Text = cn;
+            CnButton.Content = cn;
+            (this.DataContext as MainWindowModel).Cn = cn;
+
         }
 
         private void Cn_Click(object sender, RoutedEventArgs e)
         {
-          
+
             Views.KeyBoard keyb = new Views.KeyBoard();
             keyb.OutCnData += Keyb_OutCnData;
             keyb.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -668,7 +576,32 @@ namespace HV9003TE4
         private void Keyb_OutCnTanData(string cn)
         {
             CnTanTxb.Text = cn;
+            CnTanButton.Content = cn;
+            PhysicalVariable need= NumericsConverter.Text2Value(cn);
+            (this.DataContext as MainWindowModel).AGn = need;
+
         }
 
+        private void X_selectChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                UpdataWaveForm();
+            }
+            catch
+            {
+            }
+        }
+
+        private void Y_selectchanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                UpdataWaveForm();
+            }
+            catch
+            {
+            }
+        }
     }
 }

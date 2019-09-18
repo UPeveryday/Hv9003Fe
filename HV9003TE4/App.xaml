@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:local="clr-namespace:HV9003TE4"
+             xmlns:local1="clr-namespace:HV9003TE4.Views"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>

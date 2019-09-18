@@ -139,8 +139,6 @@ namespace SCEEC.NET.TCPSERVER
         public static void QueryFreAndVolate(AsyncTCPServer tCPServer, byte[] data, byte[] NeedReturnData)
         {
             SendData(NeedReturnData, tCPServer);
-
-
         }
 
       

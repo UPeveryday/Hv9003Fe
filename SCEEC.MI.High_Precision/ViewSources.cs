@@ -24,11 +24,11 @@ namespace SCEEC.MI.High_Precision
         public float TestRx2 { get; set; }
         public float TestRx3 { get; set; }
         public float TestRx4 { get; set; }
-        public float TestFre { get; set; }
+        public float TestFre { get; set; } = 50.0f;
         public float TestCurrent { get; set; }
         public float TestPower { get; set; }
         public double TestU0 { get; set; }
-        public PhysicalVariable TestCn { get; set; }
+        public PhysicalVariable TestCn { get; set; } = "1.002nF";
         public PhysicalVariable TestCnTan { get; set; }
         public double TestCx1 { get; set; }
         public double TestCx2 { get; set; }
@@ -68,8 +68,14 @@ namespace SCEEC.MI.High_Precision
             OneVolate = BitConverter.ToSingle(bits.Skip(54).Take(4).ToArray(), 0);
             AlarmStata = bits[58];
 
+            try
+            {
+                TestU0 = TestIn / (2 * Math.PI * TestFre * ((double)TestCn.value));
 
-            //TestU0 = TestIn / (2 * Math.PI * TestFre * ((double)TestCn.value));
+            }
+            catch 
+            {
+            }
             //TestCx1 = TestIx1 / (2 * Math.PI * TestU0);
             //TestCx2 = TestIx2 / (2 * Math.PI * TestU0);
             //TestCx3 = TestIx3 / (2 * Math.PI * TestU0);

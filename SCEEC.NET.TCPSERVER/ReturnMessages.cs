@@ -108,7 +108,7 @@ namespace SCEEC.NET.TCPSERVER
                     case 0xfd:
                         // TestClass.QueryTestResult(tCPServer, data, AnalysisData.DeelTestResult(TestResultData));//Test
                         ISStart = true;
-                        SendData += TestMesseages_SendData;
+                       // SendData += TestMesseages_SendData;
                         break;
                     case 0xbd:
                         //反接板状态，查询协议确实
@@ -192,7 +192,7 @@ namespace SCEEC.NET.TCPSERVER
                     case 0xfd:
                         // TestClass.QueryTestResult(tCPServer, data, AnalysisData.DeelTestResult(TestResultData));//Test
                         ISStart = true;
-                        SendData += TestMesseages_SendData;
+                        //SendData += TestMesseages_SendData;
                         break;
                     case 0xbd:
                         //反接板状态，查询协议确实

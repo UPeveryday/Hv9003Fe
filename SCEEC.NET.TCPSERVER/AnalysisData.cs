@@ -145,33 +145,26 @@ namespace SCEEC.NET.TCPSERVER
         {
             //Encoding.Default.GetBytes(aaa.ToString("N3"));
             ViewSources vs = new ViewSources(data);
-            byte[] Volate = OnlyData(vs.TestCurrent, "A");
+            byte[] HighVolate = OnlyData((float)vs.TestU0, "V");
             byte[] Fre = OnlyData(vs.TestFre, "Hz");
-            byte[] Cx1 = OnlyData((float)vs.TestCx1, "");
-            byte[] CxTan1 = OnlyData((float)vs.TestTan1, "");
-            byte[] Cx2 = OnlyData((float)vs.TestCx2, "");
-            byte[] CxTan2 = OnlyData((float)vs.TestTan2, "");
-            byte[] Cx3 = OnlyData((float)vs.TestCx3, "");
-            byte[] CxTa3 = OnlyData((float)vs.TestTan3, "");
-            byte[] Cx4 = OnlyData((float)vs.TestCx4, "");
-            byte[] CxTan4 = OnlyData((float)vs.TestTan4, "");
-            byte[] zero = new byte[7];
-            byte[] returnbyte = new byte[99];
-            returnbyte[0] = 0xfd;
-            Volate.CopyTo(returnbyte, 1);
+            byte[] ix1 = OnlyData((float)vs.TestIx1, "A");
+            byte[] ix2 = OnlyData((float)vs.TestIx2, "A");
+            byte[] ix3 = OnlyData((float)vs.TestIx3, "A");
+            byte[] ix4 = OnlyData((float)vs.TestIx4, "A");
+            byte[] LowVolate = OnlyData((float)vs.OneVolate, "V");
+            byte[] LowCurrent = OnlyData((float)vs.TestIn, "A");
+           
+            byte[] returnbyte = new byte[57];
+            returnbyte[0] = 0xda;
+            HighVolate.CopyTo(returnbyte, 1);
             Fre.CopyTo(returnbyte, 8);
-            Cx1.CopyTo(returnbyte, 15);
-            CxTan1.CopyTo(returnbyte, 22);
-            Cx2.CopyTo(returnbyte, 29);
-            CxTan2.CopyTo(returnbyte, 36);
-            Cx3.CopyTo(returnbyte, 43);
-            CxTa3.CopyTo(returnbyte, 50);
-            Cx4.CopyTo(returnbyte, 57);
-            CxTan4.CopyTo(returnbyte, 64);
-            zero.CopyTo(returnbyte, 71);
-            zero.CopyTo(returnbyte, 78);
-            zero.CopyTo(returnbyte, 85);
-            zero.CopyTo(returnbyte, 92);
+            ix1.CopyTo(returnbyte, 15);
+            ix2.CopyTo(returnbyte, 22);
+            ix3.CopyTo(returnbyte, 29);
+            ix4.CopyTo(returnbyte, 36);
+            LowVolate.CopyTo(returnbyte, 43);
+            LowCurrent.CopyTo(returnbyte, 50);
+            
             return returnbyte;
         }
 
