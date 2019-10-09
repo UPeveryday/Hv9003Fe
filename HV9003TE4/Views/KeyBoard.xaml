@@ -36,7 +36,12 @@
             <Setter Property="FontSize" Value="35"></Setter>
             <Setter Property="Background" Value="AliceBlue"></Setter>
             <Setter Property="BorderThickness" Value="0"></Setter>
-            
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="Red"></Setter>
+                    <Setter Property="FontSize" Value="45"></Setter>
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
     <Grid>

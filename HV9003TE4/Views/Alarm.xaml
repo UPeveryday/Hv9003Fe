@@ -6,11 +6,23 @@
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:local="clr-namespace:HV9003TE4.Views"
         mc:Ignorable="d"
-        Title="Alarm" Height="100" Width="200" Background="#FF3F3F46"
+        Title="Alarm" Height="200" Width="400" Background="Azure"
            ShowMaxRestoreButton="False"
         WindowStyle="None"
         FontFamily="Swis721 BT"             >
     <Grid>
-        <TextBlock VerticalAlignment="Center" Name="AlarmTextBlock" HorizontalAlignment="Center" Foreground="Green" FontSize="25">hello</TextBlock>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"></RowDefinition>
+            <RowDefinition  Height="1*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBlock  x:Name="AlarmTextBlock" Grid.Row="0" Margin="20" Foreground="Green" FontSize="35"></TextBlock>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="2" Margin="12,5" Click="Close" Content="确定" Background="Green"></Button>
+
+        </Grid>
     </Grid>
 </Controls:MetroWindow>

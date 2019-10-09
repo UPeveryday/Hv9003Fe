@@ -118,8 +118,8 @@ namespace SCEEC.Numerics
         {
             if (dec >= 0)
             {
-                dec = dec / 3;
-                dec = dec * 3;
+                dec /= 3;
+                dec *= 3;
             }
             else
             {

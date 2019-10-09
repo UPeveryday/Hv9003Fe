@@ -77,7 +77,7 @@ namespace HV9003TE4.Views
             }
         }
 
-       
+
         private void Nine_click(object sender, RoutedEventArgs e)
         {
             AddNum(9);
@@ -139,11 +139,11 @@ namespace HV9003TE4.Views
         {
             try
             {
-                int a = System.Text.RegularExpressions.Regex.Matches(ResultTextBox.Text,@".").Count;
-                if (a == 1)
-                {
-                    ResultTextBox.Text += ".";
-                }
+                //int a = System.Text.RegularExpressions.Regex.Matches(ResultTextBox.Text,@".").Count;
+                //if (a == 1)
+                //{
+                ResultTextBox.Text += ".";
+                // }
             }
             catch
             {

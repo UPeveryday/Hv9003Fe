@@ -10,28 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MahApps.Metro.Controls;
-namespace HV9003TE4.Views
+
+namespace WpfApp1
 {
     /// <summary>
-    /// Alarm.xaml 的交互逻辑
+    /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class Alarm : MetroWindow
+    public partial class MainWindow : Window
     {
-        public Alarm()
+        public MainWindow()
         {
             InitializeComponent();
-        }
-        public Alarm(string Text)
-        {
-            InitializeComponent();
-            AlarmTextBlock.Text = Text;
-        }
-
-        private void Close(object sender, RoutedEventArgs e)
-        {
-            this.Close();
         }
     }
 }

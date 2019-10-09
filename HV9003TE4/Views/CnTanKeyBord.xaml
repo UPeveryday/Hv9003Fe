@@ -24,6 +24,7 @@
             <Setter Property="Margin" Value="3"></Setter>
             <Setter Property="BorderBrush" Value="LightGray"></Setter>
             <Setter Property="BorderThickness" Value="0"></Setter>
+           
         </Style>
         <Style x:Key="Tblstyle" TargetType="TextBlock">
             <Setter Property="Margin" Value="3"></Setter>
@@ -36,7 +37,12 @@
             <Setter Property="FontSize" Value="35"></Setter>
             <Setter Property="Background" Value="AliceBlue"></Setter>
             <Setter Property="BorderThickness" Value="0"></Setter>
-
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="Red"></Setter>
+                    <Setter Property="FontSize" Value="45"></Setter>
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
     <Grid>
@@ -54,7 +60,8 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource KeyStyle}">
-            <Button  Style="{StaticResource buttonstyle }" Click="One_click">1</Button>
+            <Button  Style="{StaticResource buttonstyle }" Click="One_click">1
+            </Button>
         </Border >
         <Border  Grid.Row="1" Grid.Column="1"  Style="{StaticResource KeyStyle}">
             <Button  Style="{StaticResource buttonstyle}" Click="Two_click">2</Button>

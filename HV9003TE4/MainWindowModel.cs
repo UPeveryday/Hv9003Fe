@@ -12,6 +12,7 @@ using LiveCharts;
 using LiveCharts.Wpf;
 using System.Threading;
 using System.Windows;
+using LiveCharts.Defaults;
 
 namespace HV9003TE4
 {
@@ -22,13 +23,18 @@ namespace HV9003TE4
         TestMesseages TestMesseagesNull = new TestMesseages();
         public volatile byte[] TestRes;
 
+        public bool IsEnable { get; set; } = false;
+        public string YPopu { get; set; }
+        public bool ISREMOTE { get; set; } = true;
+        public bool VolateState { get; set; } = false;
+        public bool ISZERO { get; set; } = true;
         public PhysicalVariable SourceFrequency { get; set; } = "50.0 Hz";
         public PhysicalVariable SourceVoltage { get; set; } = "100.0 V";
         public PhysicalVariable SourceCurrent { get; set; } = "10 A";
         public PhysicalVariable SourcePower { get; set; } = "1.000 kW";
         public PhysicalVariable HVFrequency { get; set; } = "50.0 Hz";
         public PhysicalVariable HVVoltage { get; set; } = "100.0 kV";
-        public PhysicalVariable Cn { get; set; } = "1.002nF";
+        public PhysicalVariable Cn { get; set; } = "99.868pF";
         public PhysicalVariable In { get; set; } = "10.00 uA";
         public PhysicalVariable AGn { get; set; } = "0.000001";
         public PhysicalVariable Ix1 { get; set; } = "2.000 mA";
@@ -63,21 +69,56 @@ namespace HV9003TE4
         {
 
         }
-
         private void TcpServer_DataReceived(object sender, AsyncEventArgs e)
         {
             byte[] a = e._state.Buffer;
             int length = e._state.RecLength;
             var Temp = a.Skip(0).Take(length).ToArray();
+            ControlRemoteState(Temp);
             if (Temp[0] == 0xfd)
                 TestClass.QueryTestResult(TcpTask.TcpServer, null, AnalysisData.DeelTestResult(TestRes));
-            if(Temp[0]==0xda)
+            if (Temp[0] == 0xda)
             {
                 TestClass.QueryTestResult(TcpTask.TcpServer, null, AnalysisData.DeelVolateAndFre(TestRes));
             }
             TestMesseagesNull.ReturnMessages(TcpTask.TcpServer, Temp);
         }
-        
+
+        /// <summary>
+        /// 远程状态
+        /// </summary>
+        /// <param name="temp"></param>
+        private void ControlRemoteState(byte[] temp)
+        {
+            if (temp[0] == 0xdd)
+            {
+                if (temp[1] == 0x00)
+                {
+                    if (temp[2] == 0x01)
+                    {
+                        ISREMOTE = false;
+                        IsEnable = false;
+                    }
+                    if (temp[2] == 0x02)
+                    {
+                        ISREMOTE = true;
+                        IsEnable = true;
+                    }
+                }
+                if (temp[1] == 0x03)
+                {
+                    try
+                    {
+                        string path = "WaveImage\\" + temp[2].ToString() + ".jpg";
+                        TestClass.QueryTestResult(TcpTask.TcpServer, null, Models.StaticClass.getImageByte(path));
+                    }
+                    catch
+                    {
+                        ShowHide("未截取波形图\r\n" + "或者读取出错");
+                    }
+                }
+            }
+        }
         public void StartRecCom()
         {
             TestResult.WorkTest.StartTest();
@@ -175,7 +216,6 @@ namespace HV9003TE4
         public event ReturnResult OutTestResult;
         private void WorkTest_OutTestResult(byte[] result)
         {
-            //  OutTestResult(result);
             ViewSources vs = new ViewSources(result);
             this.TestFre = vs.TestFre;
             this.In = NumericsConverter.Value2Text(vs.TestIn, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Capacitance);
@@ -211,12 +251,22 @@ namespace HV9003TE4
             Power3 = calcPower(Ix3, AG3);
             Power4 = calcPower(Ix4, AG4);
             TestRes = result;
+            if (result[58] == 9)
+            {
+                IsEnable = false;
+            }
+            else if (result[58] == 0)
+            {
+                IsEnable = true;
+            }
+            OutTestResult(result);
 
-    }
+
+        }
 
 
 
-    public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
         {
             if (this.PropertyChanged != null)
@@ -248,29 +298,83 @@ namespace HV9003TE4
             }
         }
         #endregion
-
         #region
         public void StartPower()
         {
-            TestResult.WorkTest.StartPower();
+            try
+            {
+                TestResult.WorkTest.StartPower();
+                VolateState = true;
+                TestClass.QueryTestResult(TcpTask.TcpServer, null,new byte[3] { 0xdd,0x01,0x01});
+            }
+            catch
+            {
+                VolateState = false;
+                TestClass.QueryTestResult(TcpTask.TcpServer, null, new byte[3] { 0xdd, 0x01, 0x02 });
+                ShowHide("开启电源失败" + "\r\n" + "请检查串口和电源");
+            }
         }
         public void ClosePower()
         {
-            TestResult.WorkTest.ClosePower();
+            try
+            {
+                TestResult.WorkTest.ClosePower();
+                TestClass.QueryTestResult(TcpTask.TcpServer, null, new byte[3] { 0xdd, 0x01, 0x02 });
+                VolateState = false;
+
+            }
+            catch
+            {
+                VolateState = true;
+                TestClass.QueryTestResult(TcpTask.TcpServer, null, new byte[3] { 0xdd, 0x01, 0x01 });
+                ShowHide("关闭电源失败" + "\r\n" + "请检查串口和电源");
+            }
 
         }
 
         public void UpVolate()
         {
-            TestResult.WorkTest.startUpVolate();
+            try
+            {
+                TestResult.WorkTest.startUpVolate();
+            }
+            catch
+            {
+                ShowHide("升压失败" + "\r\n" + "请检查串口和电源");
+            }
+        }
+        public void ShowHide(string Text)
+        {
+            Views.Alarm alarm = new Views.Alarm(Text);
+            alarm.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            alarm.ShowDialog();
         }
         public void DownVolate()
         {
-            TestResult.WorkTest.startDownVolate();
+            try
+            {
+                ISZERO = false;
+                TestClass.SendData(new byte[3] { 0xdd,0x04,0x01}, TcpTask.TcpServer);
+                TestResult.WorkTest.startDownVolate();
+                TestClass.QueryTestResult(TcpTask.TcpServer, null, new byte[3] { 0xdd, 0x04, 0x02 });
+                ISZERO = true;
+            }
+            catch
+            {
+                ISZERO = true;
+                ShowHide("降压失败" + "\r\n" + "请检查串口和电源");
+            }
         }
         public void SetBaseVolate(float vol)
         {
-            TestResult.WorkTest.ChangeVolate(vol);
+            try
+            {
+                TestResult.WorkTest.ChangeVolate(vol);
+            }
+            catch
+            {
+                ShowHide("设置基础电压失败" + "\r\n" + "请检查串口和电源");
+            }
         }
         public void AddVolate(float vol)
         {
@@ -288,7 +392,15 @@ namespace HV9003TE4
         }
         public void AddFre(double fre)
         {
-            TestResult.WorkTest.ChangeFre((float)(OrFre + fre));
+            try
+            {
+                TestResult.WorkTest.ChangeFre((float)(OrFre + fre));
+                OrFre += fre;
+            }
+            catch
+            {
+                ShowHide("增加频率失败" + "\r\n" + "请检查串口和电源");
+            }
         }
 
         public void SendPra(byte channel, byte extennum, byte range, float amp, float tannum)
@@ -298,8 +410,18 @@ namespace HV9003TE4
         public double OrFre { get; set; } = 50.0;
         public void MulFre(double fre)
         {
-            if (TestFre > fre)
-                TestResult.WorkTest.ChangeFre((float)(OrFre - fre));
+            if (OrFre > fre)
+            {
+                try
+                {
+                    TestResult.WorkTest.ChangeFre((float)(OrFre - fre));
+                    OrFre -= fre;
+                }
+                catch
+                {
+                    ShowHide("降低频率失败" + "\r\n" + "请检查串口和电源");
+                }
+            }
         }
 
         public Thread T1 = new Thread(BoomFive);
@@ -355,60 +477,84 @@ namespace HV9003TE4
             SeriesCollection.Add(t1);
 
         }
-        public void SetChart2(double[] chartdata, List<string> Xvalue)
-        {
-            LineSeries t1 = new LineSeries
-            {
-                Values = new ChartValues<double>(chartdata),
-                StrokeThickness = 2,
-                Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(28, 142, 196)),
-                Fill = System.Windows.Media.Brushes.Transparent,
-                LineSmoothness = 0,//0为折现样式
-                PointGeometrySize = 8,
-                PointForeground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(34, 46, 49))
-            };
-            Labels2 = Xvalue;
-            SeriesCollection2 = new SeriesCollection { };
-            SeriesCollection2.Add(t1);
 
-        }
-        public void SetChart3(double[] chartdata, List<string> Xvalue)
-        {
-            LineSeries t1 = new LineSeries
-            {
-                Values = new ChartValues<double>(chartdata),
-                StrokeThickness = 2,
-                Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(28, 142, 196)),
-                Fill = System.Windows.Media.Brushes.Transparent,
-                LineSmoothness = 0,//0为折现样式
-                PointGeometrySize = 8,
-                PointForeground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(34, 46, 49))
-            };
-            Labels3 = Xvalue;
-            SeriesCollection3 = new SeriesCollection { };
-            SeriesCollection3.Add(t1);
-        }
-        public void SetChart4(double[] chartdata, List<string> Xvalue)
-        {
-            LineSeries t1 = new LineSeries
-            {
-                Values = new ChartValues<double>(chartdata),
-                StrokeThickness = 2,
-                Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(28, 142, 196)),
-                Fill = System.Windows.Media.Brushes.Transparent,
-                LineSmoothness = 0,//0为折现样式
-                PointGeometrySize = 8,
-                PointForeground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(34, 46, 49))
-            };
-            Labels4 = Xvalue;
-            SeriesCollection4 = new SeriesCollection { };
-            SeriesCollection4.Add(t1);
 
+        public ObservablePoint[] getobs(double[] chartdata, List<string> Xvalue)
+        {
+            if (chartdata.Length == Xvalue.Count)
+            {
+                float[] xva = new float[Xvalue.Count];
+                string[] tmp = Xvalue.ToArray();
+                for (int i = 0; i < Xvalue.Count; i++)
+                {
+                    xva[i] = (float)NumericsConverter.Text2Value(tmp[i]).value;
+                }
+                ObservablePoint[] obs = new ObservablePoint[Xvalue.Count];
+                for (int i = 0; i < Xvalue.Count; i++)
+                {
+                    obs[i] = new ObservablePoint(xva[i], chartdata[i]);
+                }
+                return obs;
+            }
+
+            return null;
         }
+        public void SetChartObserver(double[] chartdata, List<string> Xvalue, ChartPannel pannel)
+        {
+            ChartValues<ObservablePoint> c1 = new ChartValues<ObservablePoint>();
+            c1.AddRange(getobs(chartdata, Xvalue));
+            LineSeries t1 = new LineSeries
+            {
+                StrokeThickness = 2,
+                Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(28, 142, 196)),
+                Fill = System.Windows.Media.Brushes.Transparent,
+                LineSmoothness = 0,//0为折现样式
+                PointGeometrySize = 8,
+                PointForeground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(34, 46, 49)),
+                Values = c1,
+            };
+            if (pannel == ChartPannel.Channel1)
+            {
+                SeriesCollection = new SeriesCollection { };
+                SeriesCollection.Add(t1);
+                //c1.Clear();
+            }
+            if (pannel == ChartPannel.Channel2)
+            {
+                SeriesCollection2 = new SeriesCollection { };
+                SeriesCollection2.Add(t1);
+                //c1.Clear();
+            }
+            if (pannel == ChartPannel.Channel3)
+            {
+                SeriesCollection3 = new SeriesCollection { };
+                SeriesCollection3.Add(t1);
+                //c1.Clear();
+            }
+            if (pannel == ChartPannel.Channel4)
+            {
+                SeriesCollection4 = new SeriesCollection { };
+                SeriesCollection4.Add(t1);
+                //c1.Clear();
+            }
+
+            //XFormatter = val => (int)val;
+            //YFormatter = val => val.ToString("N") + " kV";
+        }
+        public Func<double, int> XFormatter { get; set; }
+        public Func<double, string> YFormatter { get; set; }
         #endregion
         public MainWindowModel()
         {
-            
+
         }
+    }
+
+    public enum ChartPannel
+    {
+        Channel1 = 0,
+        Channel2,
+        Channel3,
+        Channel4
     }
 }

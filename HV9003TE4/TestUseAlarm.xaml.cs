@@ -11,27 +11,24 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using MahApps.Metro.Controls;
-namespace HV9003TE4.Views
+
+namespace HV9003TE4
 {
     /// <summary>
-    /// Alarm.xaml 的交互逻辑
+    /// TestUseAlarm.xaml 的交互逻辑
     /// </summary>
-    public partial class Alarm : MetroWindow
+    public partial class TestUseAlarm : Window
     {
-        public Alarm()
+        public TestUseAlarm()
         {
             InitializeComponent();
-        }
-        public Alarm(string Text)
-        {
-            InitializeComponent();
-            AlarmTextBlock.Text = Text;
+
         }
 
-        private void Close(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Views.Alarm a = new Views.Alarm("hello");
+            a.ShowDialog();
         }
     }
 }
