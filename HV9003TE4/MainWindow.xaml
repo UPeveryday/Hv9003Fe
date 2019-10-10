@@ -266,18 +266,20 @@
                     </Grid>
                 </Grid>
                 <Expander  Grid.ColumnSpan="2" Header="波形操作" IsExpanded="{Binding ISREMOTE}">
-                    <Grid Margin="10,0">
+                    <Grid Margin="5,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="1.8*"/>
+                            <ColumnDefinition Width="1.8*"/>
+                            <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="2*"/>
                             <ColumnDefinition Width="2*"/>
                         </Grid.ColumnDefinitions>
 
                         <Rectangle Grid.ColumnSpan="10"  Stroke="#FF49B4E8" StrokeThickness="1"/>
-                        <Button Grid.Column="0" IsEnabled="{Binding ISREMOTE}" Click="Recor_Click" Margin="3,10" FontSize="18" Content="记录当前值"/>
-                        <Button Grid.Column="1" Click="Delete_Click"  IsEnabled="{Binding ISREMOTE}" Margin="3,10" FontSize="18" Content="删除上次值"/>
-                        <Grid Grid.Column="2" Margin="5">
+                        <Button Grid.Column="0" Foreground="White" Background="#ff9b14" IsEnabled="{Binding ISREMOTE}" Click="Recor_Click" Margin="3,10" FontSize="18" Content="记录当前值"/>
+                        <Button Grid.Column="1"  Foreground="White"  Background="#ff5671" Click="Delete_Click"  IsEnabled="{Binding ISREMOTE}" Margin="3,10" FontSize="18" Content="删除上次值"/>
+                       
+                        <Grid Grid.Column="3" Margin="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
@@ -289,7 +291,10 @@
                                 <ComboBoxItem Content="时间"/>
                             </ComboBox>
                         </Grid>
-                        <Grid Grid.Column="3" Margin="5">
+                        <Grid Grid.Column="2">
+                            <Button Background="#00a3ff"  Foreground="White"  Margin="5,10" FontSize="15">保存</Button>
+                        </Grid>
+                        <Grid Grid.Column="4" Margin="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
@@ -331,8 +336,8 @@
                 <Controls:ToggleSwitch  x:Name="PowerState"  Grid.Column="1" IsChecked="{Binding VolateState}" Click="Power" Margin="5" Header="电源输出"/>
                 <Button Grid.Column="2" Background="#ff4648" Name="Downc" Click="Down_Click" IsEnabled="{Binding ISZERO}"  FontSize="18" >
                     <StackPanel>
-                        <TextBlock FontSize="20" FontWeight="Bold">降压</TextBlock>
-                        <TextBlock FontSize="20">归零</TextBlock>
+                        <TextBlock FontSize="20" FontWeight="Bold" Foreground="White">降压</TextBlock>
+                        <TextBlock FontSize="20"  Foreground="White">归零</TextBlock>
                     </StackPanel>
                 </Button>
             </Grid>
