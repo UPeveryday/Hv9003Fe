@@ -9,7 +9,7 @@
         ShowMaxRestoreButton="False"
         WindowStyle="None"
         FontFamily="Swis721 BT"
-        Title="KeyBoard" Height="450" Width="400">
+        Title="KeyBoard" Height="450" Width="350">
 
     <Window.Resources>
         <Style x:Key="Tbstyle" TargetType="TextBox">
@@ -34,8 +34,10 @@
         <Style x:Key="buttonstyle" TargetType="Button">
             <Setter Property="Margin" Value="3"></Setter>
             <Setter Property="FontSize" Value="35"></Setter>
-            <Setter Property="Background" Value="AliceBlue"></Setter>
+            <Setter Property="Background" Value="#00b8ff"></Setter>
             <Setter Property="BorderThickness" Value="0"></Setter>
+            <Setter Property="Foreground" Value="White"></Setter>
+
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Foreground" Value="Red"></Setter>
@@ -59,35 +61,115 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource KeyStyle}">
-            <Button  Style="{StaticResource buttonstyle }" Click="One_click">1</Button>
+            <Button  Style="{StaticResource buttonstyle }" Click="One_click">1
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Name="PART_Background">
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Border >
         <Border  Grid.Row="1" Grid.Column="1"  Style="{StaticResource KeyStyle}">
-            <Button  Style="{StaticResource buttonstyle}" Click="Two_click">2</Button>
+            <Button  Style="{StaticResource buttonstyle}" Click="Two_click">2
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Name="PART_Background">
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Border>
         <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource KeyStyle}">
-            <Button  Style="{StaticResource buttonstyle}" Click="Three_click">3</Button>
+            <Button  Style="{StaticResource buttonstyle}" Click="Three_click">3
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Name="PART_Background">
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Border>
 
         <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource KeyStyle}">
-            <Button  Style="{StaticResource buttonstyle}" Click="Four_click">4</Button>
+            <Button  Style="{StaticResource buttonstyle}" Click="Four_click">4
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Name="PART_Background">
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Border>
         <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource KeyStyle}">
-            <Button  Style="{StaticResource buttonstyle}" Click="Five_click">5</Button>
+            <Button  Style="{StaticResource buttonstyle}" Click="Five_click">5
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Name="PART_Background">
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Border>
         <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource KeyStyle}">
-            <Button  Style="{StaticResource buttonstyle}" Click="Six_click">6</Button>
+            <Button  Style="{StaticResource buttonstyle}" Click="Six_click">6
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Name="PART_Background">
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Border>
         <Border Grid.Row="3" Grid.Column="0" Style="{StaticResource KeyStyle}">
-            <Button  Style="{StaticResource buttonstyle}" Click="Seven_click">7</Button>
+            <Button  Style="{StaticResource buttonstyle}" Click="Seven_click">7
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Name="PART_Background">
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Border>
         <Border Grid.Row="4" Grid.Column="0" Style="{StaticResource KeyStyle}">
-            <Button  Style="{StaticResource buttonstyle}" Click="Zero_click">0</Button>
+            <Button  Style="{StaticResource buttonstyle}" Click="Zero_click">0
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Name="PART_Background">
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Border>
         <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource KeyStyle}">
-            <Button  Style="{StaticResource buttonstyle}" Click="Eight_click">8</Button>
+            <Button  Style="{StaticResource buttonstyle}" Click="Eight_click">8
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Name="PART_Background">
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Border>
         <Border Grid.Row="3" Grid.Column="2" Style="{StaticResource KeyStyle}">
-            <Button  Style="{StaticResource buttonstyle}" Click="Nine_click">9</Button>
+            <Button  Style="{StaticResource buttonstyle}" Click="Nine_click">9
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Name="PART_Background">
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Border>
         <Border  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Margin="10,5" BorderThickness="1" BorderBrush="LightGray">
             <TextBlock x:Name="ResultTextBox" Margin="5" TextAlignment="Right" FontSize="40" VerticalAlignment="Center"></TextBlock>
@@ -96,25 +178,73 @@
         
         
         <Border Grid.Row="1" Grid.Column="4" Style="{StaticResource KeyStyle}" >
-            <Button  Style="{StaticResource buttonstyle}" Click="Delete_click">←</Button>
+            <Button  Style="{StaticResource buttonstyle}" Background="#ff4648" Click="Delete_click">←
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Name="PART_Background">
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Border>
        
         <Border Grid.Row="2" Grid.Column="4" Style="{StaticResource KeyStyle}">
-            <Button  Style="{StaticResource buttonstyle}" Click="E_Click">AC</Button>
+            <Button  Style="{StaticResource buttonstyle}"  Background="#ffab31"  Click="E_Click">AC
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Name="PART_Background">
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Border>
 
         <Border Grid.Row="4" Grid.Column="3" Style="{StaticResource KeyStyle}">
-            <Button  Style="{StaticResource buttonstyle}" Click="nF_Click">nF</Button>
+            <Button  Style="{StaticResource buttonstyle}" Background="#ffab31"  Click="nF_Click">nF
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Name="PART_Background">
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Border>
         <Border Grid.Row="4" Grid.Column="2" Style="{StaticResource KeyStyle}">
-            <Button  Style="{StaticResource buttonstyle}" Click="uF_Click">uF</Button>
+            <Button  Style="{StaticResource buttonstyle}"  Background="#ffab31" Click="uF_Click">uF
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Name="PART_Background">
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Border>
         <Border Grid.Row="3" Grid.Column="3" Style="{StaticResource KeyStyle}">
-            <Button  Style="{StaticResource buttonstyle}" Click="pF_Click">pF</Button>
+            <Button  Style="{StaticResource buttonstyle}" Background="#ffab31"  Click="pF_Click">pF
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Name="PART_Background">
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Border>
       
         <Border Grid.Row="4" Grid.Column="1" Style="{StaticResource KeyStyle}">
-            <Button  Style="{StaticResource buttonstyle}" Click="Point_Click" FontSize="50">.</Button>
+            <Button  Style="{StaticResource buttonstyle}" Click="Point_Click" FontSize="50">.
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Name="PART_Background">
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Border>
         <Grid Grid.Row="5" Grid.Column="4" >
             <Grid.RowDefinitions>

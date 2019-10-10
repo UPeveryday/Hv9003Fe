@@ -4,15 +4,18 @@
                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:local="clr-namespace:HV9003TE4"
                       xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+                      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                       Title="HV9003TE4 四通道电容量及介质损耗高速测量电桥"
-                      ShowMaxRestoreButton="False"
+                      ShowMaxRestoreButton="True"
                       WindowStyle="None"
                       Height="600"
                       Width="1024"
                       FontFamily="Swis721 BT"
+                      WindowState="Maximized"
                        Closing="MetroWindow_Closing" 
     >
     <!--Background="#FF252525"-->
+    
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -25,7 +28,7 @@
     </Window.DataContext>
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
-            <Button Content="设置"/>
+            <Button Content="设置"  Click="Setting_click"/>
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
     <Grid>
@@ -65,8 +68,8 @@
                         <TextBlock Grid.Column="0" TextAlignment="Center" Grid.Row="3" Text="介损:" Margin="5"/>
                         <TextBlock Grid.Column="1" x:Name="CnTanTxb" Grid.Row="3" Text="{Binding StandardCapacitanceDissipationFactor,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5" TextAlignment="Right"/>
 
-                        <Button Grid.Column="1" Name="CnButton"  Content="{Binding StandardCapacitance,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Margin="3" Click="Cn_Click" Controls:ControlsHelper.ContentCharacterCasing="Normal"></Button>
-                        <Button Grid.Column="1"  Name="CnTanButton"  Content="{Binding StandardCapacitanceDissipationFactor,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Margin="3"  Click="CnTan_Click"></Button>
+                        <Button Grid.Column="1" Name="CnButton" Visibility="Hidden" Content="{Binding StandardCapacitance,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Margin="3" Click="Cn_Click" Controls:ControlsHelper.ContentCharacterCasing="Normal"></Button>
+                        <Button Grid.Column="1"  Name="CnTanButton"   Visibility="Hidden"  Content="{Binding StandardCapacitanceDissipationFactor,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Margin="3"  Click="CnTan_Click"></Button>
                     </Grid>
                 </Viewbox>
             </GroupBox>
@@ -262,7 +265,7 @@
                         </lvc:CartesianChart>
                     </Grid>
                 </Grid>
-                <Expander  Grid.ColumnSpan="2" Header="波形操作">
+                <Expander  Grid.ColumnSpan="2" Header="波形操作" IsExpanded="{Binding ISREMOTE}">
                     <Grid Margin="10,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="2*"/>
@@ -306,12 +309,32 @@
             
             <Grid Grid.Column="2" Margin="5">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="2.3*"/>
+                    <ColumnDefinition Width="1.7*"/>
                 </Grid.ColumnDefinitions>
-                <Rectangle Grid.ColumnSpan="2"  Stroke="#FF49B4E8" StrokeThickness="1"/>
-                <Controls:ToggleSwitch  x:Name="PowerState" IsChecked="{Binding VolateState}" Click="Power"  Grid.Column="0" Margin="5" Header="电源输出"/>
-                <Button Grid.Column="1" Name="Downc" Click="Down_Click" IsEnabled="{Binding ISZERO}" Margin="10" Content="降压归零" FontSize="18" Background="#40C71585"/>
+                <Grid Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.Background>
+                            <ImageBrush ImageSource="Resources/11111.png" Stretch="Fill" />
+                        </Grid.Background>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <TextBlock  Grid.Column="1" Grid.Row="1" Text="{Binding HVVoltage, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" VerticalAlignment="Center" FontSize="18" TextAlignment="Center"/>
+                    </Grid>
+                </Grid>
+                <Rectangle Grid.ColumnSpan="2" Grid.Column="1" Stroke="#FF49B4E8" StrokeThickness="1"/>
+                <Controls:ToggleSwitch  x:Name="PowerState"  Grid.Column="1" IsChecked="{Binding VolateState}" Click="Power" Margin="5" Header="电源输出"/>
+                <Button Grid.Column="2" Background="#ff4648" Name="Downc" Click="Down_Click" IsEnabled="{Binding ISZERO}"  FontSize="18" >
+                    <StackPanel>
+                        <TextBlock FontSize="20" FontWeight="Bold">降压</TextBlock>
+                        <TextBlock FontSize="20">归零</TextBlock>
+                    </StackPanel>
+                </Button>
             </Grid>
             <GroupBox Grid.Column="2" Name="FreGroupBox" Grid.Row="1"  IsEnabled="{Binding IsEnable}"  Header="频率调节" Margin="5">
                 <Viewbox>
@@ -358,7 +381,7 @@
                     </Grid>
                 </Viewbox>
             </GroupBox>
-            <Expander Grid.Column="2" Name="VolateGroupBox" IsEnabled="{Binding IsEnable}" Grid.Row="2" Header="电压调节" Margin="5">
+            <Expander Grid.Column="2" Name="VolateGroupBox" IsExpanded="{Binding ISREMOTE}" IsEnabled="{Binding IsEnable}" Grid.Row="2" Header="电压调节" Margin="5">
                 <Viewbox>
                     <Grid>
                         <Grid.RowDefinitions>

@@ -26,6 +26,7 @@ namespace HV9003TE4
         public bool IsEnable { get; set; } = false;
         public string YPopu { get; set; }
         public bool ISREMOTE { get; set; } = true;
+        public bool ISCLOSE { get; set; } = true;
         public bool VolateState { get; set; } = false;
         public bool ISZERO { get; set; } = true;
         public PhysicalVariable SourceFrequency { get; set; } = "50.0 Hz";
@@ -98,11 +99,14 @@ namespace HV9003TE4
                     {
                         ISREMOTE = false;
                         IsEnable = false;
+                        ISCLOSE = true;
                     }
                     if (temp[2] == 0x02)
                     {
                         ISREMOTE = true;
                         IsEnable = true;
+                        ISCLOSE = false;
+
                     }
                 }
                 if (temp[1] == 0x03)

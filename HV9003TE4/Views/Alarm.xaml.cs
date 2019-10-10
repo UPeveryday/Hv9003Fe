@@ -33,5 +33,10 @@ namespace HV9003TE4.Views
         {
             this.Close();
         }
+
+        private void grid_ms(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
     }
 }

@@ -71,9 +71,10 @@ namespace HV9003TE4.Views
                 OutCnData(NumericsConverter.Value2Text((double)tpd.value, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Capacitance));
                 this.Close();
             }
-            catch
+            catch(Exception ex)
             {
-                throw new Exception("结果值出错");
+                // throw new Exception("结果值出错");
+                throw ex;
             }
         }
 

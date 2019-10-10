@@ -636,36 +636,36 @@ namespace HV9003TE4
         }
         private void Keyb_OutCnData(string cn)
         {
-            //  (this.DataContext as MainWindowModel).Cn = cn;
-            CnTbx.Text = cn;
-            CnButton.Content = cn;
-            (this.DataContext as MainWindowModel).Cn = cn;
+            //CnTbx.Text = cn;
+            //CnButton.Content = cn;
+            //PhysicalVariable need = NumericsConverter.Text2Value(cn);
+            //(this.DataContext as MainWindowModel).Cn = need;//原 不转换为need
 
         }
 
         private void Cn_Click(object sender, RoutedEventArgs e)
         {
 
-            Views.KeyBoard keyb = new Views.KeyBoard();
-            keyb.OutCnData += Keyb_OutCnData;
-            keyb.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            keyb.ShowDialog();
+            //Views.KeyBoard keyb = new Views.KeyBoard();
+            //keyb.OutCnData += Keyb_OutCnData;
+            //keyb.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            //keyb.ShowDialog();
         }
 
         private void CnTan_Click(object sender, RoutedEventArgs e)
         {
-            Views.CnTanKeyBord keyb = new Views.CnTanKeyBord();
-            keyb.OutCnTanData += Keyb_OutCnTanData;
-            keyb.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            keyb.ShowDialog();
+            //Views.CnTanKeyBord keyb = new Views.CnTanKeyBord();
+            //keyb.OutCnTanData += Keyb_OutCnTanData;
+            //keyb.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            //keyb.ShowDialog();
         }
 
         private void Keyb_OutCnTanData(string cn)
         {
-            CnTanTxb.Text = cn;
-            CnTanButton.Content = cn;
-            PhysicalVariable need = NumericsConverter.Text2Value(cn);
-            (this.DataContext as MainWindowModel).AGn = need;
+            //CnTanTxb.Text = cn;
+            //CnTanButton.Content = cn;
+            //PhysicalVariable need = NumericsConverter.Text2Value(cn);
+            //(this.DataContext as MainWindowModel).AGn = need;
 
         }
         private void X_selectChanged(object sender, SelectionChangedEventArgs e)
@@ -702,7 +702,10 @@ namespace HV9003TE4
             }
         }
 
-
-
+        private void Setting_click(object sender, RoutedEventArgs e)
+        {
+            Views.Setting setting = new Views.Setting();
+            setting.ShowDialog();
+        }
     }
 }

@@ -6,22 +6,29 @@
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:local="clr-namespace:HV9003TE4.Views"
         mc:Ignorable="d"
-        Title="Alarm" Height="200" Width="400" Background="Azure"
+        Title="Alarm" Height="250" Width="400" Background="White"
            ShowMaxRestoreButton="False"
-        WindowStyle="None"
-        FontFamily="Swis721 BT"             >
+        FontFamily="Swis721 BT"    
+                      UseNoneWindowStyle="True">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="3*"></RowDefinition>
             <RowDefinition  Height="1*"></RowDefinition>
+            <RowDefinition Height="3*"></RowDefinition>
+            <RowDefinition  Height="1.5*"></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBlock  x:Name="AlarmTextBlock" Grid.Row="0" Margin="20" Foreground="Green" FontSize="35"></TextBlock>
-        <Grid Grid.Row="1">
+
+        <Grid MouseLeftButtonDown="grid_ms" Background="#5483f9">
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="18">WARNING</TextBlock>
+        </Grid>
+        <Border BorderThickness="1" Margin="20,10" Grid.Row="1"  BorderBrush="#e5e5e5">
+            <TextBlock  x:Name="AlarmTextBlock"  Foreground="#666666" FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center">Hello</TextBlock>
+        </Border>
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"></ColumnDefinition>
                 <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="2" Margin="12,5" Click="Close" Content="确定" Background="Green"></Button>
+            <Button Grid.Column="2" Margin="15,15" Click="Close" FontSize="13" Foreground="White" Content="确  定" Background="#FF4788EE"/>
 
         </Grid>
     </Grid>
