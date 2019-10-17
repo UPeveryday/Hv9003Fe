@@ -605,6 +605,7 @@ namespace HV9003TE4
         {
             SaveFileDialog save = new SaveFileDialog();
             save.Filter = "BMP|*.bmp|PNG|*.png|JPG|*.jpg";
+
             if (save.ShowDialog().Value)
             {
                 if (SaveImg(save.FileName))
@@ -612,7 +613,13 @@ namespace HV9003TE4
                     MessageBox.Show("保存成功!");
                 }
             }
+        }
 
+        private void SaveImageRemote(string imagePath, string imagename)
+        {
+            SaveFileDialog save = new SaveFileDialog();
+            save.Filter = "BMP|*.bmp|PNG|*.png|JPG|*.jpg";
+            SaveImg(imagePath +"\\"+ imagename);
         }
 
         private bool SaveImg(string path)
@@ -706,6 +713,11 @@ namespace HV9003TE4
         {
             Views.Setting setting = new Views.Setting();
             setting.ShowDialog();
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            SaveImageLocal();
         }
     }
 }

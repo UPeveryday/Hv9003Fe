@@ -13,6 +13,8 @@ using LiveCharts.Wpf;
 using System.Threading;
 using System.Windows;
 using LiveCharts.Defaults;
+using System.Collections.ObjectModel;
+using HV9003TE4.Models;
 
 namespace HV9003TE4
 {
@@ -22,13 +24,23 @@ namespace HV9003TE4
     {
         TestMesseages TestMesseagesNull = new TestMesseages();
         public volatile byte[] TestRes;
-
+        public List<string> TaskList { get; set; }
         public bool IsEnable { get; set; } = false;
         public string YPopu { get; set; }
         public bool ISREMOTE { get; set; } = true;
         public bool ISCLOSE { get; set; } = true;
         public bool VolateState { get; set; } = false;
         public bool ISZERO { get; set; } = true;
+        public ObservableCollection<string> ListboxItemsources { get; set; } = new ObservableCollection<string>();
+        public Models.SysAutoTestResult MyTestList { get; set; }
+        public Visibility Vs { get; set; } = Visibility.Visible;
+        public ObservableCollection<string> TestResultMeassge { get; set; } = new ObservableCollection<string>();//测量过程信息
+        public string Process { get; set; }//
+        public int ProcesNum { get; set; }
+
+        public bool IsCompleteVolateTest { get; set; } = true;
+
+
         public PhysicalVariable SourceFrequency { get; set; } = "50.0 Hz";
         public PhysicalVariable SourceVoltage { get; set; } = "100.0 V";
         public PhysicalVariable SourceCurrent { get; set; } = "10 A";
@@ -70,6 +82,12 @@ namespace HV9003TE4
         {
 
         }
+        public bool IsTcpTestting { get; set; } = false;
+
+        public bool Pane1Enable { get; set; } = false;
+        public bool Pane2Enable { get; set; } = false;
+        public bool Pane3Enable { get; set; } = false;
+        public bool Pane4Enable { get; set; } = false;
         private void TcpServer_DataReceived(object sender, AsyncEventArgs e)
         {
             byte[] a = e._state.Buffer;
@@ -82,9 +100,461 @@ namespace HV9003TE4
             {
                 TestClass.QueryTestResult(TcpTask.TcpServer, null, AnalysisData.DeelVolateAndFre(TestRes));
             }
+            if (Temp[0] == 0xdd && Temp[1] == 0x0a)
+            {
+                IsTcpTestting = true;
+                SysData = Temp;
+                if (Temp[2] == 0x01) Pane1Enable = true; else Pane1Enable = false;
+                if (Temp[3] == 0x01) Pane2Enable = true; else Pane2Enable = false;
+                if (Temp[4] == 0x01) Pane3Enable = true; else Pane3Enable = false;
+                if (Temp[5] == 0x01) Pane4Enable = true; else Pane4Enable = false;
+                StaticClass.FillListBoxTip(ListboxItemsources, SysData);
+                StartAutobytcp();
+            }
+            if (Temp[0] == 0xdd && Temp[1] == 0x0b)
+            {
+                if (IsTcpTestting)
+                {
+                    byte[] array = System.Text.Encoding.ASCII.GetBytes("BUSY");
+                    TestClass.QueryTestResult(TcpTask.TcpServer, null, array);
+                }
+                else
+                {
+                   // TestClass.QueryTestResult(TcpTask.TcpServer, null, array);
+                }
+            }
             TestMesseagesNull.ReturnMessages(TcpTask.TcpServer, Temp);
         }
 
+
+
+        private void SetVolate(float volate)
+        {
+            SetBaseVolate(volate);
+            Thread.Sleep(300);
+            UpVolate();
+        }
+        #region AUTO
+        public bool ISELEY { get; set; } = false;
+        public bool ISELEVOLATE { get; set; } = false;
+
+
+        public FourTestResult AllTestResult { get; set; } = new FourTestResult();
+        public void StartAutoTest(Models.SysAutoTestResult sys)
+        {
+            #region 电压
+            Models.AutoStateStatic.SState.Clear();
+            float[] needtest = sys.NeedTestList.ToArray();
+            for (int i = 0; i < sys.NeedTestList.Count; i++)
+            {
+                if (token.IsCancellationRequested)
+                {
+                    return;
+                }
+                resetEvent.WaitOne();
+                // SetVolate(needtest[i]);
+                //IsEnable = false;
+                int p = 0;
+                bool IsEnd = false;
+                Models.AutoStateStatic.SState.TestText.Add("电压  ：" + needtest[i].ToString() + "V" + ":\t正在升压中...");
+                STAMethod();
+                while (!IsEnable)
+                {
+                    p++;
+                    Thread.Sleep(100);
+                    if (p > 20)
+                    {
+                        Models.AutoStateStatic.SState.TestText.RemoveAt(AutoStateStatic.SState.TestText.Count - 1);
+                        Models.AutoStateStatic.SState.Process = i + 1;
+                        Models.AutoStateStatic.SState.TaskCount = needtest.Length;
+                        Models.AutoStateStatic.SState.TestText.Add("电压  ：" + needtest[i].ToString() + "V" + ":\t升压超时");
+                        STAMethod();
+                        StaticClass.ReturntestTestData(AllTestResult, Capacitance1, Capacitance2, Capacitance3, Capacitance4, DissipationFactor1, DissipationFactor2,
+                            DissipationFactor3, DissipationFactor4, Pane1Enable,Pane2Enable,Pane3Enable,Pane4Enable,false);
+                        ThreadPool.QueueUserWorkItem(delegate
+                        {
+                            SynchronizationContext.SetSynchronizationContext(new
+                            System.Windows.Threading.DispatcherSynchronizationContext(Application.Current.Dispatcher));
+                            SynchronizationContext.Current.Post(pl =>
+                              {
+                                  float Processq = (float)AutoStateStatic.SState.Process / (float)AutoStateStatic.SState.TaskCount;
+                                  Process = Processq.ToString("00%");
+                                  ProcesNum = (int)(Processq * 100);
+
+                              }, null);
+                        });
+
+                        IsEnd = true;
+                        break;
+                    }
+                }
+                if (!IsEnd)
+                {
+                    Models.AutoStateStatic.SState.TestText.RemoveAt(AutoStateStatic.SState.TestText.Count - 1);
+                    Models.AutoStateStatic.SState.Process = i + 1;
+                    Models.AutoStateStatic.SState.TaskCount = needtest.Length;
+                    Models.AutoStateStatic.SState.TestText.Add("电压  ：" + needtest[i].ToString() + "V" + ":\t升压完成" + "" +
+                        "\t\n通道一电容：" + Capacitance1 + "\t\t介损 ：" + DissipationFactor1 +
+                        "\t\n通道二电容：" + Capacitance2 + "\t\t介损 ：" + DissipationFactor2 +
+                        "\t\n通道三电容：" + Capacitance3 + "\t\t介损 ：" + DissipationFactor3 +
+                        "\t\n通道四电容：" + Capacitance4 + "\t\t介损 ：" + DissipationFactor4
+
+                        );
+                    StaticClass.ReturntestTestData(AllTestResult, Capacitance1, Capacitance2, Capacitance3, Capacitance4, DissipationFactor1, DissipationFactor2,
+                          DissipationFactor3, DissipationFactor4, Pane1Enable, Pane2Enable, Pane3Enable, Pane4Enable,true);
+                    STAMethod();
+                    ThreadPool.QueueUserWorkItem(delegate
+                    {
+                        SynchronizationContext.SetSynchronizationContext(new
+                        System.Windows.Threading.DispatcherSynchronizationContext(Application.Current.Dispatcher));
+                        SynchronizationContext.Current.Post(pl =>
+                        {
+                            float Processq = (float)AutoStateStatic.SState.Process / (float)AutoStateStatic.SState.TaskCount;
+                            Process = Processq.ToString("00%");
+                            ProcesNum = (int)(Processq * 100);
+
+                        }, null);
+                    });
+                }
+            }
+            #endregion
+            ThreadPool.QueueUserWorkItem(delegate
+            {
+                SynchronizationContext.SetSynchronizationContext(new
+                System.Windows.Threading.DispatcherSynchronizationContext(Application.Current.Dispatcher));
+                SynchronizationContext.Current.Post(async pl =>
+                {
+                    if (sys.IsEleY)
+                    {
+                        StaticClass.ShowELEYANDVOLATe(Views.EleOrVolate.EleY);
+                        if (AutoStateStatic.SState.IsStartEleY)
+                            await Task.Factory.StartNew(StartEleY);
+                        else
+                        {
+                            if (sys.IsVolate)
+                            {
+                                StaticClass.ShowELEYANDVOLATe(Views.EleOrVolate.Volate);
+                                if (AutoStateStatic.SState.IsStartVolate)
+                                {
+                                    await Task.Factory.StartNew(StartVolate);
+                                }
+                            }
+                        }
+                    }
+                }, null);
+            });
+        }
+
+
+        private void StartTestTask()
+        {
+            StartAutoTest(GetSys());
+        }
+
+        public byte[] SysData { get; set; }
+        private void StartTestTaskByTcp()
+        {
+            StartAutoTest(StaticClass.GetDataForTcpAutoTest(SysData));
+        }
+        static CancellationTokenSource tokenSource = new CancellationTokenSource();
+        static CancellationToken token = tokenSource.Token;
+        static ManualResetEvent resetEvent = new ManualResetEvent(true);
+        public Task task { get; set; }
+        public Task taskTcp { get; set; }
+        public void StartAuto()
+        {
+            //Task.Factory.StartNew(StartTestTask);
+            task = new Task(StartTestTask, token);
+            task.Start();
+        }
+
+        public void StartAutobytcp()
+        {
+            //Task.Factory.StartNew(StartTestTask);
+            taskTcp = new Task(StartTestTaskByTcp, token);
+            taskTcp.Start();
+        }
+        public void ResetTest()
+        {
+            resetEvent.Reset();
+        }
+        public void ContinuTest()
+        {
+            resetEvent.Set();
+        }
+
+        public volatile bool IsStartEleY = false;
+        public bool NoRigthtEnd { get; set; } = false;
+        public bool IsCompleteEleTest { get; set; } = true;
+        public void StartEleY()
+        {
+            Models.SysAutoTestResult sys = new SysAutoTestResult();
+            if (IsTcpTestting)
+                sys = StaticClass.GetDataForTcpAutoTest(SysData);
+            else
+            {
+                sys = GetSys();
+            }
+            if (IsCompleteVolateTest)
+            {
+                //  SetVolate(sys.EleY);
+                int p = 0;
+                bool IsEnd = false;
+                Models.AutoStateStatic.SState.TestText.Add("电晕  ：" + sys.EleY.ToString() + "V" + ":\t正在升压中...");
+                STAMethod();
+                while (!IsEnable)
+                {
+                    p++;
+                    Thread.Sleep(100);
+                    if (p > 5)
+                    {
+                        Models.AutoStateStatic.SState.TestText.RemoveAt(AutoStateStatic.SState.TestText.Count - 1);
+                        Models.AutoStateStatic.SState.TestText.Add("电晕  ：" + sys.EleY.ToString() + "V" + ":\t升压超时");
+                        STAMethod();
+                        ThreadPool.QueueUserWorkItem(delegate
+                        {
+                            SynchronizationContext.SetSynchronizationContext(new
+                            System.Windows.Threading.DispatcherSynchronizationContext(Application.Current.Dispatcher));
+                            SynchronizationContext.Current.Post(async pl =>
+                            {
+                                if (sys.IsVolate)
+                                {
+                                    StaticClass.ShowELEYANDVOLATe(Views.EleOrVolate.Volate);
+                                    if (AutoStateStatic.SState.IsStartVolate == true)
+                                        await Task.Factory.StartNew(StartVolate);
+                                    else
+                                        AutoStateStatic.SState.IsStartVolate = false;
+                                }
+                                else
+                                {
+                                    IsTcpTestting = false;
+                                }
+                            }, null);
+                        });
+                        IsEnd = true;
+                        break;
+                    }
+                }
+                if (!IsEnd)
+                {
+                    AutoStateStatic.SState.TestText.RemoveAt(AutoStateStatic.SState.TestText.Count - 1);
+                    AutoStateStatic.SState.TestText.Add("电晕  ：" + sys.EleY.ToString() + "V" + ":\t升压完成");
+                    StaticClass.AddEleY(AllTestResult, Pane1Enable, Pane2Enable, Pane3Enable, Pane4Enable, HVVoltage, 
+                         HVVoltage, HVVoltage, HVVoltage);
+                    STAMethod();
+                    ThreadPool.QueueUserWorkItem(delegate
+                    {
+                        SynchronizationContext.SetSynchronizationContext(new
+                        System.Windows.Threading.DispatcherSynchronizationContext(Application.Current.Dispatcher));
+                        SynchronizationContext.Current.Post(async pl =>
+                        {
+                            Views.Qualified q = new Views.Qualified
+                            {
+                                WindowStartupLocation = WindowStartupLocation.CenterScreen
+                            };
+                            q.ShowDialog();
+                            StaticClass.ShowELEYANDVOLATe(Views.EleOrVolate.Volate);
+                            if (AutoStateStatic.SState.IsStartVolate == true)
+                                await Task.Factory.StartNew(StartVolate);
+                            else
+                                AutoStateStatic.SState.IsStartVolate = false;
+                        }, null);
+                    });
+                }
+            }
+
+        }
+        public void StartVolate()
+        {
+            Models.SysAutoTestResult sys = new SysAutoTestResult();
+            if (IsTcpTestting)
+                sys = StaticClass.GetDataForTcpAutoTest(SysData);
+            else
+            {
+                sys = GetSys();
+            }
+            if (IsCompleteEleTest)
+            {
+                //  SetVolate(sys.EleVolate);
+                int p = 0;
+                bool IsEnd = false;
+                Models.AutoStateStatic.SState.TestText.Add("耐压  ：" + sys.EleVolate.ToString() + "V" + ":\t正在升压中...");
+                STAMethod();
+                while (!IsEnable)
+                {
+                    p++;
+                    Thread.Sleep(100);
+                    float maxvalue = 0;
+                    float actvalue = 0;
+                    if (p > 5)
+                    {
+                        if (Math.Abs((float)HVVoltage.value - sys.EleVolate) < maxvalue)
+                            actvalue = (float)HVVoltage.value;
+                        AutoStateStatic.SState.TestText.RemoveAt(AutoStateStatic.SState.TestText.Count - 1);
+                        AutoStateStatic.SState.TestText.Add("耐压  ：" + actvalue.ToString() + "V" + ":\t未升到耐压值");
+                        STAMethod();
+                        IsEnd = true;
+                        IsTcpTestting = false;
+                        break;
+                    }
+                }
+                if (!IsEnd)
+                {
+                    AutoStateStatic.SState.TestText.RemoveAt(AutoStateStatic.SState.TestText.Count - 1);
+                    AutoStateStatic.SState.TestText.Add("耐压  ：" + sys.EleVolate.ToString() + "V" + ":\t升压完成");
+                    STAMethod();
+                    int c = 0;
+                    float MaxVolate = 0;
+                    #region 
+                    while (true)
+                    {
+                        Models.AutoStateStatic.SState.TestText.Add("当前电压： " + HVVoltage + "\t\n正在持续耐压中...");
+                        STAMethod();
+                        if (c < sys.HideTime * 2)
+                        {
+                            if (StaticClass.IsOk((float)HVVoltage.value, sys.EleVolate))
+                            {
+                                float tempdata = Math.Abs(sys.EleVolate - (float)HVVoltage.value);
+                                if (tempdata > MaxVolate)
+                                {
+                                    MaxVolate = tempdata;
+                                    AutoStateStatic.SState.MaxEqualVolate = sys.EleVolate;
+                                }
+                                Thread.Sleep(500);
+                                c++;
+                            }
+                            else
+                            {
+                                Thread.Sleep(500);
+                                c++;
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            if (((float)AutoStateStatic.SState.NoSame / (float)AutoStateStatic.SState.AllNum) >= 0.80f)
+                            {
+                                Models.AutoStateStatic.SState.TestText.Add("耐压实验已完成  耐压结果： 不合格");
+                                STAMethod();
+                                AutoStateStatic.SState.NaiVolate = false;//耐压是否合格
+                                AutoStateStatic.SState.CompeleteVolate = true;//是否完成耐压
+                                IsTcpTestting = false;
+                                break;
+                            }
+                            else
+                            {
+                                Models.AutoStateStatic.SState.TestText.Add("耐压实验已完成  耐压结果： 合格");
+                                STAMethod();
+                                AutoStateStatic.SState.NaiVolate = true;//耐压是否合格
+                                AutoStateStatic.SState.CompeleteVolate = true;//是否完成耐压
+                                IsTcpTestting = false;
+                                break;
+                            }
+                        }
+                    }
+                    #endregion
+                }
+            }
+        }
+
+        public void STAMethod()
+        {
+            ThreadPool.QueueUserWorkItem(delegate
+            {
+                SynchronizationContext.SetSynchronizationContext(new
+                System.Windows.Threading.DispatcherSynchronizationContext(Application.Current.Dispatcher));
+                SynchronizationContext.Current.Post(pl =>
+                {
+                    TestResultMeassge.Clear();
+                    foreach (var a in AutoStateStatic.SState.TestText)
+                    {
+                        TestResultMeassge.Add(a);
+                    }
+
+                }, null);
+            });
+        }
+        /// <summary>
+        /// 耐压
+        /// </summary>
+        /// <param name="sys"></param>
+        public void StartELEvolate(Models.SysAutoTestResult sys)
+        {
+            ISELEVOLATE = false;
+            SetVolate(sys.EleVolate);
+            int p = 0;
+            bool IsEnd = false;
+            while (!IsEnable)
+            {
+                p++;
+                Thread.Sleep(100);
+                if (p > 200)
+                {
+                    Models.AutoStateStatic.SState.TestText.Add("未升到指定耐压值");
+                    IsEnd = true;
+                    break;
+                }
+            }
+            if (!IsEnd)
+            {
+                while (true)
+                {
+                    Models.AutoStateStatic.SState.TestText.Add("正在保持耐压中...");
+                    Thread.Sleep(sys.HideTime);
+                    if (sys.EleVolate > Volate - sys.EleVolate * 0.2 && sys.EleVolate < Volate + sys.EleVolate * 0.2)
+                    {
+                        Models.AutoStateStatic.SState.TestText.Add("耐压完成");
+                        ISELEVOLATE = true;
+                    }
+                    else
+                    {
+                        Models.AutoStateStatic.SState.TestText.Add("耐压失败");
+                        ISELEVOLATE = false;
+                    }
+
+                }
+
+            }
+        }
+
+
+        private Models.SysAutoTestResult GetSys()
+        {
+            //  Models.AutoStateStatic.SState.Clear();
+            Models.SysAutoTestResult sys = new Models.SysAutoTestResult();
+            var tpd = ListboxItemsources.ToArray();
+            for (int i = 0; i < tpd.Length - 2; i++)
+            {
+                string[] Usedata = tpd[i].Split(':');
+                if (Usedata.Length == 2)
+                {
+                    //  Usedata[i] = Usedata[i].Trim();
+                    sys.NeedTestList.Add((float)NumericsConverter.Text2Value(StaticClass.DeleteSpace(Usedata[1])).value);
+                }
+
+            }
+            string[] Usedata1 = tpd[tpd.Length - 2].Split(':');
+            sys.IsEleY = true;
+            sys.IsVolate = true;
+            sys.EleY = (float)NumericsConverter.Text2Value(StaticClass.DeleteSpace(Usedata1[1])).value;
+            string[] p = tpd[tpd.Length - 1].Split(':');
+            sys.EleVolate = (float)NumericsConverter.Text2Value(StaticClass.DeleteSpace(p[3])).value;
+            try
+            {
+                sys.HideTime = Convert.ToInt32(StaticClass.DeleteSpace(p[1]));
+            }
+            catch
+            {
+                sys.HideTime = 60;
+                ShowHide("键入的耐压保持时间格式错误" + "\t\n" + "以设置为默认60S");
+
+            }
+
+            return sys;
+        }
+
+
+        #endregion
         /// <summary>
         /// 远程状态
         /// </summary>
@@ -217,6 +687,7 @@ namespace HV9003TE4
         public string Alarm { get; set; }
         public string OneStata { get; set; }
         private double TestFre;
+        public float Volate { get; set; }
         public event ReturnResult OutTestResult;
         private void WorkTest_OutTestResult(byte[] result)
         {
@@ -233,7 +704,7 @@ namespace HV9003TE4
             this.AG4 = vs.TestPh4.ToString("F6"); //NumericsConverter.Value2Text(vs.TestPh4, 4, -6, "", SCEEC.Numerics.Quantities.QuantityName.None);
             this.OneStata = NumericsConverter.Value2Text(vs.OneVolate, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Voltage);
             this.Alarm = vs.AlarmStata.ToString();
-
+            this.Volate = (float)vs.OneVolate;
             StandardCapacitance = Cn.ToString();
             StandardCapacitanceDissipationFactor = NumericsConverter.Value2Text(Math.Tan(pnv(AGn.value)), 4, -5, "", SCEEC.Numerics.Quantities.QuantityName.None, percentage: true).Trim();
             HVFrequency = NumericsConverter.Value2Text(vs.TestFre, 4, -3, "", SCEEC.Numerics.Quantities.QuantityName.Frequency);
@@ -257,7 +728,7 @@ namespace HV9003TE4
             TestRes = result;
             if (result[58] == 9)
             {
-                IsEnable = false;
+                IsEnable = false;//对升压状态的处理
             }
             else if (result[58] == 0)
             {
@@ -309,7 +780,7 @@ namespace HV9003TE4
             {
                 TestResult.WorkTest.StartPower();
                 VolateState = true;
-                TestClass.QueryTestResult(TcpTask.TcpServer, null,new byte[3] { 0xdd,0x01,0x01});
+                TestClass.QueryTestResult(TcpTask.TcpServer, null, new byte[3] { 0xdd, 0x01, 0x01 });
             }
             catch
             {
@@ -358,7 +829,7 @@ namespace HV9003TE4
             try
             {
                 ISZERO = false;
-                TestClass.SendData(new byte[3] { 0xdd,0x04,0x01}, TcpTask.TcpServer);
+                TestClass.SendData(new byte[3] { 0xdd, 0x04, 0x01 }, TcpTask.TcpServer);
                 TestResult.WorkTest.startDownVolate();
                 TestClass.QueryTestResult(TcpTask.TcpServer, null, new byte[3] { 0xdd, 0x04, 0x02 });
                 ISZERO = true;
@@ -441,7 +912,6 @@ namespace HV9003TE4
 
 
         #endregion
-
         #region chart
         public SeriesCollection SeriesCollection { get; set; }
         public List<string> Labels { get; set; }
@@ -457,7 +927,6 @@ namespace HV9003TE4
         public SeriesCollection SeriesCollection4 { get; set; }
         public List<string> Labels4 { get; set; }
 
-        private double _trend;
         /// <summary>
         /// 定义样式
         /// </summary>
@@ -521,19 +990,16 @@ namespace HV9003TE4
             {
                 SeriesCollection = new SeriesCollection { };
                 SeriesCollection.Add(t1);
-                //c1.Clear();
             }
             if (pannel == ChartPannel.Channel2)
             {
                 SeriesCollection2 = new SeriesCollection { };
                 SeriesCollection2.Add(t1);
-                //c1.Clear();
             }
             if (pannel == ChartPannel.Channel3)
             {
                 SeriesCollection3 = new SeriesCollection { };
                 SeriesCollection3.Add(t1);
-                //c1.Clear();
             }
             if (pannel == ChartPannel.Channel4)
             {

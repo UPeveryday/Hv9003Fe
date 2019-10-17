@@ -3,6 +3,7 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:local="clr-namespace:HV9003TE4"
+                      xmlns:local1="clr-namespace:HV9003TE4.Views"
                       xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                       Title="HV9003TE4 四通道电容量及介质损耗高速测量电桥"
@@ -10,12 +11,12 @@
                       WindowStyle="None"
                       Height="600"
                       Width="1024"
-                      FontFamily="Swis721 BT"
+                      FontFamily="思源黑体"
                       WindowState="Maximized"
                        Closing="MetroWindow_Closing" 
     >
     <!--Background="#FF252525"-->
-    
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -225,7 +226,7 @@
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Row="0" Grid.Column="0" >
-                        <lvc:CartesianChart  Series="{Binding SeriesCollection}" Background="Black" >
+                        <lvc:CartesianChart Background="#022343" Series="{Binding SeriesCollection}"  >
                             <lvc:CartesianChart.AxisX>
                                 <lvc:Axis Title="测量通道一"></lvc:Axis>
                             </lvc:CartesianChart.AxisX>
@@ -235,7 +236,7 @@
                         </lvc:CartesianChart>
                     </Grid>
                     <Grid Grid.Row="0" Grid.Column="1" >
-                        <lvc:CartesianChart Name="ch2" Series="{Binding SeriesCollection2}" Background="Black">
+                        <lvc:CartesianChart Name="ch2" Series="{Binding SeriesCollection2}" Background="#022343">
                             <lvc:CartesianChart.AxisX>
                                 <lvc:Axis Title="测量通道二" Labels="{Binding Labels2}" FontSize="14"></lvc:Axis>
                             </lvc:CartesianChart.AxisX>
@@ -245,7 +246,7 @@
                         </lvc:CartesianChart>
                     </Grid>
                     <Grid Grid.Row="1" Grid.Column="0" >
-                        <lvc:CartesianChart Name="ch3" Series="{Binding SeriesCollection3}"  Background="Black">
+                        <lvc:CartesianChart Name="ch3" Series="{Binding SeriesCollection3}"  Background="#022343">
                             <lvc:CartesianChart.AxisX>
                                 <lvc:Axis Title="测量通道三" Labels="{Binding Labels3}" FontSize="14"></lvc:Axis>
                             </lvc:CartesianChart.AxisX>
@@ -255,7 +256,7 @@
                         </lvc:CartesianChart>
                     </Grid>
                     <Grid Grid.Row="1" Grid.Column="1" >
-                        <lvc:CartesianChart Name="ch4" Series="{Binding SeriesCollection4}" Background="Black">
+                        <lvc:CartesianChart Name="ch4" Series="{Binding SeriesCollection4}" Background="#022343">
                             <lvc:CartesianChart.AxisX>
                                 <lvc:Axis Title="测量通道四" Labels="{Binding Labels4}" FontSize="14"></lvc:Axis>
                             </lvc:CartesianChart.AxisX>
@@ -276,9 +277,9 @@
                         </Grid.ColumnDefinitions>
 
                         <Rectangle Grid.ColumnSpan="10"  Stroke="#FF49B4E8" StrokeThickness="1"/>
-                        <Button Grid.Column="0" Foreground="White" Background="#ff9b14" IsEnabled="{Binding ISREMOTE}" Click="Recor_Click" Margin="3,10" FontSize="18" Content="记录当前值"/>
+                        <Button Grid.Column="0"  Foreground="White" Background="#ff9b14" IsEnabled="{Binding ISREMOTE}" Click="Recor_Click" Margin="3,10" FontSize="18" Content="记录当前值"/>
                         <Button Grid.Column="1"  Foreground="White"  Background="#ff5671" Click="Delete_Click"  IsEnabled="{Binding ISREMOTE}" Margin="3,10" FontSize="18" Content="删除上次值"/>
-                       
+
                         <Grid Grid.Column="3" Margin="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -292,7 +293,7 @@
                             </ComboBox>
                         </Grid>
                         <Grid Grid.Column="2">
-                            <Button Background="#00a3ff"  Foreground="White"  Margin="5,10" FontSize="15">保存</Button>
+                            <Button Background="#00a3ff" Click="Save_Click" Foreground="White"  Margin="5,10" FontSize="15">保存</Button>
                         </Grid>
                         <Grid Grid.Column="4" Margin="5">
                             <Grid.ColumnDefinitions>
@@ -309,9 +310,9 @@
                     </Grid>
                 </Expander>
             </Grid>
-           
 
-            
+
+
             <Grid Grid.Column="2" Margin="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"/>
@@ -333,7 +334,7 @@
                     </Grid>
                 </Grid>
                 <Rectangle Grid.ColumnSpan="2" Grid.Column="1" Stroke="#FF49B4E8" StrokeThickness="1"/>
-                <Controls:ToggleSwitch  x:Name="PowerState"  Grid.Column="1" IsChecked="{Binding VolateState}" Click="Power" Margin="5" Header="电源输出"/>
+                <Controls:ToggleSwitch  x:Name="PowerState"  Grid.Column="1" IsChecked="{Binding VolateState}" Click="Power" Margin="5"  Header="电源输出"/>
                 <Button Grid.Column="2" Background="#ff4648" Name="Downc" Click="Down_Click" IsEnabled="{Binding ISZERO}"  FontSize="18" >
                     <StackPanel>
                         <TextBlock FontSize="20" FontWeight="Bold" Foreground="White">降压</TextBlock>
@@ -431,6 +432,11 @@
                     </Grid>
                 </Viewbox>
             </Expander>
+            <!--<Grid Grid.Row="1"  Grid.Column="2" Visibility="{Binding Vs}"  Grid.RowSpan="2" Background="White">
+                <Frame Source="Views/Task.xaml" Margin="10" BorderThickness="1" BorderBrush="#00bbff">
+                </Frame>
+            </Grid>-->
+
             <!--<Button x:Name="button" Command="{Binding UpdateName}" Grid.ColumnSpan="2" Content="Button" HorizontalAlignment="Left" Margin="331,133,0,0" VerticalAlignment="Top" Width="75"/>-->
         </Grid>
     </Grid>
