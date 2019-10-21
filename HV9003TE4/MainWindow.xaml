@@ -30,6 +30,7 @@
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button Content="设置"  Click="Setting_click"/>
+            <Button Content="方案管理"  ></Button>
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
     <Grid>

@@ -163,7 +163,6 @@ namespace HV9003TE4.Views
                     PhysicalVariable need = NumericsConverter.Text2Value(cn);
                     (this.DataContext as MainWindowModel).ListboxItemsources.Add("持续时间  :" + time.Text + ":" + "耐   压 :" + need);
                 }
-
             }
         }
         private void StartTest_click(object sender, RoutedEventArgs e)
@@ -191,8 +190,6 @@ namespace HV9003TE4.Views
             {
                 (this.DataContext as MainWindowModel).ShowHide("请添加电晕测量电压");
             }
-
-
         }
 
         private void Stop_click(object sender, RoutedEventArgs e)
@@ -203,6 +200,18 @@ namespace HV9003TE4.Views
         private void Continur_click(object sender, RoutedEventArgs e)
         {
             (this.DataContext as MainWindowModel).ContinuTest();
+        }
+        private void Quatity_Click(object sender, RoutedEventArgs e)
+        {
+            (this.DataContext as MainWindowModel).QuqlityIsOk = Visibility.Collapsed;
+            Models.AutoStateStatic.SState.Quality = true;
+            Models.AutoStateStatic.SState.IsPress = true;
+        }
+        private void QualityNot_Click(object sender, RoutedEventArgs e)
+        {
+            (this.DataContext as MainWindowModel).QuqlityIsOk = Visibility.Collapsed;
+            Models.AutoStateStatic.SState.Quality = false;
+            Models.AutoStateStatic.SState.IsPress = true;
         }
     }
 }

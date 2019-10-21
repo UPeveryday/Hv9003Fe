@@ -29,6 +29,8 @@ namespace HV9003TE4.Models
         public float MaxEqualVolate { get; set; }
         public bool Quality { get; set; }
         public bool CompeleteVolate { get; set; } = false;
+
+        public bool IsPress { get; set; } = false;
     }
 
     public static class AutoStateStatic

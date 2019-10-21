@@ -1,4 +1,5 @@
-﻿using SCEEC.Numerics;
+﻿using LiveCharts.Defaults;
+using SCEEC.Numerics;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -105,15 +106,15 @@ namespace HV9003TE4.Models
                 }
                 if (data[7] == 1)
                 {
-                    sys.EleY = BitConverter.ToSingle(data, 9 + NeedTestVolate * 8);
+                    sys.EleY = BitConverter.ToSingle(data, 9 + NeedTestVolate * 4);
                     sys.IsEleY = true;
                 }
                 else
                     sys.IsEleY = false;
                 if (data[8] == 1)
                 {
-                    sys.EleVolate = BitConverter.ToSingle(data, 9 + 8 * NeedTestVolate + data[7] * 4);
-                    sys.HideTime = data[9 + 8 * NeedTestVolate + data[7] * 4 + data[8] * 4];
+                    sys.EleVolate = BitConverter.ToSingle(data, 9 + 4 * NeedTestVolate + data[7] * 4);
+                    sys.HideTime = data[9 + 4 * NeedTestVolate + data[7] * 4 + data[8] * 4];
                     sys.IsVolate = true;
                 }
                 else
@@ -155,11 +156,11 @@ namespace HV9003TE4.Models
 
 
         public static FourTestResult ReturntestTestData(FourTestResult AllTestResult, string Cn1, string Cn2, string Cn3, string Cn4,
-            string Ag1, string Ag2, string Ag3, string Ag4, bool pan1, bool pan2, bool pan3, bool pan4, bool ISVOLATEFALSE)
+            string Ag1, string Ag2, string Ag3, string Ag4, bool ISVOLATEFALSE)
         {
             if (ISVOLATEFALSE)
             {
-                if (!pan1)
+                if (AllTestResult.PanelEnable)
                 {
                     PanelResult p1 = new PanelResult
                     {
@@ -168,7 +169,7 @@ namespace HV9003TE4.Models
                     };
                     AllTestResult.Panel1Result.Add(p1);
                 }
-                if (!pan2)
+                if (AllTestResult.Pane2Enable)
                 {
                     PanelResult p2 = new PanelResult
                     {
@@ -177,7 +178,7 @@ namespace HV9003TE4.Models
                     };
                     AllTestResult.Panel2Result.Add(p2);
                 }
-                if (!pan3)
+                if (AllTestResult.Pane3Enable)
                 {
                     PanelResult p3 = new PanelResult
                     {
@@ -186,7 +187,7 @@ namespace HV9003TE4.Models
                     };
                     AllTestResult.Panel3Result.Add(p3);
                 }
-                if (!pan4)
+                if (AllTestResult.Pane4Enable)
                 {
                     PanelResult p4 = new PanelResult
                     {
@@ -199,7 +200,7 @@ namespace HV9003TE4.Models
             }
             else
             {
-                if (!pan1)
+                if (AllTestResult.PanelEnable)
                 {
                     PanelResult p1 = new PanelResult
                     {
@@ -208,7 +209,7 @@ namespace HV9003TE4.Models
                     };
                     AllTestResult.Panel1Result.Add(p1);
                 }
-                if (!pan2)
+                if (AllTestResult.Pane2Enable)
                 {
                     PanelResult p2 = new PanelResult
                     {
@@ -217,13 +218,13 @@ namespace HV9003TE4.Models
                     };
                     AllTestResult.Panel2Result.Add(p2);
                 }
-                if (!pan3)
+                if (AllTestResult.Pane3Enable)
                 {
                     PanelResult p3 = new PanelResult();
                     p3.Cn = NumericsConverter.Text2Value("0pF"); p3.CnTan = NumericsConverter.Text2Value("0");
                     AllTestResult.Panel3Result.Add(p3);
                 }
-                if (!pan4)
+                if (AllTestResult.Pane4Enable)
                 {
                     PanelResult p4 = new PanelResult();
                     p4.Cn = NumericsConverter.Text2Value("0pF"); p4.CnTan = NumericsConverter.Text2Value("0");
@@ -234,55 +235,158 @@ namespace HV9003TE4.Models
 
         }
 
-        public static void AddEleY(FourTestResult AllTestResult, bool p1, bool p2, bool p3, bool p4,
+        public static void AddEleY(FourTestResult AllTestResult,
             PhysicalVariable eley1, PhysicalVariable eley2, PhysicalVariable eley3, PhysicalVariable eley4)
         {
-            if (p1)
+            if (AllTestResult.PanelEnable)
             {
                 AllTestResult.Panel1EleYAndVolate.EleY = eley1;
             }
-            if (p2)
+            if (AllTestResult.Pane2Enable)
             {
                 AllTestResult.Panel2EleYAndVolate.EleY = eley2;
             }
-            if (p3)
+            if (AllTestResult.Pane3Enable)
             {
                 AllTestResult.Panel3EleYAndVolate.EleY = eley3;
             }
-            if (p4)
+            if (AllTestResult.Pane4Enable)
             {
                 AllTestResult.Panel4EleYAndVolate.EleY = eley4;
             }
         }
 
-        public static void AddEleVolate(FourTestResult AllTestResult, bool p1, bool p2, bool p3, bool p4,
+        public static void AddEleVolate(FourTestResult AllTestResult,
             PhysicalVariable v1, PhysicalVariable v2, PhysicalVariable v3, PhysicalVariable v4,
             int h1, int h2, int h3, int h4)
         {
-            if (p1)
+            if (AllTestResult.PanelEnable)
             {
                 AllTestResult.Panel1EleYAndVolate.EleVolate = v1;
                 AllTestResult.Panel1EleYAndVolate.HodeTime = h1;
             }
-            if (p2)
+            if (AllTestResult.Pane2Enable)
             {
                 AllTestResult.Panel2EleYAndVolate.EleVolate = v2;
                 AllTestResult.Panel2EleYAndVolate.HodeTime = h2;
             }
-            if (p3)
+            if (AllTestResult.Pane3Enable)
             {
                 AllTestResult.Panel3EleYAndVolate.EleVolate = v3;
                 AllTestResult.Panel3EleYAndVolate.HodeTime = h3;
             }
-            if (p4)
+            if (AllTestResult.Pane4Enable)
             {
                 AllTestResult.Panel4EleYAndVolate.EleVolate = v4;
                 AllTestResult.Panel4EleYAndVolate.HodeTime = h4;
             }
         }
 
+       
+        public static byte[] Getbytesdata(FourTestResult fs,Int16 ImageID)
+        {
+            List<byte> rel = new List<byte>();
+            rel.AddRange(new byte[] { 0xdd, 0x0a, (byte)fs.NeedTestNum });
+            if (fs.PanelEnable)
+            {
+                foreach (var a in fs.Panel1Result)
+                {
+                    PhysicalVariable cn = a.Cn;
+                    PhysicalVariable cnt = a.CnTan;
+                    byte[] cnf = BitConverter.GetBytes((float)cn.value);
+                    byte[] cntf = BitConverter.GetBytes((float)cnt.value);
+                    rel.AddRange(cnf);
+                    rel.AddRange(cntf);
+                    if (Models.AutoStateStatic.SState.Quality)
+                    {
+                        rel.Add(0x01);
+                    }
+                    else
+                        rel.Add(0x00);
+
+                    rel.Add((byte)ImageID);
+
+                }
+            }
+            if (fs.Pane2Enable)
+            {
+                foreach (var a in fs.Panel2Result)
+                {
+                    PhysicalVariable cn = a.Cn;
+                    PhysicalVariable cnt = a.CnTan;
+                    byte[] cnf = BitConverter.GetBytes((float)cn.value);
+                    byte[] cntf = BitConverter.GetBytes((float)cnt.value);
+                    rel.AddRange(cnf);
+                    rel.AddRange(cntf);
+                    if (Models.AutoStateStatic.SState.Quality)
+                    {
+                        rel.Add(0x01);
+                    }
+                    else
+                        rel.Add(0x00);
+
+                    rel.Add((byte)ImageID);
+                }
+            }
+            if (fs.Pane3Enable)
+            {
+                foreach (var a in fs.Panel3Result)
+                {
+                    PhysicalVariable cn = a.Cn;
+                    PhysicalVariable cnt = a.CnTan;
+                    byte[] cnf = BitConverter.GetBytes((float)cn.value);
+                    byte[] cntf = BitConverter.GetBytes((float)cnt.value);
+                    rel.AddRange(cnf);
+                    rel.AddRange(cntf);
+                    if (Models.AutoStateStatic.SState.Quality)
+                    {
+                        rel.Add(0x01);
+                    }
+                    else
+                        rel.Add(0x00);
+
+                    rel.Add((byte)ImageID);
+                }
+            }
+            if (fs.Pane4Enable)
+            {
+                foreach (var a in fs.Panel4Result)
+                {
+                    PhysicalVariable cn = a.Cn;
+                    PhysicalVariable cnt = a.CnTan;
+                    byte[] cnf = BitConverter.GetBytes((float)cn.value);
+                    byte[] cntf = BitConverter.GetBytes((float)cnt.value);
+                    rel.AddRange(cnf);
+                    rel.AddRange(cntf);
+                    if (Models.AutoStateStatic.SState.Quality)
+                    {
+                        rel.Add(0x01);
+                    }
+                    else
+                        rel.Add(0x00);
+
+                    rel.Add((byte)ImageID);
+                }
+            }
+            return rel.ToArray();
+        }
 
 
+        public static ObservablePoint[] GetEleOrVolate(List<float> EleXvalue, List<double> EleYvalue)
+        {
+            if (EleXvalue.Count == EleYvalue.Count)
+            {
+                float[] Xva = EleXvalue.ToArray();
+                double[] Yva = EleYvalue.ToArray();
+                ObservablePoint[] rtd = new ObservablePoint[EleXvalue.Count];
+                for (int i = 0; i < EleXvalue.Count; i++)
+                {
+                    rtd[i] = new ObservablePoint(Xva[i], Yva[i]);
+                }
+                return rtd;
+            }
+            return null;
+        }
 
     }
 
