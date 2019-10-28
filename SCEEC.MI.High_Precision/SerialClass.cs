@@ -336,6 +336,49 @@ namespace SCEEC.MI.High_Precision
             }
             return -1;
         }
+        public int SendCommandNotRecv(byte[] SendData, ref byte[] ReceiveData, int Overtime)
+        {
+            if (_seriaPort.IsOpen)
+            {
+                try
+                {
+                    ReceiveEventFlag = true;//关闭接收事件
+                    _seriaPort.DiscardInBuffer();//清空接收缓冲区     
+                    _seriaPort.Write(SendData, 0, SendData.Length);
+                    _seriaPort.DiscardInBuffer();//清空接收缓冲区     
+                    int num = 0, ret = 0;
+                    System.Threading.Thread.Sleep(10);
+                    //ReceiveEventFlag = false;//打开事件
+                    while (num++ < Overtime)
+                    {
+                        if (_seriaPort.BytesToRead >= ReceiveData.Length)
+                        {
+                            break;
+                        }
+                        System.Threading.Thread.Sleep(10);
+                    }
+                    if (_seriaPort.BytesToRead >= ReceiveData.Length)
+                    {
+                        ret = _seriaPort.Read(ReceiveData, 0, ReceiveData.Length);
+                    }
+                    else
+                    {
+                        ret = _seriaPort.Read(ReceiveData, 0, _seriaPort.BytesToRead);
+
+                    }
+
+                    ReceiveEventFlag = true;
+                    return ret;
+
+                }
+                catch (Exception ex)
+                {
+                    ReceiveEventFlag = false;
+                    throw ex;
+                }
+            }
+            return -1;
+        }
         #endregion
 
         /// <summary>

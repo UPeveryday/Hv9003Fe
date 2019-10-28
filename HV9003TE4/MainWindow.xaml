@@ -14,6 +14,8 @@
                       FontFamily="思源黑体"
                       WindowState="Maximized"
                        Closing="MetroWindow_Closing" 
+                      Loaded="Main_load"
+                      Unloaded="unload_load"
     >
     <!--Background="#FF252525"-->
 
@@ -30,7 +32,7 @@
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button Content="设置"  Click="Setting_click"/>
-            <Button Content="方案管理"  ></Button>
+            <Button Content="方案管理" Click="Project_click" ></Button>
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
     <Grid>
@@ -343,7 +345,19 @@
                     </StackPanel>
                 </Button>
             </Grid>
-            <GroupBox Grid.Column="2" Name="FreGroupBox" Grid.Row="1"  IsEnabled="{Binding IsEnable}"  Header="频率调节" Margin="5">
+            <GroupBox Grid.Column="2" Name="FreGroupBox" Grid.Row="1"  IsEnabled="{Binding IsEnable}"  Margin="5">
+                <GroupBox.Header >
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="频率调节"></TextBlock>
+                        <TextBlock  HorizontalAlignment="Right" VerticalAlignment="Center"   Grid.Column="1"  Text="目标频率："></TextBlock>
+                        <TextBlock   x:Name="NeedFre" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="2" Foreground="Red">Volate</TextBlock>
+                    </Grid>
+                </GroupBox.Header>
                 <Viewbox>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -388,7 +402,19 @@
                     </Grid>
                 </Viewbox>
             </GroupBox>
-            <Expander Grid.Column="2" Name="VolateGroupBox" IsExpanded="{Binding ISREMOTE}" IsEnabled="{Binding IsEnable}" Grid.Row="2" Header="电压调节" Margin="5">
+            <Expander Grid.Column="2" Name="VolateGroupBox" IsExpanded="{Binding ISREMOTE}" IsEnabled="{Binding IsEnable}" Grid.Row="2"  Margin="5">
+                <Expander.Header >
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="电压调节"></TextBlock>
+                        <TextBlock  HorizontalAlignment="Right" VerticalAlignment="Center"   Grid.Column="1"  Text="目标电压："></TextBlock>
+                        <TextBlock   HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="2" Foreground="Red" x:Name="NeedVolateText">Volate</TextBlock>
+                    </Grid>
+                </Expander.Header>
                 <Viewbox>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -440,5 +466,6 @@
 
             <!--<Button x:Name="button" Command="{Binding UpdateName}" Grid.ColumnSpan="2" Content="Button" HorizontalAlignment="Left" Margin="331,133,0,0" VerticalAlignment="Top" Width="75"/>-->
         </Grid>
+
     </Grid>
 </Controls:MetroWindow>

@@ -8,8 +8,10 @@
         xmlns:local="clr-namespace:HV9003TE4.Views"
         xmlns:local1="clr-namespace:HV9003TE4"
         mc:Ignorable="d"
-        Title="Automatic Measurement" Height="510" Width="800" 
-        WindowStyle="None"    Background="#e8e8e8"    >
+        Title="Automatic Measurement" Height="650" Width="1000" 
+        WindowStyle="None"  Background="#e8e8e8" WindowState="Maximized"
+                      Loaded="all_load" Unloaded="Undload"
+                      Closed="MetroWindow_Closed" WindowStartupLocation="CenterScreen" >
     <Window.DataContext>
         <local1:MainWindowModel/>
     </Window.DataContext>
@@ -49,7 +51,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="0*"></RowDefinition>
             <RowDefinition Height="5*"></RowDefinition>
-            <RowDefinition Height="0.4*"></RowDefinition>
+            <RowDefinition Height="0.33*"></RowDefinition>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="1">
@@ -240,7 +242,7 @@
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <lvc:CartesianChart  Grid.Column="0" Background="#022343" Margin="0,10" Series="{Binding SeriesCollectionEleYAndVolate}"  >
+                    <lvc:CartesianChart Name="EleyChart" Grid.Column="0" Background="#022343" Margin="0,10" Series="{Binding SeriesCollectionEleYAndVolate}"  >
                         <lvc:CartesianChart.AxisX>
                             <lvc:Axis Title="电晕"></lvc:Axis>
                         </lvc:CartesianChart.AxisX>
@@ -248,7 +250,7 @@
                             <lvc:Axis Title="Volate"></lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                     </lvc:CartesianChart>
-                    <lvc:CartesianChart  Grid.Column="1" Background="#022343" Margin="0,10" Series="{Binding SeriesCollectionEleYAndVolate1}"  >
+                    <lvc:CartesianChart Name="Volatechart" Grid.Column="1" Background="#022343" Margin="0,10" Series="{Binding SeriesCollectionEleYAndVolate1}"  >
                         <lvc:CartesianChart.AxisX>
                             <lvc:Axis Title="耐压"></lvc:Axis>
                         </lvc:CartesianChart.AxisX>
@@ -265,14 +267,21 @@
                         <RowDefinition Height="auto"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="2"  Visibility="{Binding QuqlityIsOk}" >
+                        <!--{Binding QuqlityIsOk}-->
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"></ColumnDefinition>
                             <ColumnDefinition ></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">电晕实验是否合格？</TextBlock>
-                        <Button  Grid.Column="1" Foreground="White" Background="Green" Margin="3" Click="Quatity_Click">合格</Button>
-                        <Button  Grid.Column="2"  Foreground="White" Background="Red" Margin="2" Click="QualityNot_Click">不合格</Button>
+                            <Border Grid.Column="0" BorderThickness="1" BorderBrush="Black">
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">电晕实验是否合格？</TextBlock>
+                            </Border>
+                        <Border Grid.Column="1" BorderThickness="0,1,1,1" BorderBrush="Black">
+                                <Button MinHeight="40" Margin="5,2" MaxHeight="150" Foreground="White" Background="Green"  Click="Quatity_Click" >合格</Button>
+                        </Border>
+                        <Border  Grid.Column="2" BorderThickness="0,1,1,1" BorderBrush="Black">
+                            <Button MinHeight="40" Margin="5,2" MaxHeight="150" Foreground="White" Background="Red" Click="QualityNot_Click">不合格</Button>
+                        </Border>
                     </Grid>
                     <ListBox    BorderThickness="1"  Foreground="#00ffcc"  Background="Black" ItemsSource="{Binding TestResultMeassge,UpdateSourceTrigger=PropertyChanged}">
                         <ListBox.ItemContainerStyle >
@@ -382,35 +391,44 @@
                     </Grid>
                 </Expander>
             </Grid>
-
-
         </Grid>
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
-            <Button  Margin="5,3" Background="Green" Click="StartTest_click" Foreground="White">
-                <TextBlock FontSize="12" x:Name="StartTestTextBox">开始测量</TextBlock>
-            </Button>
-            <Grid  Grid.Column="1">
+        <Expander ExpandDirection="Left" Grid.Row="2">
+            <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <Button  Margin="5,3" Background="Green" Click="Stop_click" Foreground="White">
-                    <TextBlock FontSize="12">暂停</TextBlock>
-                </Button>
-                <Button  Margin="5,3" Grid.Column="1" Background="Green" Click="Continur_click" Foreground="White">
-                    <TextBlock FontSize="12">继续</TextBlock>
-                </Button>
+                <Viewbox>
+                    <Button  MinWidth="80"  Background="Green" Click="StartTest_click" Foreground="White">
+                        <TextBlock  x:Name="StartTestTextBox">开始测量</TextBlock>
+                    </Button>
+                </Viewbox>
+                <Grid  Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Viewbox>
+                        <Button Background="Green" MinWidth="50" Click="Stop_click" Foreground="White">
+                            <TextBlock >暂停</TextBlock>
+                        </Button>
+                    </Viewbox>
+                    <Viewbox  Grid.Column="1">
+                        <Button MinWidth="50" Background="Green" Click="Continur_click" Foreground="White">
+                            <TextBlock >继续</TextBlock>
+                        </Button>
+                    </Viewbox>
+                   
+                   
+                </Grid>
+
             </Grid>
-            
-        </Grid>
+
+        </Expander>
     </Grid>
 
 </Controls:MetroWindow>

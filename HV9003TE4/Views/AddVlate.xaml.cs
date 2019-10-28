@@ -80,6 +80,8 @@ namespace HV9003TE4.Views
                     OutVolateData(NumericsConverter.Value2Text((double)tpd.value, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Voltage));
                 if (Flag == 3)
                     OutDYData(NumericsConverter.Value2Text((double)tpd.value, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Voltage));
+                if (Flag == 4)
+                    OutProjectVolate(NumericsConverter.Value2Text((double)tpd.value, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Voltage));
                 this.Close();
             }
             catch
@@ -214,6 +216,7 @@ namespace HV9003TE4.Views
         public event Outdy OutCnData;
         public event OutCn OutDYData;
         public event OutCn OutVolateData;
+        public event OutCn OutProjectVolate;
     }
     public delegate void Outdy(string dy);
 }

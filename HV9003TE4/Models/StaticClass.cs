@@ -1,4 +1,5 @@
 ﻿using LiveCharts.Defaults;
+using Microsoft.Win32;
 using SCEEC.Numerics;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -31,7 +33,7 @@ namespace HV9003TE4.Models
             files.Close();
             return imgByte;
         }
-        public static Image byteArrayToImage(byte[] Bytes)
+        public static System.Drawing.Image byteArrayToImage(byte[] Bytes)
         {
             MemoryStream ms = new MemoryStream(Bytes);
             return Bitmap.FromStream(ms, true);
@@ -96,10 +98,13 @@ namespace HV9003TE4.Models
 
         public static SysAutoTestResult GetDataForTcpAutoTest(byte[] data)
         {
-            SysAutoTestResult sys = new SysAutoTestResult();
-            byte NeedTestVolate = data[6];
-            if (data[0] == 0xdd && data[1] == 0x0a)
+            if (data.Length > 9)
             {
+
+
+                SysAutoTestResult sys = new SysAutoTestResult();
+                byte NeedTestVolate = data[6];
+
                 for (int i = 0; i < NeedTestVolate; i++)
                 {
                     sys.NeedTestList.Add(BitConverter.ToSingle(data, 9 + i * 4));
@@ -122,7 +127,11 @@ namespace HV9003TE4.Models
 
                 return sys;
             }
-            return null;
+            else
+            {
+                ShowHide("TCP传输测量数据错误");
+                return null;
+            }
         }
 
         /// <summary>
@@ -130,7 +139,7 @@ namespace HV9003TE4.Models
         /// </summary>
         /// <param name="ListboxItemsources">数据源</param>
         /// <param name="SysData">TCP接受的数据</param>
-        public static void FillListBoxTip(ObservableCollection<string> ListboxItemsources, byte[] SysData)
+        public static ObservableCollection<string> FillListBoxTip(ObservableCollection<string> ListboxItemsources, byte[] SysData)
         {
             ThreadPool.QueueUserWorkItem(delegate
             {
@@ -139,7 +148,6 @@ namespace HV9003TE4.Models
                 SynchronizationContext.Current.Post(async pl =>
                 {
                     ListboxItemsources.Add("远程数据显示\t\n若需要手动测量\t\n请设置电晕和耐压");
-
                     var a = StaticClass.GetDataForTcpAutoTest(SysData);
                     foreach (var b in a.NeedTestList)
                     {
@@ -152,6 +160,7 @@ namespace HV9003TE4.Models
                     ListboxItemsources.Add("持续时间  :" + a.HideTime.ToString() + ":" + "  耐    压:" + elevolate);
                 }, null);
             });
+            return ListboxItemsources;
         }
 
 
@@ -282,8 +291,8 @@ namespace HV9003TE4.Models
             }
         }
 
-       
-        public static byte[] Getbytesdata(FourTestResult fs,Int16 ImageID)
+
+        public static byte[] Getbytesdata(FourTestResult fs, Int16 ImageID)
         {
             List<byte> rel = new List<byte>();
             rel.AddRange(new byte[] { 0xdd, 0x0a, (byte)fs.NeedTestNum });
@@ -386,6 +395,78 @@ namespace HV9003TE4.Models
                 return rtd;
             }
             return null;
+        }
+
+
+        public static Models.SysAutoTestResult GetSys(ObservableCollection<string> ListboxItemsources)
+        {
+            //  Models.AutoStateStatic.SState.Clear();
+            Models.SysAutoTestResult sys = new Models.SysAutoTestResult();
+            var tpd = ListboxItemsources.ToArray();
+            for (int i = 0; i < tpd.Length - 2; i++)
+            {
+                string[] Usedata = tpd[i].Split(':');
+                if (Usedata.Length == 2)
+                {
+                    //  Usedata[i] = Usedata[i].Trim();
+                    sys.NeedTestList.Add((float)NumericsConverter.Text2Value(StaticClass.DeleteSpace(Usedata[1])).value);
+                }
+
+            }
+            string[] Usedata1 = tpd[tpd.Length - 2].Split(':');
+            sys.IsEleY = true;
+            sys.IsVolate = true;
+            sys.EleY = (float)NumericsConverter.Text2Value(StaticClass.DeleteSpace(Usedata1[1])).value;
+            string[] p = tpd[tpd.Length - 1].Split(':');
+            sys.EleVolate = (float)NumericsConverter.Text2Value(StaticClass.DeleteSpace(p[3])).value;
+            try
+            {
+                sys.HideTime = Convert.ToInt32(StaticClass.DeleteSpace(p[1]));
+            }
+            catch
+            {
+                sys.HideTime = 60;
+                ShowHide("键入的耐压保持时间格式错误" + "\t\n" + "以设置为默认60S");
+
+            }
+            return sys;
+        }
+
+        public static void ShowHide(string Text)
+        {
+            Views.Alarm alarm = new Views.Alarm(Text);
+            alarm.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            alarm.ShowDialog();
+        }
+
+        public static void SaveImageRemote(string imagePath, string imagename, Control control)
+        {
+            if (!Directory.Exists(imagePath))
+            {
+                WriteDataToFile.DeelDirectoryInfo(imagePath, Mode.Create);
+            }
+            SaveFileDialog save = new SaveFileDialog();
+            save.Filter = "BMP|*.bmp|PNG|*.png|JPG|*.jpg";
+            SaveImg(imagePath + "\\" + imagename, control);
+        }
+        private static bool SaveImg(string path, Control control)
+        {
+            try
+            {
+                FileStream fs = new FileStream(path, FileMode.Create);
+                RenderTargetBitmap bmp = new RenderTargetBitmap((int)control.ActualWidth,  //ic是控件的名字
+                    (int)control.ActualHeight + 100, 1 / 48, 1 / 48, PixelFormats.Pbgra32);
+                bmp.Render(control);
+                BitmapEncoder encoder = new TiffBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bmp));
+                encoder.Save(fs);
+                fs.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
     }

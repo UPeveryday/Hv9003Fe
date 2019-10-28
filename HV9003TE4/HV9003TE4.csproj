@@ -79,10 +79,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AllAutoTestModel.cs" />
     <Compile Include="Models\AutoState.cs" />
     <Compile Include="Models\AutoTestFunctions.cs" />
+    <Compile Include="Models\INIFILE.cs" />
     <Compile Include="Models\StaticClass.cs" />
     <Compile Include="Models\TestResult.cs" />
+    <Compile Include="Models\WriteDataToFile.cs" />
     <Compile Include="RelayComman.cs" />
     <Compile Include="TestUseAlarm.xaml.cs">
       <DependentUpon>TestUseAlarm.xaml</DependentUpon>
@@ -107,6 +110,9 @@
     </Compile>
     <Compile Include="Views\Process.xaml.cs">
       <DependentUpon>Process.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProjectManagement.xaml.cs">
+      <DependentUpon>ProjectManagement.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Qualified.xaml.cs">
       <DependentUpon>Qualified.xaml</DependentUpon>
@@ -170,6 +176,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Process.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProjectManagement.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -244,6 +254,7 @@
   <ItemGroup>
     <Folder Include="DLL\" />
     <Folder Include="ModelViews\" />
+    <Folder Include="ProjectSources\" />
     <Folder Include="Theme\" />
     <Folder Include="WaveImage\" />
   </ItemGroup>

@@ -55,6 +55,24 @@ namespace SCEEC.MI.High_Precision
                 OpenPort();
             }
         }
+
+        public void StopRecv(int time)
+        {
+            LocalPrecision.ReceiveEventFlag = true;
+            Thread.Sleep(time);
+            LocalPrecision.ReceiveEventFlag = false;
+        }
+
+        public void StopRe()
+        {
+            LocalPrecision.ReceiveEventFlag = true;
+
+        }
+        public void ContinuieRe()
+        {
+            LocalPrecision.ReceiveEventFlag = false;
+
+        }
         public High_PrecisionClass(string comPortName)
         {
             this.ComPort = comPortName;
@@ -229,7 +247,7 @@ namespace SCEEC.MI.High_Precision
             {
                 byte[] TestComman = { 0x50, testCnBuffer[0], testCnBuffer[1], testCnBuffer[2], testCnBuffer[3],
                     CheckData(new byte[5] { 0x50, testCnBuffer[0], testCnBuffer[1], testCnBuffer[2], testCnBuffer[3] }) };
-                if (0 < LocalPrecision.SendCommand(TestComman, ref Issuccss, 10))
+                if (0 < LocalPrecision.SendCommandNotRecv(TestComman, ref Issuccss, 10))
                     return RetureFalse(Issuccss[0]);
                 return RetureFalse(Issuccss[0]);
             }
@@ -396,7 +414,6 @@ namespace SCEEC.MI.High_Precision
     public static class TestResult
     {
         public static High_PrecisionClass WorkTest = new High_PrecisionClass();
-
     }
 
 

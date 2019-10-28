@@ -31,6 +31,9 @@ namespace HV9003TE4.Models
         public bool CompeleteVolate { get; set; } = false;
 
         public bool IsPress { get; set; } = false;
+
+        public bool WaveImageState { get; set; } = false;
+        public Int16 WaveImageId { get; set; } 
     }
 
     public static class AutoStateStatic

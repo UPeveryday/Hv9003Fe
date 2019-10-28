@@ -1,0 +1,171 @@
+﻿<Controls:MetroWindow x:Class="HV9003TE4.Views.ProjectManagement"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HV9003TE4.Views"
+        xmlns:local1="clr-namespace:HV9003TE4"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        mc:Ignorable="d"
+        Title="ProjectManagement" Height="450" Width="800" >
+    <Window.DataContext>
+        <local1:MainWindowModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Expander ExpandDirection="Right" IsExpanded="True">
+            <Expander.Header>
+                <StackPanel>
+                    <TextBlock Foreground="White" >方</TextBlock>
+                    <TextBlock Foreground="White">案</TextBlock>
+                    <TextBlock Foreground="White">列</TextBlock>
+                    <TextBlock Foreground="White">表</TextBlock>
+                </StackPanel>
+            </Expander.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="8*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Row="0">
+                    <ListBox Margin="3"  SelectedIndex="0" ItemsSource="{Binding projiectnames, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SelectionChanged="ListBox_SelectionChanged" Name="ProjiectListBox">
+                        <ListBox.ItemContainerStyle >
+                            <Style  TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                            <Border x:Name="Bd" SnapsToDevicePixels="true" Background="{TemplateBinding Background}" BorderBrush="Green" BorderThickness="0,0,0,1" Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" x:Name="contentPresenter"
+                                                      Margin="6"            />
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="#1D82DA"/>
+                                                </Trigger>
+                                                <MultiTrigger>
+                                                    <MultiTrigger.Conditions>
+                                                        <Condition Property="IsSelected" Value="true"/>
+                                                        <Condition Property="Selector.IsSelectionActive" Value="false"/>
+                                                    </MultiTrigger.Conditions>
+                                                    <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                                                </MultiTrigger>
+                                                <Trigger Property="IsEnabled" Value="false">
+                                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Viewbox Margin="5">
+                        <Button BorderThickness="0"  Background="#FFC071CC" Click="AddNewProject" Foreground="White">添加新方案
+                        </Button>
+                    </Viewbox>
+                </Grid>
+                <GroupBox  Grid.Column="1" Header="添加方案" Name="GridProJect" Visibility="Collapsed" Grid.RowSpan="2">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="6*"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="1.2*"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <DockPanel>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">方案名：</TextBlock>
+                            <TextBox BorderBrush="Green" MinWidth="100" Name="projecttextbox" LostFocus="projectname_lostfocus" BorderThickness="0,0,0,1" Margin="5,3" TextAlignment="Right"></TextBox>
+                        </DockPanel>
+                        <ListBox Grid.Row="1" Margin="0,5" BorderThickness="1" ItemsSource="{Binding ProjectVolate,UpdateSourceTrigger=PropertyChanged}" BorderBrush="#5483f9"></ListBox>
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Button Margin="3" Click="Addvolate_click"  Foreground="White"  Background="#ffab31">
+                                <Viewbox>
+                                    <TextBlock>添加电压</TextBlock>
+                                </Viewbox>
+                            </Button>
+                            <Button Grid.Column="1" Margin="3" Click="Mulvolate" Foreground="White" Background="#e91111">
+                                <Viewbox>
+                                    <TextBlock>删除</TextBlock>
+                                </Viewbox>
+                            </Button>
+                        </Grid>
+                            <Button Click="SetY" Grid.Row="3" Margin="5,0" Background="#242e3b" Foreground="White">
+                            <Viewbox>
+                                <TextBlock>设置电晕</TextBlock>
+                            </Viewbox>
+                            </Button>
+                        <Grid Grid.Row="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox Grid.Column="0" x:Name="Timecombobox"  SelectedItem="60" ItemsSource="{Binding TimeSources,UpdateSourceTrigger=PropertyChanged}" Margin="3,5"></ComboBox>
+                            <Button Grid.Column="1" Click="SetVolate" Margin="3,5">
+                                <Viewbox>
+                                    <TextBlock>设置耐压</TextBlock>
+                                </Viewbox>
+                            </Button>
+                        </Grid>
+                        <Button Grid.Row="5" Margin="5,1" Background="Green" Click="Save_project" Foreground="White">
+                            <Viewbox>
+                                <TextBlock>保存方案</TextBlock>
+                            </Viewbox>
+                        </Button>
+                    </Grid>
+
+                </GroupBox>
+            </Grid>
+
+        </Expander>
+        <Grid Grid.Column="1" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="8*"/>
+                <RowDefinition Height="1*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <GroupBox Grid.Row="0" Grid.RowSpan="2" Header="测量方案数据">
+                <ListBox  BorderThickness="1" Name="resultlistbox" ItemsSource="{Binding Projectdataui,UpdateSourceTrigger=PropertyChanged}"></ListBox>
+            </GroupBox>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="0.6*"></ColumnDefinition>
+                    <ColumnDefinition ></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Viewbox Grid.Column="1" Margin="10,3">
+                    <Button  Click="Saveproject" >确认修改并保存方案</Button>
+                </Viewbox>
+                <Viewbox  Grid.Column="2">
+                    <Button Margin="3" Click="DeletePeoject" >删除方案</Button>
+                </Viewbox>
+                <Viewbox  Grid.Column="3" Margin="3">
+                    <Button Click="StartTest_Click">启动自动测量</Button>
+                </Viewbox>
+            </Grid>
+            
+            
+        </Grid>
+
+    </Grid>
+</Controls:MetroWindow>
