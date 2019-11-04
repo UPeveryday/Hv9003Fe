@@ -16,6 +16,8 @@
                        Closing="MetroWindow_Closing" 
                       Loaded="Main_load"
                       Unloaded="unload_load"
+                      IsEnabled="{Binding WindowIsEnable,UpdateSourceTrigger=PropertyChanged}"
+                      IsEnabledChanged="MetroWindow_IsEnabledChanged"
     >
     <!--Background="#FF252525"-->
 
@@ -31,6 +33,7 @@
     </Window.DataContext>
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
+            <Button Content="重启并复位"  Foreground="Red" Click="Reset" ></Button>
             <Button Content="设置"  Click="Setting_click"/>
             <Button Content="方案管理" Click="Project_click" ></Button>
         </Controls:WindowCommands>
@@ -269,7 +272,12 @@
                         </lvc:CartesianChart>
                     </Grid>
                 </Grid>
-                <Expander  Grid.ColumnSpan="2" Header="波形操作" IsExpanded="{Binding ISREMOTE}">
+                <Expander  Grid.ColumnSpan="2"  IsExpanded="{Binding ISREMOTE}">
+                    <Expander.Header >
+                        <DockPanel >
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left">波形操作</TextBlock>
+                        </DockPanel>
+                    </Expander.Header>
                     <Grid Margin="5,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1.8*"/>
@@ -327,18 +335,21 @@
                         <ColumnDefinition Width="1*"></ColumnDefinition>
                         <ColumnDefinition Width="2*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0">
+                    <Grid Grid.Column="0" Opacity="{Binding ConnectStateControl,UpdateSourceTrigger=PropertyChanged}">
                         <Grid.Background>
                             <ImageBrush ImageSource="Resources/11111.png" Stretch="Fill" />
                         </Grid.Background>
                     </Grid>
                     <Grid Grid.Column="1">
-                        <TextBlock  Grid.Column="1" Grid.Row="1" Text="{Binding HVVoltage, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" VerticalAlignment="Center" FontSize="18" TextAlignment="Center"/>
+                        <Viewbox Grid.Column="1" Grid.Row="1" MaxHeight="100">
+                            <TextBlock  Margin="3"  Foreground="Red" Text="{Binding HVVoltage, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" VerticalAlignment="Center" FontSize="
+                                    22" TextAlignment="Center"/>
+                        </Viewbox>
                     </Grid>
                 </Grid>
                 <Rectangle Grid.ColumnSpan="2" Grid.Column="1" Stroke="#FF49B4E8" StrokeThickness="1"/>
                 <Controls:ToggleSwitch  x:Name="PowerState"  Grid.Column="1" IsChecked="{Binding VolateState}" Click="Power" Margin="5"  Header="电源输出"/>
-                <Button Grid.Column="2" Background="#ff4648" Name="Downc" Click="Down_Click" IsEnabled="{Binding ISZERO}"  FontSize="18" >
+                <Button Grid.Column="2" Background="#ff4648"  Name="Downc" Click="Down_Click" IsEnabled="{Binding ISZERO}"  FontSize="18" >
                     <StackPanel>
                         <TextBlock FontSize="20" FontWeight="Bold" Foreground="White">降压</TextBlock>
                         <TextBlock FontSize="20"  Foreground="White">归零</TextBlock>

@@ -39,6 +39,8 @@ namespace HV9003TE4.Views
                 mv.SetFre(50);
                 mv.T1.IsBackground = true;
                 mv.T1.Start();
+                mv.CreateFourTan();//实例化对象，临时
+                mv.CreateTanEleVolate();//实例化对象，临时
             }
             catch
             {
@@ -51,9 +53,11 @@ namespace HV9003TE4.Views
             mv = new MainWindowModel();
             this.DataContext = mv;
             mv.MyPAllAutoTestOrOrdeTestroperty = true;//只提供回复测量结果功能
-            mv.IsTcpTestting = true;//
+            Models.StaticClass.IsTcpTestting = true;
+            // mv.IsTcpTestting = true;//
             mv.SysData = temp;
-            mv.AllTestResult.Clear();
+            Models.StaticClass.AllTestResult.Clear();
+            // mv.AllTestResult.Clear();
             Models.SysAutoTestResult sys = Models.StaticClass.GetDataForTcpAutoTest(temp);
             mv.StartTcp();
             try
@@ -76,24 +80,25 @@ namespace HV9003TE4.Views
         {
             InitializeComponent();
             mv = new MainWindowModel();
-            this.DataContext = mv;
-            mv.AllTestResult.Clear();
+
+            Models.StaticClass.AllTestResult.Clear();
+            // mv.AllTestResult.Clear();
             mv.SysProject = temp;
             mv.StartTcp();
             try
             {
                 mv.StartRecCom();
-                mv.SetFre(50);
-                mv.T1.IsBackground = true;
-                mv.T1.Start();
             }
             catch
             {
                 mv.ShowHide("初始化程序发生错误" + "\r\n" + "请检查串口及仪器连接");
             }
+            //mv.ContinuTest();
             sys1 = temp;
             Bitconvert(temp);
             mv.StartAutobyProject();
+            this.DataContext = null;
+            this.DataContext = mv;
         }
 
         /// <summary>
@@ -111,7 +116,7 @@ namespace HV9003TE4.Views
             ISHAVEVOLATE = true;
             ISHAVEDY = true;
             time.Text = sys.HideTime.ToString();
-            Expander.IsExpanded = true;
+            //Expander.IsExpanded = true;
         }
         private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -252,7 +257,7 @@ namespace HV9003TE4.Views
         }
         private void StartTest_click(object sender, RoutedEventArgs e)
         {
-            Expander.IsExpanded = false;
+            // Expander.IsExpanded = false;
             if (ISHAVEDY)
             {
                 if (ISHAVEVOLATE)
@@ -279,26 +284,32 @@ namespace HV9003TE4.Views
 
         private void Stop_click(object sender, RoutedEventArgs e)
         {
-            mv.ResetTest();
+            // mv.ResetTest();
+            mv.StartPower();
+
         }
 
         private void Continur_click(object sender, RoutedEventArgs e)
         {
-            mv.ContinuTest();
+            // mv.ContinuTest();
+            // mv.ClosePower();
+            mv.REset();
+
+
         }
         private void Quatity_Click(object sender, RoutedEventArgs e)
         {
             mv.QuqlityIsOk = Visibility.Collapsed;
             Models.AutoStateStatic.SState.Quality = true;
             Models.AutoStateStatic.SState.IsPress = true;
-            Models.StaticClass.SaveImageRemote("C:\\WaveImage", "1.jpg", EleyChart);
+            //  Models.StaticClass.SaveImageRemote("C:\\WaveImage", "1.jpg", EleyChart);
             Task.Factory.StartNew(SaveVolateImage);
         }
         private void SaveVolateImage()
         {
             while (Models.AutoStateStatic.SState.CompeleteVolate)
             {
-                Models.StaticClass.SaveImageRemote("C:\\WaveImage", "1.jpg", Volatechart);
+                //  Models.StaticClass.SaveImageRemote("C:\\WaveImage", "1.jpg", Volatechart);
                 Thread.Sleep(500);
             }
         }
@@ -334,6 +345,15 @@ namespace HV9003TE4.Views
         ~AllAutoTest()
         {
             mv.ResetTest();
+            mv.CancerTest();
+            // GC.Collect();
+        }
+
+        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            mv.DownVolate();
+            //mv.ResetTest();
+            //mv.CancerTest();
         }
     }
 }

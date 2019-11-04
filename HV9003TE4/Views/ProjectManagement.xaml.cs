@@ -519,10 +519,10 @@ namespace HV9003TE4.Views
                 }
                 else
                 {
-                    Application.Current.Dispatcher.Invoke((Action)(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         ShowHide("方案不存在\t\n或数据错误");
-                    }));
+                    });
                     
                 }
 

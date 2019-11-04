@@ -45,7 +45,7 @@ namespace SCEEC.MI.High_Precision
             else
             {
                 List<string> Comp = new List<string>();
-                foreach(string a in cp)
+                foreach (string a in cp)
                 {
                     if (a != "COM4")
                         Comp.Add(a);
@@ -239,14 +239,17 @@ namespace SCEEC.MI.High_Precision
             return RetureFalse(Issuccss[0]);
         }
 
-        public MisTak ChangeVolate(float TestVolate)
+        public MisTak ChangeVolate(float TestVolate, float volate2 = 500f)
         {
             byte[] testCnBuffer = BitConverter.GetBytes(TestVolate);
+            byte[] changevolate = BitConverter.GetBytes(volate2);
             byte[] Issuccss = new byte[4096];
             if (testCnBuffer.Length == 4)
             {
                 byte[] TestComman = { 0x50, testCnBuffer[0], testCnBuffer[1], testCnBuffer[2], testCnBuffer[3],
-                    CheckData(new byte[5] { 0x50, testCnBuffer[0], testCnBuffer[1], testCnBuffer[2], testCnBuffer[3] }) };
+                    changevolate[0], changevolate[1], changevolate[2], changevolate[3],
+                    CheckData(new byte[9] { 0x50, testCnBuffer[0], testCnBuffer[1], testCnBuffer[2], testCnBuffer[3],
+                        changevolate[0], changevolate[1], changevolate[2], changevolate[3] }) };
                 if (0 < LocalPrecision.SendCommandNotRecv(TestComman, ref Issuccss, 10))
                     return RetureFalse(Issuccss[0]);
                 return RetureFalse(Issuccss[0]);
@@ -272,6 +275,12 @@ namespace SCEEC.MI.High_Precision
         public void BoomFive()
         {
             byte[] tpd = { 0x65, 0x65, CheckData(new byte[] { 0x65, 0x65 }) };
+            LocalPrecision.SendDataByte(tpd, 0, 3);
+        }
+
+        public void Reset()
+        {
+            byte[] tpd = { 0x31, 0x31, 0x62 };
             LocalPrecision.SendDataByte(tpd, 0, 3);
         }
 

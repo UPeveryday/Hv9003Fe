@@ -19,7 +19,9 @@ namespace HV9003TE4.Models
 {
     public static class StaticClass
     {
+        public static FourTestResult AllTestResult = new FourTestResult();
 
+        public static bool IsTcpTestting { get; set; } = false;
         public static void ShowELEYANDVOLATe(Views.EleOrVolate a)
         {
             Views.ELEYORVOLATE el = new Views.ELEYORVOLATE(a);
@@ -107,18 +109,18 @@ namespace HV9003TE4.Models
 
                 for (int i = 0; i < NeedTestVolate; i++)
                 {
-                    sys.NeedTestList.Add(BitConverter.ToSingle(data, 9 + i * 4));
+                    sys.NeedTestList.Add(BitConverter.ToSingle(data, 9 + i * 4)*1000);
                 }
                 if (data[7] == 1)
                 {
-                    sys.EleY = BitConverter.ToSingle(data, 9 + NeedTestVolate * 4);
+                    sys.EleY = BitConverter.ToSingle(data, 9 + NeedTestVolate * 4) * 1000;
                     sys.IsEleY = true;
                 }
                 else
                     sys.IsEleY = false;
                 if (data[8] == 1)
                 {
-                    sys.EleVolate = BitConverter.ToSingle(data, 9 + 4 * NeedTestVolate + data[7] * 4);
+                    sys.EleVolate = BitConverter.ToSingle(data, 9 + 4 * NeedTestVolate + data[7] * 4) * 1000;
                     sys.HideTime = data[9 + 4 * NeedTestVolate + data[7] * 4 + data[8] * 4];
                     sys.IsVolate = true;
                 }
@@ -306,16 +308,23 @@ namespace HV9003TE4.Models
                     byte[] cntf = BitConverter.GetBytes((float)cnt.value);
                     rel.AddRange(cnf);
                     rel.AddRange(cntf);
-                    if (Models.AutoStateStatic.SState.Quality)
-                    {
-                        rel.Add(0x01);
-                    }
-                    else
-                        rel.Add(0x00);
-
-                    rel.Add((byte)ImageID);
-
                 }
+                if (Models.AutoStateStatic.SState.Quality)
+                {
+                    rel.AddRange(BitConverter.GetBytes((float)fs.Panel1EleYAndVolate.EleY.value));
+                    rel.Add(0x01);
+                    rel.Add(0x01
+                        );
+                }
+                else
+                {
+                    rel.AddRange(BitConverter.GetBytes((float)fs.Panel1EleYAndVolate.EleY.value));
+                    rel.Add(0x00);
+                    rel.Add(0x01);
+                }
+                rel.AddRange(BitConverter.GetBytes((float)fs.Panel1EleYAndVolate.EleVolate.value));
+                rel.Add((byte)fs.Panel1EleYAndVolate.HodeTime);
+                rel.Add(0x02);
             }
             if (fs.Pane2Enable)
             {
@@ -327,15 +336,22 @@ namespace HV9003TE4.Models
                     byte[] cntf = BitConverter.GetBytes((float)cnt.value);
                     rel.AddRange(cnf);
                     rel.AddRange(cntf);
-                    if (Models.AutoStateStatic.SState.Quality)
-                    {
-                        rel.Add(0x01);
-                    }
-                    else
-                        rel.Add(0x00);
-
-                    rel.Add((byte)ImageID);
                 }
+                if (Models.AutoStateStatic.SState.Quality)
+                {
+                    rel.AddRange(BitConverter.GetBytes((float)fs.Panel2EleYAndVolate.EleY.value));
+                    rel.Add(0x01);
+                    rel.Add(0x01);
+                }
+                else
+                {
+                    rel.AddRange(BitConverter.GetBytes((float)fs.Panel2EleYAndVolate.EleY.value));
+                    rel.Add(0x00);
+                    rel.Add(0x01);
+                }
+                rel.AddRange(BitConverter.GetBytes((float)fs.Panel2EleYAndVolate.EleVolate.value));
+                rel.Add((byte)fs.Panel2EleYAndVolate.HodeTime);
+                rel.Add(0x02);
             }
             if (fs.Pane3Enable)
             {
@@ -347,15 +363,22 @@ namespace HV9003TE4.Models
                     byte[] cntf = BitConverter.GetBytes((float)cnt.value);
                     rel.AddRange(cnf);
                     rel.AddRange(cntf);
-                    if (Models.AutoStateStatic.SState.Quality)
-                    {
-                        rel.Add(0x01);
-                    }
-                    else
-                        rel.Add(0x00);
-
-                    rel.Add((byte)ImageID);
                 }
+                if (Models.AutoStateStatic.SState.Quality)
+                {
+                    rel.AddRange(BitConverter.GetBytes((float)fs.Panel3EleYAndVolate.EleY.value));
+                    rel.Add(0x01);
+                    rel.Add(0x01);
+                }
+                else
+                {
+                    rel.AddRange(BitConverter.GetBytes((float)fs.Panel3EleYAndVolate.EleY.value));
+                    rel.Add(0x00);
+                    rel.Add(0x01);
+                }
+                rel.AddRange(BitConverter.GetBytes((float)fs.Panel3EleYAndVolate.EleVolate.value));
+                rel.Add((byte)fs.Panel3EleYAndVolate.HodeTime);
+                rel.Add(0x02);
             }
             if (fs.Pane4Enable)
             {
@@ -367,15 +390,22 @@ namespace HV9003TE4.Models
                     byte[] cntf = BitConverter.GetBytes((float)cnt.value);
                     rel.AddRange(cnf);
                     rel.AddRange(cntf);
-                    if (Models.AutoStateStatic.SState.Quality)
-                    {
-                        rel.Add(0x01);
-                    }
-                    else
-                        rel.Add(0x00);
-
-                    rel.Add((byte)ImageID);
                 }
+                if (Models.AutoStateStatic.SState.Quality)
+                {
+                    rel.AddRange(BitConverter.GetBytes((float)fs.Panel4EleYAndVolate.EleY.value));
+                    rel.Add(0x01);
+                    rel.Add(0x01);
+                }
+                else
+                {
+                    rel.AddRange(BitConverter.GetBytes((float)fs.Panel4EleYAndVolate.EleY.value));
+                    rel.Add(0x00);
+                    rel.Add(0x01);
+                }
+                rel.AddRange(BitConverter.GetBytes((float)fs.Panel4EleYAndVolate.EleVolate.value));
+                rel.Add((byte)fs.Panel4EleYAndVolate.HodeTime);
+                rel.Add(0x02);
             }
             return rel.ToArray();
         }

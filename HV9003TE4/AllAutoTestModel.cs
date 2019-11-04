@@ -154,6 +154,7 @@ namespace HV9003TE4
                     TestClass.QueryTestResult(TcpTask.TcpServer, null, StaticClass.Getbytesdata(AllTestResult, 2));
                 }
             }
+            Models.StaticClass.GetDataForTcpAutoTest(Temp);
             TestMesseagesNull.ReturnMessages(TcpTask.TcpServer, Temp);
         }
 

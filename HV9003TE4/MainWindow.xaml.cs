@@ -469,6 +469,7 @@ namespace HV9003TE4
         private void Power(object sender, RoutedEventArgs e)
         {
             NeedVolate = 0;
+            NeedVolateText.Text = "0";
             if (PowerState.IsChecked != false)
             {
                 mv.StartPower();
@@ -619,7 +620,7 @@ namespace HV9003TE4
         private void Down_Click(object sender, RoutedEventArgs e)
         {
             // PowerState.IsChecked = false;
-
+            NeedVolateText.Text = "0";
             NeedVolate = 0;
             DownVolate();
 
@@ -761,6 +762,18 @@ namespace HV9003TE4
         private void unload_load(object sender, RoutedEventArgs e)
         {
             this.DataContext = null;
+        }
+
+        private void Reset(object sender, RoutedEventArgs e)
+        {
+            mv.REset();
+         
+        }
+
+        private void MetroWindow_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            System.Windows.Forms.Application.Restart();
+            Application.Current.Shutdown();
         }
     }
 }
