@@ -285,16 +285,73 @@ namespace SCEEC.Numerics
         /// <param name="percentage">百分号显示</param>
         /// <param name="positiveSign">正值显示+号</param>
         /// <returns>带有SI词头的有效位数表示方式文本</returns>
-        public static string Value2Text(double value, int effectiveLength, int noiseLevel, string prefix, string quantity, bool percentage = false, bool positiveSign = false)
+        //public static string Value2Text(double value, int effectiveLength, int noiseLevel, string prefix, string quantity, bool percentage = false, bool positiveSign = false)
+        //{
+        //    string rtn = string.Empty;
+        //    if (effectiveLength < 1) { throw new Exception("有效位数需要为正整数。"); }
+        //    if (Math.Abs(value) < 1e-24)
+        //    {
+        //        if (percentage)
+        //            if (noiseLevel < -2)
+        //                return value.ToString("F" + (-noiseLevel - 2).ToString()) + "% " + quantity;
+        //        return ("0" + quantity);
+        //    }
+        //    if (value < 0) { value = -value; rtn = "-"; }
+        //    else if (positiveSign) rtn += "+";
+        //    value *= Math.Pow(10, PrefixsConverter.prefixString2dec(prefix));
+        //    if (value > 1.0000000000000000000001)
+        //    {
+        //        percentage = false;
+        //    }
+        //    if (percentage)
+        //    {
+        //        value *= 100;
+        //        noiseLevel += 2;
+        //    }
+        //    int decCnt = (int)Math.Floor(Math.Log10(value));
+        //    prefix = PrefixsConverter.dec2prefixString(Math.Max(PrefixsConverter.prefixString2dec(PrefixsConverter.dec2prefixString(decCnt)), noiseLevel + effectiveLength - 1));
+        //    if ((decCnt - effectiveLength + 1) < noiseLevel)
+        //        effectiveLength = decCnt - noiseLevel + 1;
+        //    if (!percentage)
+        //    {
+        //        if ((decCnt - PrefixsConverter.prefixString2dec(prefix)) >= effectiveLength)
+        //        prefix = PrefixsConverter.dec2prefixString(PrefixsConverter.prefixString2dec(prefix) + 3);
+        //        value /= Math.Pow(10, PrefixsConverter.prefixString2dec(prefix));
+        //        decCnt = (int)Math.Floor(Math.Log10(value));
+        //        value = Math.Round(value, effectiveLength - Math.Min(0, decCnt + 1), MidpointRounding.AwayFromZero);
+        //        if (value < 1e-24) { return ("0" + quantity); }
+        //        string format;
+        //        if (value >= 1) format = "F" + Math.Max((effectiveLength - ((decCnt + 48) % 3) - 1), 0).ToString();
+        //        else format = "F" + Math.Max((effectiveLength - decCnt - 1), 0).ToString();
+        //        rtn += value.ToString(format);
+        //        return (rtn + " " + prefix + quantity);
+        //    }
+        //    else
+        //    {
+        //        string format = "F" + Math.Max(effectiveLength - decCnt - 1, 0).ToString();
+        //        rtn += value.ToString(format);
+        //        return (rtn + "% " + quantity);
+        //    }
+        //}
+
+        public static string Value2Text(double value, int effectiveLength, int noiseLevel, string prefix, string quantity, bool percentage = false, bool positiveSign = false, bool usePrefix = true)
         {
             string rtn = string.Empty;
+            int el = effectiveLength;
             if (effectiveLength < 1) { throw new Exception("有效位数需要为正整数。"); }
+            if (double.IsNaN(value)) return "NaN";
+            if (double.IsInfinity(value)) return "Infinity";
             if (Math.Abs(value) < 1e-24)
             {
                 if (percentage)
                     if (noiseLevel < -2)
                         return value.ToString("F" + (-noiseLevel - 2).ToString()) + "% " + quantity;
-                return ("0" + quantity);
+                if (usePrefix)
+                {
+                    prefix = PrefixsConverter.dec2prefixString(PrefixsConverter.prefixString2dec(prefix) + noiseLevel + el - 1);
+                    return ((0.0).ToString("F" + (PrefixsConverter.prefixString2dec(prefix) - noiseLevel).ToString()) + " " + prefix + quantity);
+                }
+                return value.ToString("F" + (-noiseLevel).ToString()) + quantity;
             }
             if (value < 0) { value = -value; rtn = "-"; }
             else if (positiveSign) rtn += "+";
@@ -309,21 +366,37 @@ namespace SCEEC.Numerics
                 noiseLevel += 2;
             }
             int decCnt = (int)Math.Floor(Math.Log10(value));
-            prefix = PrefixsConverter.dec2prefixString(Math.Max(PrefixsConverter.prefixString2dec(PrefixsConverter.dec2prefixString(decCnt)), noiseLevel + effectiveLength - 1));
+            decCnt = (int)Math.Floor(Math.Log10(value) + decCnt / Math.Pow(10, effectiveLength - 1));
+            if (usePrefix)
+                prefix = PrefixsConverter.dec2prefixString(Math.Max(PrefixsConverter.prefixString2dec(PrefixsConverter.dec2prefixString(decCnt)), noiseLevel + effectiveLength - 1));
+            else
+                prefix = "";
             if ((decCnt - effectiveLength + 1) < noiseLevel)
                 effectiveLength = decCnt - noiseLevel + 1;
             if (!percentage)
             {
-                if ((decCnt - PrefixsConverter.prefixString2dec(prefix)) >= effectiveLength)
-                prefix = PrefixsConverter.dec2prefixString(PrefixsConverter.prefixString2dec(prefix) + 3);
+                if (usePrefix)
+                    if ((decCnt - PrefixsConverter.prefixString2dec(prefix)) >= effectiveLength)
+                        prefix = PrefixsConverter.dec2prefixString(PrefixsConverter.prefixString2dec(prefix) + 3);
                 value /= Math.Pow(10, PrefixsConverter.prefixString2dec(prefix));
-                decCnt = (int)Math.Floor(Math.Log10(value));
+                decCnt = (int)Math.Floor(Math.Log10(value + value * 0.5 * Math.Pow(10, -el)));
                 value = Math.Round(value, effectiveLength - Math.Min(0, decCnt + 1), MidpointRounding.AwayFromZero);
-                if (value < 1e-24) { return ("0" + quantity); }
+                if (value < 1e-24)
+                {
+                    if (usePrefix)
+                    {
+                        prefix = PrefixsConverter.dec2prefixString(noiseLevel + el - 1);
+                        return ((0.0).ToString("F" + (PrefixsConverter.prefixString2dec(prefix) - noiseLevel).ToString()) + " " + prefix + quantity);
+                    }
+                    return value.ToString("F" + (-noiseLevel).ToString()) + quantity;
+                }
                 string format;
-                if (value >= 1) format = "F" + Math.Max((effectiveLength - ((decCnt + 48) % 3) - 1), 0).ToString();
-                else format = "F" + Math.Max((effectiveLength - decCnt - 1), 0).ToString();
+                if (value >= 1)
+                    format = "F" + Math.Max((effectiveLength - decCnt - 1), 0).ToString();
+                else
+                    format = "F" + Math.Max((effectiveLength - decCnt - 1), 0).ToString();
                 rtn += value.ToString(format);
+                if ((prefix.Length == 0) && (quantity.Length == 0)) return rtn;
                 return (rtn + " " + prefix + quantity);
             }
             else
@@ -333,6 +406,7 @@ namespace SCEEC.Numerics
                 return (rtn + "% " + quantity);
             }
         }
+
 
         /// <summary>
         /// 将数值转换自动转换为SI词头的有效位数表示方式

@@ -23,7 +23,7 @@ namespace HV9003TE4.Models
         public bool IsStartEleY { get; set; } = false;
         public bool IsStartVolate { get; set; } = false;
 
-        public int NoSame { get; set; } 
+        public int NoSame { get; set; }
         public int AllNum { get; set; }
         public bool NaiVolate { get; set; } = false;
         public float MaxEqualVolate { get; set; }
@@ -33,7 +33,11 @@ namespace HV9003TE4.Models
         public bool IsPress { get; set; } = false;
 
         public bool WaveImageState { get; set; } = false;
-        public Int16 WaveImageId { get; set; } 
+        public Int16 WaveImageId { get; set; }
+
+        public int VolateNUm { get; set; } = 1;//耐压之前有多少点
+
+        public double VolateSpeed { get; set; } = 2;
     }
 
     public static class AutoStateStatic

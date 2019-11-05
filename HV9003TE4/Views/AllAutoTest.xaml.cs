@@ -36,7 +36,7 @@ namespace HV9003TE4.Views
             try
             {
                 mv.StartRecCom();
-                mv.SetFre(50);
+                // mv.SetFre(50);
                 mv.T1.IsBackground = true;
                 mv.T1.Start();
                 mv.CreateFourTan();//实例化对象，临时
@@ -354,6 +354,42 @@ namespace HV9003TE4.Views
             mv.DownVolate();
             //mv.ResetTest();
             //mv.CancerTest();
+        }
+
+        private void NumericUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<decimal> e)
+        {
+
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                if (cmb.SelectedIndex == 0)
+                    mv.SetFre(50);
+                else
+                    mv.SetFre(60);
+            }
+            catch 
+            {
+            }
+          
+
+        }
+
+        private void Reset(object sender, RoutedEventArgs e)
+        {
+            mv.REset();
+        }
+
+        private void StartPower(object sender, RoutedEventArgs e)
+        {
+            mv.StartPower();
+        }
+
+        private void ClosePower(object sender, RoutedEventArgs e)
+        {
+            mv.ClosePower();
         }
     }
 }

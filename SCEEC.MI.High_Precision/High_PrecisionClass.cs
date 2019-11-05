@@ -239,7 +239,7 @@ namespace SCEEC.MI.High_Precision
             return RetureFalse(Issuccss[0]);
         }
 
-        public MisTak ChangeVolate(float TestVolate, float volate2 = 500f)
+        public MisTak ChangeVolate(float TestVolate, float volate2 = 2000f)
         {
             byte[] testCnBuffer = BitConverter.GetBytes(TestVolate);
             byte[] changevolate = BitConverter.GetBytes(volate2);

@@ -584,7 +584,7 @@ namespace HV9003TE4
         {
 
             NeedVolate += addbum;
-            mv.SetBaseVolate(NeedVolate);
+            mv.SetBaseVolate(NeedVolate, (float)mv.VolateSpeed);
             NeedVolateText.Text = NeedVolate.ToString();
             Thread.Sleep(300);
             mv.UpVolate();
@@ -596,7 +596,7 @@ namespace HV9003TE4
             if (NeedVolate >= addbum)
             {
                 NeedVolate -= addbum;
-                mv.SetBaseVolate(NeedVolate);
+                mv.SetBaseVolate(NeedVolate, (float)mv.VolateSpeed);
                 NeedVolateText.Text = NeedVolate.ToString();
 
                 Thread.Sleep(300);
@@ -605,7 +605,7 @@ namespace HV9003TE4
             else
             {
                 NeedVolate = 0;
-                mv.SetBaseVolate(NeedVolate);
+                mv.SetBaseVolate(NeedVolate, (float)mv.VolateSpeed);
                 NeedVolateText.Text = NeedVolate.ToString(); ;
                 Thread.Sleep(300);
                 mv.UpVolate();
@@ -767,7 +767,7 @@ namespace HV9003TE4
         private void Reset(object sender, RoutedEventArgs e)
         {
             mv.REset();
-         
+
         }
 
         private void MetroWindow_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
