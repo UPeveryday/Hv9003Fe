@@ -25,94 +25,96 @@ namespace HV9003TE4.Views
     public partial class AllAutoTest : MetroWindow
     {
         public Models.SysAutoTestResult sys1 { get; set; }
-        MainWindowModel mv;
+        // MainWindowModel Models.AutoStateStatic.SState.mv;
         public AllAutoTest()
         {
             InitializeComponent();
-            mv = new MainWindowModel();
-            this.DataContext = mv;
-            mv.MyPAllAutoTestOrOrdeTestroperty = true;//只提供回复测量结果功能
-            mv.StartTcp();
+            Models.AutoStateStatic.SState.mv = new MainWindowModel();
+            this.DataContext = Models.AutoStateStatic.SState.mv;
+            Models.AutoStateStatic.SState.mv.MyPAllAutoTestOrOrdeTestroperty = true;//只提供回复测量结果功能
+            Models.AutoStateStatic.SState.mv.StartTcp();
             try
             {
-                mv.StartRecCom();
-                // mv.SetFre(50);
-                mv.T1.IsBackground = true;
-                mv.T1.Start();
-                mv.CreateFourTan();//实例化对象，临时
-                mv.CreateTanEleVolate();//实例化对象，临时
+                Models.AutoStateStatic.SState.mv.StartRecCom();
+                // Models.AutoStateStatic.SState.mv.SetFre(50);
+                Models.AutoStateStatic.SState.mv.T1.IsBackground = true;
+                Models.AutoStateStatic.SState.mv.T1.Start();
+                Models.AutoStateStatic.SState.mv.CreateFourTan();//实例化对象，临时
+                Models.AutoStateStatic.SState.mv.CreateTanEleVolate();//实例化对象，临时
             }
             catch
             {
-                mv.ShowHide("初始化程序发生错误" + "\r\n" + "请检查串口及仪器连接");
+                Models.AutoStateStatic.SState.mv.ShowHide("初始化程序发生错误" + "\r\n" + "请检查串口及仪器连接");
             }
         }
         public AllAutoTest(byte[] temp)
         {
             InitializeComponent();
-            mv = new MainWindowModel();
-            this.DataContext = mv;
-            mv.MyPAllAutoTestOrOrdeTestroperty = true;//只提供回复测量结果功能
+            Models.AutoStateStatic.SState.mv = new MainWindowModel();
+            this.DataContext = Models.AutoStateStatic.SState.mv;
+            Models.AutoStateStatic.SState.mv.MyPAllAutoTestOrOrdeTestroperty = true;//只提供回复测量结果功能
             Models.StaticClass.IsTcpTestting = true;
-            // mv.IsTcpTestting = true;//
-            mv.SysData = temp;
+            // Models.AutoStateStatic.SState.mv.IsTcpTestting = true;//
+            Models.AutoStateStatic.SState.mv.SysData = temp;
             Models.StaticClass.AllTestResult.Clear();
-            // mv.AllTestResult.Clear();
+            // Models.AutoStateStatic.SState.mv.AllTestResult.Clear();
             Models.SysAutoTestResult sys = Models.StaticClass.GetDataForTcpAutoTest(temp);
-            mv.StartTcp();
+            Models.AutoStateStatic.SState.mv.StartTcp();
             try
             {
-                mv.StartRecCom();
-                mv.SetFre(50);
-                mv.T1.IsBackground = true;
-                mv.T1.Start();
+                Models.AutoStateStatic.SState.mv.StartRecCom();
+                Models.AutoStateStatic.SState.mv.SetFre(50);
+                Models.AutoStateStatic.SState.mv.T1.IsBackground = true;
+                Models.AutoStateStatic.SState.mv.T1.Start();
             }
             catch
             {
-                mv.ShowHide("初始化程序发生错误" + "\r\n" + "请检查串口及仪器连接");
+                Models.AutoStateStatic.SState.mv.ShowHide("初始化程序发生错误" + "\r\n" + "请检查串口及仪器连接");
             }
             sys1 = sys;
             Bitconvert(sys);
-            mv.StartAutobytcp();
+            Models.AutoStateStatic.SState.mv.StartAutobytcp();
 
         }
         public AllAutoTest(Models.SysAutoTestResult temp)
         {
             InitializeComponent();
-            mv = new MainWindowModel();
-
+            Models.AutoStateStatic.SState.mv = new MainWindowModel();
             Models.StaticClass.AllTestResult.Clear();
-            // mv.AllTestResult.Clear();
-            mv.SysProject = temp;
-            mv.StartTcp();
+            Models.AutoStateStatic.SState.mv.SysProject = temp;
+            Models.AutoStateStatic.SState.mv.StartTcp();
             try
             {
-                mv.StartRecCom();
+                Models.AutoStateStatic.SState.mv.StartRecCom();
+                // Models.AutoStateStatic.SState.mv.SetFre(50);
+                //Models.AutoStateStatic.SState.mv.T1.IsBackground = true;
+                //Models.AutoStateStatic.SState.mv.T1.Start();
+                Models.AutoStateStatic.SState.mv.CreateFourTan();//实例化对象，临时
+                Models.AutoStateStatic.SState.mv.CreateTanEleVolate();//实例化对象，临时
             }
             catch
             {
-                mv.ShowHide("初始化程序发生错误" + "\r\n" + "请检查串口及仪器连接");
+                Models.AutoStateStatic.SState.mv.ShowHide("初始化程序发生错误" + "\r\n" + "请检查串口及仪器连接");
             }
-            //mv.ContinuTest();
             sys1 = temp;
             Bitconvert(temp);
-            mv.StartAutobyProject();
+            //  Models.AutoStateStatic.SState.mv.StartAutobyProject();
             this.DataContext = null;
-            this.DataContext = mv;
+            this.DataContext = Models.AutoStateStatic.SState.mv;
         }
 
         /// <summary>
-        ///  mv.ListboxItemsources数据源添加
+        ///  Models.AutoStateStatic.SState.mv.ListboxItemsources数据源添加
         /// </summary>
         /// <param name="sys"></param>
         private void Bitconvert(Models.SysAutoTestResult sys)
         {
             foreach (var a in sys.NeedTestList)
             {
-                mv.ListboxItemsources.Add("待测电压  :" + a.ToString() + "V");
+                Models.AutoStateStatic.SState.mv.ListboxItemsources.Add("待测电压  :" + a.ToString() + "V");
             }
-            mv.ListboxItemsources.Add("待测电晕  :" + sys.EleY.ToString() + "V");
-            mv.ListboxItemsources.Add("持续时间  :" + sys.HideTime.ToString() + ":" + "耐   压 :" + sys.EleVolate.ToString());
+            Models.AutoStateStatic.SState.mv.ListboxItemsources.Add("待测电晕  :" + sys.EleY.ToString() + "V");
+            Models.AutoStateStatic.SState.mv.ListboxItemsources.Add("持续时间  :" + sys.HideTime.ToString() + ":" + "耐   压 :" + sys.EleVolate.ToString());
             ISHAVEVOLATE = true;
             ISHAVEDY = true;
             time.Text = sys.HideTime.ToString();
@@ -151,28 +153,28 @@ namespace HV9003TE4.Views
             {
                 if (!ISHAVEVOLATE)
                 {
-                    string[] a = mv.ListboxItemsources.ToArray();
-                    mv.ListboxItemsources.RemoveAt(mv.ListboxItemsources.Count - 1);
+                    string[] a = Models.AutoStateStatic.SState.mv.ListboxItemsources.ToArray();
+                    Models.AutoStateStatic.SState.mv.ListboxItemsources.RemoveAt(Models.AutoStateStatic.SState.mv.ListboxItemsources.Count - 1);
                     PhysicalVariable need = NumericsConverter.Text2Value(cn);
-                    mv.ListboxItemsources.Add("待测电压  :" + need);
-                    mv.ListboxItemsources.Add(a[a.Length - 1]);
+                    Models.AutoStateStatic.SState.mv.ListboxItemsources.Add("待测电压  :" + need);
+                    Models.AutoStateStatic.SState.mv.ListboxItemsources.Add(a[a.Length - 1]);
                 }
                 else
                 {
-                    string[] a = mv.ListboxItemsources.ToArray();
-                    mv.ListboxItemsources.RemoveAt(mv.ListboxItemsources.Count - 1);
-                    mv.ListboxItemsources.RemoveAt(mv.ListboxItemsources.Count - 1);
+                    string[] a = Models.AutoStateStatic.SState.mv.ListboxItemsources.ToArray();
+                    Models.AutoStateStatic.SState.mv.ListboxItemsources.RemoveAt(Models.AutoStateStatic.SState.mv.ListboxItemsources.Count - 1);
+                    Models.AutoStateStatic.SState.mv.ListboxItemsources.RemoveAt(Models.AutoStateStatic.SState.mv.ListboxItemsources.Count - 1);
                     PhysicalVariable need = NumericsConverter.Text2Value(cn);
-                    mv.ListboxItemsources.Add("待测电压  :" + need);
-                    mv.ListboxItemsources.Add(a[a.Length - 2]);
-                    mv.ListboxItemsources.Add(a[a.Length - 1]);
+                    Models.AutoStateStatic.SState.mv.ListboxItemsources.Add("待测电压  :" + need);
+                    Models.AutoStateStatic.SState.mv.ListboxItemsources.Add(a[a.Length - 2]);
+                    Models.AutoStateStatic.SState.mv.ListboxItemsources.Add(a[a.Length - 1]);
                 }
 
             }
             else
             {
                 PhysicalVariable need = NumericsConverter.Text2Value(cn);
-                mv.ListboxItemsources.Add("待测电压  :" + need);
+                Models.AutoStateStatic.SState.mv.ListboxItemsources.Add("待测电压  :" + need);
             }
 
 
@@ -180,8 +182,8 @@ namespace HV9003TE4.Views
 
         private void Mul_Click(object sender, RoutedEventArgs e)
         {
-            if (mv.ListboxItemsources.Count != 0)
-                mv.ListboxItemsources.RemoveAt(mv.ListboxItemsources.Count - 1);
+            if (Models.AutoStateStatic.SState.mv.ListboxItemsources.Count != 0)
+                Models.AutoStateStatic.SState.mv.ListboxItemsources.RemoveAt(Models.AutoStateStatic.SState.mv.ListboxItemsources.Count - 1);
 
         }
         private bool ISHAVEVOLATE = false;
@@ -201,25 +203,25 @@ namespace HV9003TE4.Views
             {
 
                 PhysicalVariable need = NumericsConverter.Text2Value(cn);
-                mv.ListboxItemsources.Add("待测电晕  :" + need);
+                Models.AutoStateStatic.SState.mv.ListboxItemsources.Add("待测电晕  :" + need);
                 ISHAVEDY = true;
             }
             else
             {
                 if (ISHAVEVOLATE)
                 {
-                    string[] b = mv.ListboxItemsources.ToArray();
-                    mv.ListboxItemsources.RemoveAt(mv.ListboxItemsources.Count - 1);
-                    mv.ListboxItemsources.RemoveAt(mv.ListboxItemsources.Count - 1);
+                    string[] b = Models.AutoStateStatic.SState.mv.ListboxItemsources.ToArray();
+                    Models.AutoStateStatic.SState.mv.ListboxItemsources.RemoveAt(Models.AutoStateStatic.SState.mv.ListboxItemsources.Count - 1);
+                    Models.AutoStateStatic.SState.mv.ListboxItemsources.RemoveAt(Models.AutoStateStatic.SState.mv.ListboxItemsources.Count - 1);
                     PhysicalVariable need = NumericsConverter.Text2Value(cn);
-                    mv.ListboxItemsources.Add("待测电晕  :" + need);
-                    mv.ListboxItemsources.Add(b[b.Length - 1]);
+                    Models.AutoStateStatic.SState.mv.ListboxItemsources.Add("待测电晕  :" + need);
+                    Models.AutoStateStatic.SState.mv.ListboxItemsources.Add(b[b.Length - 1]);
                 }
                 else
                 {
-                    mv.ListboxItemsources.RemoveAt(mv.ListboxItemsources.Count - 1);
+                    Models.AutoStateStatic.SState.mv.ListboxItemsources.RemoveAt(Models.AutoStateStatic.SState.mv.ListboxItemsources.Count - 1);
                     PhysicalVariable need = NumericsConverter.Text2Value(cn);
-                    mv.ListboxItemsources.Add("待测电晕  :" + need);
+                    Models.AutoStateStatic.SState.mv.ListboxItemsources.Add("待测电晕  :" + need);
                 }
             }
 
@@ -242,16 +244,16 @@ namespace HV9003TE4.Views
                     if (time.Text == "")
                         time.Text = "60";
                     PhysicalVariable need = NumericsConverter.Text2Value(cn);
-                    mv.ListboxItemsources.Add("持续时间  :" + time.Text + ":" + "  耐    压:" + need);
+                    Models.AutoStateStatic.SState.mv.ListboxItemsources.Add("持续时间  :" + time.Text + ":" + "  耐    压:" + need);
                     ISHAVEVOLATE = true;
                 }
                 else
                 {
                     if (time.Text == "")
                         time.Text = "60";
-                    mv.ListboxItemsources.RemoveAt(mv.ListboxItemsources.Count - 1);
+                    Models.AutoStateStatic.SState.mv.ListboxItemsources.RemoveAt(Models.AutoStateStatic.SState.mv.ListboxItemsources.Count - 1);
                     PhysicalVariable need = NumericsConverter.Text2Value(cn);
-                    mv.ListboxItemsources.Add("持续时间  :" + time.Text + ":" + "耐   压 :" + need);
+                    Models.AutoStateStatic.SState.mv.ListboxItemsources.Add("持续时间  :" + time.Text + ":" + "耐   压 :" + need);
                 }
             }
         }
@@ -262,44 +264,45 @@ namespace HV9003TE4.Views
             {
                 if (ISHAVEVOLATE)
                 {
-                    if (mv.ListboxItemsources.Count != 0)
+                    if (Models.AutoStateStatic.SState.mv.ListboxItemsources.Count != 0)
                     {
-                        mv.StartAuto();
+                        Models.AutoStateStatic.SState.mv.InitTest();
+                        Models.AutoStateStatic.SState.mv.StartAuto();
                     }
                     else
                     {
-                        mv.ShowHide("请添加测量数据");
+                        Models.AutoStateStatic.SState.mv.ShowHide("请添加测量数据");
                     }
                 }
                 else
                 {
-                    mv.ShowHide("请添加耐压电压");
+                    Models.AutoStateStatic.SState.mv.ShowHide("请添加耐压电压");
                 }
             }
             else
             {
-                mv.ShowHide("请添加电晕测量电压");
+                Models.AutoStateStatic.SState.mv.ShowHide("请添加电晕测量电压");
             }
         }
 
         private void Stop_click(object sender, RoutedEventArgs e)
         {
-            // mv.ResetTest();
-            mv.StartPower();
+            // Models.AutoStateStatic.SState.mv.ResetTest();
+            Models.AutoStateStatic.SState.mv.StartPower();
 
         }
 
         private void Continur_click(object sender, RoutedEventArgs e)
         {
-            // mv.ContinuTest();
-            // mv.ClosePower();
-            mv.REset();
+            // Models.AutoStateStatic.SState.mv.ContinuTest();
+            // Models.AutoStateStatic.SState.mv.ClosePower();
+            Models.AutoStateStatic.SState.mv.REset();
 
 
         }
         private void Quatity_Click(object sender, RoutedEventArgs e)
         {
-            mv.QuqlityIsOk = Visibility.Collapsed;
+            Models.AutoStateStatic.SState.mv.QuqlityIsOk = Visibility.Collapsed;
             Models.AutoStateStatic.SState.Quality = true;
             Models.AutoStateStatic.SState.IsPress = true;
             //  Models.StaticClass.SaveImageRemote("C:\\WaveImage", "1.jpg", EleyChart);
@@ -317,14 +320,14 @@ namespace HV9003TE4.Views
 
         private void QualityNot_Click(object sender, RoutedEventArgs e)
         {
-            mv.QuqlityIsOk = Visibility.Collapsed;
+            Models.AutoStateStatic.SState.mv.QuqlityIsOk = Visibility.Collapsed;
             Models.AutoStateStatic.SState.Quality = false;
             Models.AutoStateStatic.SState.IsPress = true;
         }
 
         private void MetroWindow_Closed(object sender, EventArgs e)
         {
-            // mv.AllAutoTestIsOpen = false;
+            // Models.AutoStateStatic.SState.mv.AllAutoTestIsOpen = false;
         }
 
         private void all_load(object sender, RoutedEventArgs e)
@@ -344,16 +347,16 @@ namespace HV9003TE4.Views
 
         ~AllAutoTest()
         {
-            mv.ResetTest();
-            mv.CancerTest();
-            // GC.Collect();
+            Models.AutoStateStatic.SState.mv.ResetTest();
+            Models.AutoStateStatic.SState.mv.CancerTest();
+            GC.Collect();
         }
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            mv.DownVolate();
-            //mv.ResetTest();
-            //mv.CancerTest();
+            Models.AutoStateStatic.SState.mv.DownVolate();
+            //Models.AutoStateStatic.SState.mv.ResetTest();
+            //Models.AutoStateStatic.SState.mv.CancerTest();
         }
 
         private void NumericUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<decimal> e)
@@ -366,30 +369,37 @@ namespace HV9003TE4.Views
             try
             {
                 if (cmb.SelectedIndex == 0)
-                    mv.SetFre(50);
+                    Models.AutoStateStatic.SState.mv.SetFre(50);
                 else
-                    mv.SetFre(60);
+                    Models.AutoStateStatic.SState.mv.SetFre(60);
             }
-            catch 
+            catch
             {
             }
-          
+
 
         }
 
         private void Reset(object sender, RoutedEventArgs e)
         {
-            mv.REset();
+            Models.AutoStateStatic.SState.mv.REset();
         }
 
         private void StartPower(object sender, RoutedEventArgs e)
         {
-            mv.StartPower();
+            Models.AutoStateStatic.SState.mv.StartPower();
         }
 
         private void ClosePower(object sender, RoutedEventArgs e)
         {
-            mv.ClosePower();
+            Models.AutoStateStatic.SState.mv.ClosePower();
         }
+
+        private void MetroWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Models.AutoStateStatic.SState.mv.FontSize = (ushort)(ActualHeight / 600 * 15);
+        }
+
+
     }
 }

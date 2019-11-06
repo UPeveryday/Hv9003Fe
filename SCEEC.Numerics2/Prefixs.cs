@@ -1,6 +1,5 @@
 ﻿using SCEEC.Numerics.Quantities;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -31,7 +30,79 @@ namespace SCEEC.Numerics
         Y = 24
     }
 
-    
+    /// <summary>
+    /// 物理量
+    /// </summary>
+    public class PhysicalVariable
+    {
+        /// <summary>
+        /// 值
+        /// </summary>
+        public double? value;
+        /// <summary>
+        /// 类型
+        /// </summary>
+        public QuantityName PhysicalVariableType;
+        /// <summary>
+        /// 源文本
+        /// </summary>
+        public string OriginText;
+        /// <summary>
+        /// 有效长度
+        /// </summary>
+        public int? EffectiveLength;
+        /// <summary>
+        /// 转换为SI词头的有效位数表示方式文本
+        /// </summary>
+        /// <returns>物理量的带有SI词头的有效位数表示方式文本</returns>
+        public override string ToString()
+        {
+            if (this.EffectiveLength < 1) return OriginText;
+            return NumericsConverter.Value2Text(this);
+        }
+        /// <summary>
+        /// 转换为SI词头的有效位数表示方式文本
+        /// </summary>
+        /// <param name="percentage">百分号显示</param>
+        /// <param name="positiveSign">正值显示+号</param>
+        /// <returns>物理量的带有SI词头的有效位数表示方式文本</returns>
+        public string ToString(bool percentage = false, bool positiveSign = false)
+        {
+            return NumericsConverter.Value2Text(this, percentage, positiveSign);
+        }
+        public static implicit operator PhysicalVariable(string value)
+        {
+            return NumericsConverter.Text2Value(value);
+        }
+        /// <summary>
+        /// 单位名称
+        /// </summary>
+        public Unit Unit
+        {
+            get
+            {
+                return ((Unit)this.PhysicalVariableType);
+            }
+            set
+            {
+                this.PhysicalVariableType = (QuantityName)value;
+            }
+        }
+        /// <summary>
+        /// 单位符号
+        /// </summary>
+        public Symbol Symbol
+        {
+            get
+            {
+                return ((Symbol)this.PhysicalVariableType);
+            }
+            set
+            {
+                this.PhysicalVariableType = (QuantityName)value;
+            }
+        }
+    }
 
     /// <summary>
     /// SI词头转换器
@@ -47,8 +118,8 @@ namespace SCEEC.Numerics
         {
             if (dec >= 0)
             {
-                dec = dec / 3;
-                dec = dec * 3;
+                dec /= 3;
+                dec *= 3;
             }
             else
             {
@@ -141,7 +212,7 @@ namespace SCEEC.Numerics
             return ("yzafpnμum kMGTPEZY".IndexOf(word) > -1);
         }
     }
-
+    
     /// <summary>
     /// 默认常数值
     /// </summary>
@@ -158,22 +229,18 @@ namespace SCEEC.Numerics
         {
             switch (name)
             {
-                case QuantityName.Admittance: return 4;
-                case QuantityName.ApparentPower: return 4;
                 case QuantityName.Capacitance: return 4;
                 case QuantityName.CentigradeTemperature: return 3;
                 case QuantityName.Charge: return 3;
                 case QuantityName.Current: return 4;
-                case QuantityName.Frequency: return 4;
-                case QuantityName.Inductor: return 4;
+                case QuantityName.Frequency: return 3;
                 case QuantityName.Length: return 3;
-                case QuantityName.Power: return 4;
-                case QuantityName.ReactivePower: return 4;
-                case QuantityName.Resistance: return 4;
+                case QuantityName.Power: return 3;
+                case QuantityName.Resistance: return 3;
                 case QuantityName.Temperature: return 3;
-                case QuantityName.Time: return 3;
+                case QuantityName.Time: return 5;
                 case QuantityName.Voltage: return 4;
-                default: return 4;
+                default: return 8;
             }
         }
 
@@ -186,21 +253,17 @@ namespace SCEEC.Numerics
         {
             switch (name)
             {
-                case QuantityName.Admittance: return -1;
-                case QuantityName.ApparentPower: return -4;
-                case QuantityName.Capacitance: return -14;
+                case QuantityName.Capacitance: return -13;
                 case QuantityName.CentigradeTemperature: return -1;
-                case QuantityName.Charge: return -15;
-                case QuantityName.Current: return -8;
-                case QuantityName.Frequency: return -4;
-                case QuantityName.Inductor: return -8;
-                case QuantityName.Length: return 0;
-                case QuantityName.Power: return -4;
-                case QuantityName.ReactivePower: return -4;
-                case QuantityName.Resistance: return 1;
+                case QuantityName.Charge: return -3;
+                case QuantityName.Current: return -12;
+                case QuantityName.Frequency: return -3;
+                case QuantityName.Length: return -3;
+                case QuantityName.Power: return -3;
+                case QuantityName.Resistance: return -7;
                 case QuantityName.Temperature: return -1;
-                case QuantityName.Time: return -2;
-                case QuantityName.Voltage: return -1;
+                case QuantityName.Time: return -12;
+                case QuantityName.Voltage: return -7;
                 default: return -8;
             }
         }
@@ -222,6 +285,55 @@ namespace SCEEC.Numerics
         /// <param name="percentage">百分号显示</param>
         /// <param name="positiveSign">正值显示+号</param>
         /// <returns>带有SI词头的有效位数表示方式文本</returns>
+        //public static string Value2Text(double value, int effectiveLength, int noiseLevel, string prefix, string quantity, bool percentage = false, bool positiveSign = false)
+        //{
+        //    string rtn = string.Empty;
+        //    if (effectiveLength < 1) { throw new Exception("有效位数需要为正整数。"); }
+        //    if (Math.Abs(value) < 1e-24)
+        //    {
+        //        if (percentage)
+        //            if (noiseLevel < -2)
+        //                return value.ToString("F" + (-noiseLevel - 2).ToString()) + "% " + quantity;
+        //        return ("0" + quantity);
+        //    }
+        //    if (value < 0) { value = -value; rtn = "-"; }
+        //    else if (positiveSign) rtn += "+";
+        //    value *= Math.Pow(10, PrefixsConverter.prefixString2dec(prefix));
+        //    if (value > 1.0000000000000000000001)
+        //    {
+        //        percentage = false;
+        //    }
+        //    if (percentage)
+        //    {
+        //        value *= 100;
+        //        noiseLevel += 2;
+        //    }
+        //    int decCnt = (int)Math.Floor(Math.Log10(value));
+        //    prefix = PrefixsConverter.dec2prefixString(Math.Max(PrefixsConverter.prefixString2dec(PrefixsConverter.dec2prefixString(decCnt)), noiseLevel + effectiveLength - 1));
+        //    if ((decCnt - effectiveLength + 1) < noiseLevel)
+        //        effectiveLength = decCnt - noiseLevel + 1;
+        //    if (!percentage)
+        //    {
+        //        if ((decCnt - PrefixsConverter.prefixString2dec(prefix)) >= effectiveLength)
+        //        prefix = PrefixsConverter.dec2prefixString(PrefixsConverter.prefixString2dec(prefix) + 3);
+        //        value /= Math.Pow(10, PrefixsConverter.prefixString2dec(prefix));
+        //        decCnt = (int)Math.Floor(Math.Log10(value));
+        //        value = Math.Round(value, effectiveLength - Math.Min(0, decCnt + 1), MidpointRounding.AwayFromZero);
+        //        if (value < 1e-24) { return ("0" + quantity); }
+        //        string format;
+        //        if (value >= 1) format = "F" + Math.Max((effectiveLength - ((decCnt + 48) % 3) - 1), 0).ToString();
+        //        else format = "F" + Math.Max((effectiveLength - decCnt - 1), 0).ToString();
+        //        rtn += value.ToString(format);
+        //        return (rtn + " " + prefix + quantity);
+        //    }
+        //    else
+        //    {
+        //        string format = "F" + Math.Max(effectiveLength - decCnt - 1, 0).ToString();
+        //        rtn += value.ToString(format);
+        //        return (rtn + "% " + quantity);
+        //    }
+        //}
+
         public static string Value2Text(double value, int effectiveLength, int noiseLevel, string prefix, string quantity, bool percentage = false, bool positiveSign = false, bool usePrefix = true)
         {
             string rtn = string.Empty;
@@ -295,6 +407,7 @@ namespace SCEEC.Numerics
             }
         }
 
+
         /// <summary>
         /// 将数值转换自动转换为SI词头的有效位数表示方式
         /// </summary>
@@ -306,42 +419,30 @@ namespace SCEEC.Numerics
         /// <param name="percentage">百分号显示</param>
         /// <param name="positiveSign">正值显示+号</param>
         /// <returns>带有SI词头的有效位数表示方式文本</returns>
-        public static string Value2Text(double value, int effectiveLength, int noiseLevel, string prefix, QuantityName quantity, bool percentage = false, bool positiveSign = false, bool usePrefix = true)
+        public static string Value2Text(double value, int effectiveLength, int noiseLevel, string prefix, QuantityName quantity, bool percentage = false, bool positiveSign = false)
         {
             switch (quantity)
             {
-                case QuantityName.Admittance:
-                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "S", percentage, positiveSign, usePrefix);
-                case QuantityName.ApparentPower:
-                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "VA", percentage, positiveSign, usePrefix);
                 case QuantityName.Capacitance:
-                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "F", percentage, positiveSign, usePrefix);
-                case QuantityName.CentigradeTemperature:
-                    return Value2Text(value + 272.15, effectiveLength, noiseLevel, prefix, "°", percentage, positiveSign, usePrefix);
+                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "F", percentage, positiveSign);
                 case QuantityName.Charge:
-                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "C", percentage, positiveSign, usePrefix);
+                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "C", percentage, positiveSign);
                 case QuantityName.Current:
-                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "A", percentage, positiveSign, usePrefix);
+                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "A", percentage, positiveSign);
                 case QuantityName.Frequency:
-                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "Hz", percentage, positiveSign, usePrefix);
-                case QuantityName.Inductor:
-                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "H", percentage, positiveSign, usePrefix);
-                case QuantityName.Length:
-                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "m", percentage, positiveSign, usePrefix);
+                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "Hz", percentage, positiveSign);
                 case QuantityName.Power:
-                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "W", percentage, positiveSign, usePrefix);
-                case QuantityName.ReactivePower:
-
+                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "W", percentage, positiveSign);
                 case QuantityName.Resistance:
-                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "Ω", percentage, positiveSign, usePrefix);
+                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "Ω", percentage, positiveSign);
                 case QuantityName.Temperature:
-                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "K", percentage, positiveSign, usePrefix);
+                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "K", percentage, positiveSign);
                 case QuantityName.Time:
-                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "s", percentage, positiveSign, usePrefix);
+                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "s", percentage, positiveSign);
                 case QuantityName.Voltage:
-                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "V", percentage, positiveSign, usePrefix);
+                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "V", percentage, positiveSign);
                 default:
-                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "", percentage, positiveSign, usePrefix);
+                    return Value2Text(value, effectiveLength, noiseLevel, prefix, "", percentage, positiveSign);
             }
         }
 
@@ -354,11 +455,11 @@ namespace SCEEC.Numerics
         /// <param name="percentage">百分号显示</param>
         /// <param name="positiveSign">正值显示+号</param>
         /// <returns>带有SI词头的有效位数表示方式文本</returns>
-        public static string Value2Text(PhysicalVariable value, int effectiveLength, int noiseLevel, bool percentage = false, bool positiveSign = false, bool usePrefix = true)
+        public static string Value2Text(PhysicalVariable value, int effectiveLength, int noiseLevel, bool percentage = false, bool positiveSign = false)
         {
             if (value == null) return string.Empty;
             if (value.value != null)
-                return Value2Text((double)value.value, effectiveLength, noiseLevel, string.Empty, value.PhysicalVariableType, percentage, positiveSign, usePrefix);
+                return Value2Text((double)value.value, effectiveLength, noiseLevel, string.Empty, value.PhysicalVariableType, percentage, positiveSign);
             else
                 return value.OriginText;
         }
@@ -371,10 +472,10 @@ namespace SCEEC.Numerics
         /// <param name="percentage">百分号显示</param>
         /// <param name="positiveSign">正值显示+号</param>
         /// <returns>带有SI词头的有效位数表示方式文本</returns>
-        public static string Value2Text(PhysicalVariable value, int effectiveLength, bool percentage = false, bool positiveSign = false, bool usePrefix = true)
-        {
-            return Value2Text(value, effectiveLength, DefaultConstant.NoiseLevel(value.PhysicalVariableType), percentage, positiveSign, usePrefix);
-        }
+        //public static string Value2Text(PhysicalVariable value, int effectiveLength, int v, bool percentage = false, bool positiveSign = false)
+        //{
+        //    return Value2Text(value, effectiveLength, DefaultConstant.NoiseLevel(value.PhysicalVariableType), percentage, positiveSign);
+        //}
 
         /// <summary>
         /// 将数值转换自动转换为SI词头的有效位数表示方式
@@ -384,15 +485,15 @@ namespace SCEEC.Numerics
         /// <param name="percentage">百分号显示</param>
         /// <param name="positiveSign">正值显示+号</param>
         /// <returns>带有SI词头的有效位数表示方式文本</returns>
-        public static string Value2Text(PhysicalVariable value, bool percentage = false, bool positiveSign = false, bool usePrefix = true)
+        public static string Value2Text(PhysicalVariable value, bool percentage = false, bool positiveSign = false)
         {
             if (value.EffectiveLength > 0)
             {
-                return Value2Text(value, (int)value.EffectiveLength, DefaultConstant.NoiseLevel(value.PhysicalVariableType), percentage, positiveSign, usePrefix);
+                return Value2Text(value, (int)value.EffectiveLength, DefaultConstant.NoiseLevel(value.PhysicalVariableType), percentage, positiveSign);
             }
             else
             {
-                return Value2Text(value, DefaultConstant.EffectiveLength(value.PhysicalVariableType), DefaultConstant.NoiseLevel(value.PhysicalVariableType), percentage, positiveSign, usePrefix);
+                return Value2Text(value, DefaultConstant.EffectiveLength(value.PhysicalVariableType), DefaultConstant.NoiseLevel(value.PhysicalVariableType), percentage, positiveSign);
             }
         }
 
@@ -404,11 +505,11 @@ namespace SCEEC.Numerics
         /// <returns>转化后的物理量（当successed = true时有效）</returns>
         public static PhysicalVariable Text2Value(string text, out bool successed)
         {
-            PhysicalVariable rtn = new PhysicalVariable();
+            PhysicalVariable rtn = new PhysicalVariable() { };
             string num = string.Empty;
             string suffix = string.Empty;
             int i = 0;
-            foreach (char c in text)
+            foreach(char c in text)
             {
                 if (c != ' ')
                     if (c != '?')
@@ -417,11 +518,6 @@ namespace SCEEC.Numerics
                                 num += c;
             }
             rtn.OriginText = num;
-            if (text.Length < 1)
-            {
-                successed = false;
-                return rtn;
-            }
             if (num.StartsWith("+")) num = num.Remove(0, 1);
             while ((num.Length > 0) && (!Microsoft.VisualBasic.Information.IsNumeric(num)))
             {
@@ -435,23 +531,9 @@ namespace SCEEC.Numerics
                 return rtn;
             }
 
-            suffix = suffix.Trim();
             Symbol symbol = QuantitiesConverter.String2Symbol(suffix);
-            switch (symbol)
-            {
-                case Symbol.None:
-                    break;
-                case Symbol.VAR:
-                    suffix = suffix.Remove(suffix.Length - 3);
-                    break;
-                case Symbol.Hz:
-                case Symbol.VA:
-                    suffix = suffix.Remove(suffix.Length - 2);
-                    break;
-                default:
-                    suffix = suffix.Remove(suffix.Length - 1);
-                    break;
-            }
+            if (symbol == Symbol.Hz) suffix = suffix.Remove(suffix.Length - 2);
+            else if (symbol != Symbol.None) suffix = suffix.Remove(suffix.Length - 1);
             bool percentage = suffix.StartsWith("%");
             if (percentage)
             {
@@ -472,10 +554,10 @@ namespace SCEEC.Numerics
             rtn.EffectiveLength = 0;
             i = 0;
             bool notZero = false;
-
+            
             while (i < num.Length)
             {
-                if (num[i] == '.') i++;
+                if (num[i] == '.') i++; 
                 if (i >= num.Length)
                 {
                     successed = false;
@@ -530,12 +612,12 @@ namespace SCEEC.Numerics
         public static List<PhysicalVariable> TextCollection2ValueList(string[] text)
         {
             List<PhysicalVariable> pvs = new List<PhysicalVariable>();
-            foreach (var str in text)
+            foreach(var str in text)
             {
                 pvs.Add(Text2Value(str));
             }
             return pvs;
         }
     }
-
+        
 }

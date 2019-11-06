@@ -39,6 +39,7 @@ namespace HV9003TE4
         public ObservableCollection<string> TestResultMeassge { get; set; } = new ObservableCollection<string>();//测量过程信息
         public string Process { get; set; }//
         public int ProcesNum { get; set; }
+        public ushort FontSize { get; set; } = 15;
 
         public double VolateSpeed { get; set; } = 2;
         public ObservableCollection<string> projiectnames { get; set; } = new ObservableCollection<string>();//方案列表
@@ -224,7 +225,6 @@ namespace HV9003TE4
                     Application.Current.Dispatcher.Invoke(async () =>
                     {
                         await Task.Delay(2000);
-
                         DatagridData.Add(new TestResultDataGrid
                         {
                             volate = HVVoltage,
@@ -252,27 +252,29 @@ namespace HV9003TE4
             AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
             #endregion
             DownVolate();
-            UpvolateIsOk();
             if (token.IsCancellationRequested)
             {
                 return;
             }
             resetEvent.WaitOne();
 
-            if (sys.IsEleY)
+            if (UpvolateIsOk())
             {
-                if (MessageBox.Show("是否开始电晕实验？", "通知", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
-                    StartEleY();
-                else
+                if (sys.IsEleY)
                 {
-                    if (sys.IsVolate)
+                    Thread.Sleep(3000);
+                    if (MessageBox.Show("是否开始电晕实验？", "通知", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                        StartEleY();
+                    else
                     {
-                        if (MessageBox.Show("是否开始耐压实验？", "通知", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
-                            StartVolate();
+                        if (sys.IsVolate)
+                        {
+                            if (MessageBox.Show("是否开始耐压实验？", "通知", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                                StartVolate();
+                        }
                     }
                 }
             }
-
         }
         private void StartTestTask()
         {
@@ -292,6 +294,16 @@ namespace HV9003TE4
         public Task taskProject { get; set; }
         public SysAutoTestResult SysProject { get; set; }
 
+
+        public void InitTest()
+        {
+            panel1SeriesCollection[0].Values.Clear();
+            panel2SeriesCollection[0].Values.Clear();
+            panel3SeriesCollection[0].Values.Clear();
+            panel4SeriesCollection[0].Values.Clear();
+            TanEleVolate[0].Values.Clear();
+            //  DatagridData.Clear();
+        }
         public void StartAuto()
         {
             task = new Task(StartTestTask, token);
@@ -336,6 +348,8 @@ namespace HV9003TE4
         {
             int p = 0;
             bool IsEnd = false;
+            IsEnable = false;
+            Thread.Sleep(300);
             while (!IsEnable)
             {
                 p++;
@@ -364,18 +378,14 @@ namespace HV9003TE4
             {
                 sys = GetSys();
             }
-            // AddTanEleVolatepoint(AutoStateStatic.SState.VolateNUm++, (double)HVVoltage.value);
             Thread.Sleep(8000);
             SetVolate(sys.EleY);
             if (UpvolateIsOk())
             {
                 QuqlityIsOk = Visibility.Visible;
                 AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
-                Application.Current.Dispatcher.Invoke(async () =>
-                {
-                    await Task.Delay(2000);
-                    AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
-                });
+                Thread.Sleep(2000);
+                AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
                 while (true)
                 {
                     if (AutoStateStatic.SState.IsPress)
@@ -403,47 +413,75 @@ namespace HV9003TE4
             {
                 sys = GetSys();
             }
-            Thread.Sleep(3000);
             SetVolate(sys.EleVolate);
             if (UpvolateIsOk())
             {
                 AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
-                Application.Current.Dispatcher.Invoke(async () =>
+                for (int i = 0; i < sys.HideTime; i++)
                 {
-                    //AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
-                    for (int i = 0; i < sys.HideTime; i++)
-                    {
-                        await Task.Delay(1000);
-                    }
+                    Thread.Sleep(1000);
+                }
+                AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
+                SetVolate(0);
+                Thread.Sleep(100);
+                if (UpvolateIsOk())
                     AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
-                    SetVolate(0);
-                    bool IsEnd = false;
-                    for (int i = 0; i < 20; i++)
-                    {
-                        if (IsEnable != true)
-                        {
-                            // await Task.Delay(1000);
-                            Thread.Sleep(1000);
-
-                            IsEnd = true;
-                        }
-                        else
-                        {
-                            IsEnd = false;
-                            break;
-                        }
-                    }
-                    if (!IsEnd)
-                    {
-                        AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
-                    }
-                });
-
-
                 #region 
             }
             #endregion
         }
+
+        //public void StartVolate()
+        //{
+        //    Models.SysAutoTestResult sys = new SysAutoTestResult();
+        //    if (Models.StaticClass.IsTcpTestting)
+        //        sys = StaticClass.GetDataForTcpAutoTest(SysData);
+        //    else
+        //    {
+        //        sys = GetSys();
+        //    }
+        //    Thread.Sleep(3000);
+        //    SetVolate(sys.EleVolate);
+        //    if (UpvolateIsOk())
+        //    {
+        //        AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
+        //        Application.Current.Dispatcher.Invoke(async () =>
+        //        {
+        //            //AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
+        //            for (int i = 0; i < sys.HideTime; i++)
+        //            {
+        //                await Task.Delay(1000);
+        //            }
+        //            AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
+        //            SetVolate(0);
+        //            bool IsEnd = false;
+        //            for (int i = 0; i < 20; i++)
+        //            {
+        //                if (IsEnable != true)
+        //                {
+        //                    await Task.Delay(1000);
+        //                    //  Thread.Sleep(1000);
+
+        //                    IsEnd = true;
+        //                }
+        //                else
+        //                {
+        //                    IsEnd = false;
+        //                    break;
+        //                }
+        //            }
+        //            if (!IsEnd)
+        //            {
+        //                await Task.Delay(10000);
+        //                AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
+        //            }
+        //        });
+
+
+        //        #region 
+        //    }
+        //    #endregion
+        //}
         private Models.SysAutoTestResult GetSys()
         {
             //  Models.AutoStateStatic.SState.Clear();
@@ -532,7 +570,6 @@ namespace HV9003TE4
             try
             {
                 TestResult.WorkTest.Reset();
-
             }
             catch
             {
@@ -563,11 +600,9 @@ namespace HV9003TE4
         }
         private string calcDF(PhysicalVariable AGx)
         {
-            double tan = Math.Tan(pnv(AGx.value) - pnv(AGn.value));
-            if (Math.Abs(tan) < 0.0000005)
-                return "0.000%";
+            double tan = Math.Tan(pnv(AGx.value) + pnv(AGn.value));
             if ((tan < 1e24) && (tan > -1e24))
-                return NumericsConverter.Value2Text(tan, 4, -5, "", SCEEC.Numerics.Quantities.QuantityName.None, percentage: true).Trim();
+                return NumericsConverter.Value2Text(tan, 4, -5, "", "", percentage: true, usePrefix: false).Trim();
             else
                 return "NaN";
 
@@ -622,66 +657,117 @@ namespace HV9003TE4
         public string OneStata { get; set; }
         private double TestFre;
         public float Volate { get; set; }
-        public event ReturnResult OutTestResult;
         private void WorkTest_OutTestResult(byte[] result)
         {
-            ViewSources vs = new ViewSources(result);
-            this.TestFre = vs.TestFre;
-            this.In = NumericsConverter.Value2Text(vs.TestIn, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Capacitance);
-            this.Ix1 = NumericsConverter.Value2Text(vs.TestIx1, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Current);
-            this.AG1 = vs.TestPh1.ToString("F6"); //NumericsConverter.Value2Text(vs.TestPh1, 4, -6, "", SCEEC.Numerics.Quantities.QuantityName.None);
-            this.Ix2 = NumericsConverter.Value2Text(vs.TestIx2, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Current);
-            this.AG2 = vs.TestPh2.ToString("F6"); //NumericsConverter.Value2Text(vs.TestPh2, 4, -6, "", SCEEC.Numerics.Quantities.QuantityName.None);
-            this.Ix3 = NumericsConverter.Value2Text(vs.TestIx3, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Current);
-            this.AG3 = vs.TestPh3.ToString("F6"); //NumericsConverter.Value2Text(vs.TestPh3, 4, -6, "", SCEEC.Numerics.Quantities.QuantityName.None);
-            this.Ix4 = NumericsConverter.Value2Text(vs.TestIx4, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Current);
-            this.AG4 = vs.TestPh4.ToString("F6"); //NumericsConverter.Value2Text(vs.TestPh4, 4, -6, "", SCEEC.Numerics.Quantities.QuantityName.None);
-            this.OneStata = NumericsConverter.Value2Text(vs.OneVolate, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Voltage);
-            this.Alarm = vs.AlarmStata.ToString();
-            this.Volate = (float)vs.OneVolate;
-            SourceFrequency = NumericsConverter.Value2Text(vs.TestFre, 4, -3, "", SCEEC.Numerics.Quantities.QuantityName.Frequency);
-            SourceCurrent = NumericsConverter.Value2Text(vs.TestCurrent, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Current);
-            SourcePower = NumericsConverter.Value2Text(vs.TestPower, 4, 0, "", SCEEC.Numerics.Quantities.QuantityName.Power);
-            SourceVoltage = OneStata;
-            StandardCapacitance = Cn.ToString();
-            StandardCapacitanceDissipationFactor = NumericsConverter.Value2Text(Math.Tan(pnv(AGn.value)), 4, -5, "", SCEEC.Numerics.Quantities.QuantityName.None, percentage: true).Trim();
-            HVFrequency = NumericsConverter.Value2Text(vs.TestFre, 4, -3, "", SCEEC.Numerics.Quantities.QuantityName.Frequency);
-            HVVoltage = calcVolt(HVFrequency, Cn, In);
-            Capacitance1 = calcCap(Ix1, AG1).ToString();
-            Capacitance2 = calcCap(Ix2, AG2).ToString();
-            Capacitance3 = calcCap(Ix3, AG3).ToString();
-            Capacitance4 = calcCap(Ix4, AG4).ToString();
-            Current1 = Ix1.ToString();
-            Current2 = Ix2.ToString();
-            Current3 = Ix3.ToString();
-            Current4 = Ix4.ToString();
-            DissipationFactor1 = calcDF(AG1);
-            DissipationFactor2 = calcDF(AG2);
-            DissipationFactor3 = calcDF(AG3);
-            DissipationFactor4 = calcDF(AG4);
-            Power1 = calcPower(Ix1, AG1);
-            Power2 = calcPower(Ix2, AG2);
-            Power3 = calcPower(Ix3, AG3);
-            Power4 = calcPower(Ix4, AG4);
-            TestRes = result;
-            if (result[58] == 9)
+            AlarmLock(result);
+            if (result[58] == 0x09 || result[58] == 0x00)
             {
-                IsEnable = false;//对升压状态的处理
+                ViewSources vs = new ViewSources(result);
+                this.TestFre = vs.TestFre;
+                this.In = NumericsConverter.Value2Text(vs.TestIn, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Capacitance);
+                this.Ix1 = NumericsConverter.Value2Text(vs.TestIx1, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Current);
+                this.AG1 = vs.TestPh1.ToString("F6"); //NumericsConverter.Value2Text(vs.TestPh1, 4, -6, "", SCEEC.Numerics.Quantities.QuantityName.None);
+                this.Ix2 = NumericsConverter.Value2Text(vs.TestIx2, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Current);
+                this.AG2 = vs.TestPh2.ToString("F6"); //NumericsConverter.Value2Text(vs.TestPh2, 4, -6, "", SCEEC.Numerics.Quantities.QuantityName.None);
+                this.Ix3 = NumericsConverter.Value2Text(vs.TestIx3, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Current);
+                this.AG3 = vs.TestPh3.ToString("F6"); //NumericsConverter.Value2Text(vs.TestPh3, 4, -6, "", SCEEC.Numerics.Quantities.QuantityName.None);
+                this.Ix4 = NumericsConverter.Value2Text(vs.TestIx4, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Current);
+                this.AG4 = vs.TestPh4.ToString("F6"); //NumericsConverter.Value2Text(vs.TestPh4, 4, -6, "", SCEEC.Numerics.Quantities.QuantityName.None);
+                this.OneStata = NumericsConverter.Value2Text(vs.OneVolate, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Voltage);
+                this.Alarm = vs.AlarmStata.ToString();
+                this.Volate = (float)vs.OneVolate;
+                SourceFrequency = NumericsConverter.Value2Text(vs.TestFre, 4, -3, "", SCEEC.Numerics.Quantities.QuantityName.Frequency);
+                SourceCurrent = NumericsConverter.Value2Text(vs.TestCurrent * 10, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Current);
+                SourcePower = NumericsConverter.Value2Text(vs.TestPower, 4, 0, "", SCEEC.Numerics.Quantities.QuantityName.Power);
+                SourceVoltage = OneStata;
+                StandardCapacitance = Cn.ToString();
+                StandardCapacitanceDissipationFactor = NumericsConverter.Value2Text(Math.Tan(pnv(AGn.value)), 4, -5, "", SCEEC.Numerics.Quantities.QuantityName.None, percentage: true).Trim();
+                HVFrequency = NumericsConverter.Value2Text(vs.TestFre, 4, -3, "", SCEEC.Numerics.Quantities.QuantityName.Frequency);
+                HVVoltage = calcVolt(HVFrequency, Cn, In);
+                Capacitance1 = calcCap(Ix1, AG1).ToString();
+                Capacitance2 = calcCap(Ix2, AG2).ToString();
+                Capacitance3 = calcCap(Ix3, AG3).ToString();
+                Capacitance4 = calcCap(Ix4, AG4).ToString();
+                Current1 = Ix1.ToString();
+                Current2 = Ix2.ToString();
+                Current3 = Ix3.ToString();
+                Current4 = Ix4.ToString();
+                DissipationFactor1 = calcDF(AG1);
+                DissipationFactor2 = calcDF(AG2);
+                DissipationFactor3 = calcDF(AG3);
+                DissipationFactor4 = calcDF(AG4);
+                Power1 = calcPower(Ix1, AG1);
+                Power2 = calcPower(Ix2, AG2);
+                Power3 = calcPower(Ix3, AG3);
+                Power4 = calcPower(Ix4, AG4);
+                TestRes = result;
+                if (result[58] == 9)
+                {
+                    IsEnable = false;//对升压状态的处理
+                }
+                else if (result[58] == 0)
+                {
+                    IsEnable = true;
+                }
             }
-            else if (result[58] == 0)
-            {
-                IsEnable = true;
-            }
-            if (result[58] != 9 && result[58] != 0)
-            {
-                var b = result[58];
-            }
-
-            OutTestResult(result);
-
-
         }
+        private void AlarmLock(byte[] data)
+        {
 
+            if (data[58] == 1)
+            {
+                MessageBox.Show("升压失败", "警告", MessageBoxButton.OK, MessageBoxImage.Information);
+                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = true;
+                REset();
+                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+            }
+            if (data[58] == 2)
+            {
+                MessageBox.Show("变频电源通讯失败", "警告", MessageBoxButton.OK, MessageBoxImage.Information);
+                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = true;
+                REset();
+                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+
+            }
+            if (data[58] == 3)
+            {
+                MessageBox.Show("变频电源过流", "警告", MessageBoxButton.OK, MessageBoxImage.Information);
+                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = true;
+                REset();
+                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+            }
+            if (data[58] == 4)
+            {
+                MessageBox.Show("变频电源开启或者输出失败", "警告", MessageBoxButton.OK, MessageBoxImage.Information);
+                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = true;
+                REset();
+                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+            }
+            if (data[58] == 6)
+            {
+                MessageBox.Show("标容侧无信号", "警告", MessageBoxButton.OK, MessageBoxImage.Information);
+                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = true;
+                REset();
+                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+
+            }
+            if (data[58] == 7)
+            {
+                MessageBox.Show("被试侧过流", "警告", MessageBoxButton.OK, MessageBoxImage.Information);
+                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = true;
+                REset();
+                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+            }
+            if (data[58] == 8)
+            {
+                MessageBox.Show("心跳丢失", "警告", MessageBoxButton.OK, MessageBoxImage.Information);
+                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = true;
+                REset();
+                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+            }
+
+            Thread.Sleep(1000);
+        }
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -867,18 +953,12 @@ namespace HV9003TE4
         #region chart
         public SeriesCollection SeriesCollection { get; set; }
         public List<string> Labels { get; set; }
-
         public SeriesCollection SeriesCollection2 { get; set; }
         public List<string> Labels2 { get; set; }
-
-
         public SeriesCollection SeriesCollection3 { get; set; }
         public List<string> Labels3 { get; set; }
-
-
         public SeriesCollection SeriesCollection4 { get; set; }
         public List<string> Labels4 { get; set; }
-
         public SeriesCollection SeriesCollectionEleYAndVolate { get; set; }
         public SeriesCollection SeriesCollectionEleYAndVolate1 { get; set; }
 
@@ -898,8 +978,6 @@ namespace HV9003TE4
         public ChartValues<ObservablePoint> panel2ObservablePoint { get; set; }
         public ChartValues<ObservablePoint> panel3ObservablePoint { get; set; }
         public ChartValues<ObservablePoint> panel4ObservablePoint { get; set; }
-
-
         public ObservableCollection<TestResultDataGrid> DatagridData { get; set; }
         public void CreateTanEleVolate()
         {
@@ -917,6 +995,9 @@ namespace HV9003TE4
             TanEleVolate = new SeriesCollection { };
             TanEleVolate.Add(t1);
             TanEleVolate[0].Values.Add(new ObservablePoint(0, 0));
+
+            XAllFormat = val => ((int)val).ToString() + "s";
+            YAllFormat = val => (val / 1000.0).ToString("N3") + " kV";
         }
 
         public void CreateFourTan()
@@ -979,7 +1060,7 @@ namespace HV9003TE4
             panel3SeriesCollection[0].Values.Add(new ObservablePoint(0, 0));
             panel4SeriesCollection[0].Values.Add(new ObservablePoint(0, 0));
 
-            YFormatter = val => (val * 100.0).ToString("N6") + "%";
+            YFormatter = val => (val * 100.0).ToString("N3") + "%";
             XFormatter = val => (val / 1000.0).ToString("N3") + " kV";
         }
 
@@ -1068,6 +1149,9 @@ namespace HV9003TE4
 
         public Func<double, string> XFormatter { get; set; }
         public Func<double, string> YFormatter { get; set; }
+
+        public Func<double, string> XAllFormat { get; set; }
+        public Func<double, string> YAllFormat { get; set; }
         #endregion
         public MainWindowModel()
         {
@@ -1087,15 +1171,15 @@ namespace HV9003TE4
 
     public class TestResultDataGrid
     {
-        public PhysicalVariable volate { get; set; }
-        public PhysicalVariable captance1 { get; set; }
-        public PhysicalVariable tan1 { get; set; }
-        public PhysicalVariable captance2 { get; set; }
-        public PhysicalVariable tan2 { get; set; }
-        public PhysicalVariable captance3 { get; set; }
-        public PhysicalVariable tan3 { get; set; }
-        public PhysicalVariable captance4 { get; set; }
-        public PhysicalVariable tan4 { get; set; }
+        public string volate { get; set; }
+        public string captance1 { get; set; }
+        public string tan1 { get; set; }
+        public string captance2 { get; set; }
+        public string tan2 { get; set; }
+        public string captance3 { get; set; }
+        public string tan3 { get; set; }
+        public string captance4 { get; set; }
+        public string tan4 { get; set; }
         public string Qultitly { get; set; }
 
     }

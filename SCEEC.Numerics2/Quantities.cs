@@ -20,12 +20,7 @@ namespace SCEEC.Numerics.Quantities
         CyclesPerSecond = 8,
         Kelvin = 9,
         degreeCentigrade = 10,
-        Meter = 11,
-        Henry = 12,
-        VA = 13,
-        VAR = 14,
-        Siemens = 15,
-        Degree = 16
+        Meter = 11
     }
 
     /// <summary>
@@ -44,12 +39,7 @@ namespace SCEEC.Numerics.Quantities
         Hz = 8,
         K = 9,
         _C = 10,
-        m = 11,
-        H = 12,
-        VA = 13,
-        VAR = 14,
-        S = 15,
-        Degree = 16
+        m = 11
     }
 
     /// <summary>
@@ -68,12 +58,7 @@ namespace SCEEC.Numerics.Quantities
         Frequency = 8,
         Temperature = 9,
         CentigradeTemperature = 10,
-        Length = 11,
-        Inductor = 12,
-        ApparentPower = 13,
-        ReactivePower = 14,
-        Admittance = 15,
-        Degree = 16
+        Length = 11
     }
 
 }

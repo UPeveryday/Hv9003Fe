@@ -22,6 +22,7 @@ namespace HV9003TE4.Models
         }
         public bool IsStartEleY { get; set; } = false;
         public bool IsStartVolate { get; set; } = false;
+        public ushort Fontsize { get; set; } = 15;
 
         public int NoSame { get; set; }
         public int AllNum { get; set; }
@@ -38,6 +39,8 @@ namespace HV9003TE4.Models
         public int VolateNUm { get; set; } = 1;//耐压之前有多少点
 
         public double VolateSpeed { get; set; } = 2;
+
+        public MainWindowModel mv { get; set; } = new MainWindowModel();
     }
 
     public static class AutoStateStatic

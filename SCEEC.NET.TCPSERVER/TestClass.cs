@@ -42,8 +42,6 @@ namespace SCEEC.NET.TCPSERVER
             return sun;
         }
 
-
-
         public static bool IsCheckData(byte[] checkdata)
         {
             byte[] tempD = new byte[checkdata.Length - 1];

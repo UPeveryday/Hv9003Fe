@@ -158,21 +158,21 @@ namespace SCEEC.Numerics
         {
             switch (name)
             {
-                case QuantityName.Admittance: return 4;
-                case QuantityName.ApparentPower: return 4;
-                case QuantityName.Capacitance: return 4;
+                case QuantityName.Admittance: return 6;
+                case QuantityName.ApparentPower: return 5;
+                case QuantityName.Capacitance: return 6;
                 case QuantityName.CentigradeTemperature: return 3;
                 case QuantityName.Charge: return 3;
-                case QuantityName.Current: return 4;
-                case QuantityName.Frequency: return 4;
-                case QuantityName.Inductor: return 4;
+                case QuantityName.Current: return 6;
+                case QuantityName.Frequency: return 6;
+                case QuantityName.Inductor: return 6;
                 case QuantityName.Length: return 3;
-                case QuantityName.Power: return 4;
-                case QuantityName.ReactivePower: return 4;
-                case QuantityName.Resistance: return 4;
+                case QuantityName.Power: return 5;
+                case QuantityName.ReactivePower: return 5;
+                case QuantityName.Resistance: return 6;
                 case QuantityName.Temperature: return 3;
-                case QuantityName.Time: return 3;
-                case QuantityName.Voltage: return 4;
+                case QuantityName.Time: return 6;
+                case QuantityName.Voltage: return 6;
                 default: return 4;
             }
         }
@@ -188,7 +188,7 @@ namespace SCEEC.Numerics
             {
                 case QuantityName.Admittance: return -1;
                 case QuantityName.ApparentPower: return -4;
-                case QuantityName.Capacitance: return -14;
+                case QuantityName.Capacitance: return -15;
                 case QuantityName.CentigradeTemperature: return -1;
                 case QuantityName.Charge: return -15;
                 case QuantityName.Current: return -8;

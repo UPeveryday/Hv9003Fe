@@ -9,11 +9,12 @@
         xmlns:local1="clr-namespace:HV9003TE4"
         xmlns:talex="http://schemas.talex-soft.com/2010/xaml/presentation" x:Class="HV9003TE4.Views.AllAutoTest"
         mc:Ignorable="d"
-        Title="Automatic Measurement" Height="650" Width="1000" 
+        Title="Automatic Measurement" Height="600" Width="1000" 
         WindowStyle="None"  Background="#e8e8e8" WindowState="Maximized"
                       Loaded="all_load" Unloaded="Undload"
                       Closed="MetroWindow_Closed" WindowStartupLocation="CenterScreen"
-                      Closing="MetroWindow_Closing">
+                      Closing="MetroWindow_Closing" SizeChanged="MetroWindow_SizeChanged" 
+    >
     <Controls:MetroWindow.Resources>
         <Style x:Key="FileListBoxItem" TargetType="{x:Type ListBoxItem}">
             <Setter Property="Template">
@@ -41,6 +42,32 @@
                                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="DataGridRowHeader" x:Key="datagridheaderstyle">
+            <Setter Property="Background" Value="Red"></Setter>
+        </Style>
+        <Style x:Key="dataGridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridColumnHeader">
+                        <Border x:Name="BackgroundBorder" Background="#00a3ff" BorderThickness="0,0,1,0" BorderBrush="#FF81CDE4" Width="Auto">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter  Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <Path x:Name="SortArrow" Visibility="Collapsed" Stretch="Fill" Grid.Column="2" 
+                                                      Width="8" Height="6" Fill="White" Margin="0,0,50,0" VerticalAlignment="Center" RenderTransformOrigin="1,1"/>
+                                <Rectangle Width="1" Fill="#FF81CDE4" HorizontalAlignment="Right" Grid.ColumnSpan="1" />
+                            </Grid>
+                        </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -108,18 +135,19 @@
                         </Grid>
                     </Viewbox>
                 </GroupBox>-->
-                <GroupBox Grid.Column="0" Margin="5">
+                <GroupBox Grid.Column="0"  Margin="5">
                     <GroupBox.Header>
-                        <TextBlock Foreground="White" FontSize="15"><Run Text="高压参数"/></TextBlock>
+                        <TextBlock Foreground="White" ><Run FontSize="{Binding FontSize}" Text="高压参数"/></TextBlock>
                     </GroupBox.Header>
-                    <Viewbox>
+                    <Viewbox >
+
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="24"/>
+                                <RowDefinition />
                                 <RowDefinition/>
                                 <RowDefinition/>
                                 <RowDefinition/>
@@ -134,10 +162,12 @@
                             <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding StandardCapacitanceDissipationFactor, UpdateSourceTrigger=PropertyChanged}" Margin="5" TextAlignment="Right"/>
                         </Grid>
                     </Viewbox>
+
                 </GroupBox>
+
                 <GroupBox Grid.Column="1"  Margin="5">
                     <GroupBox.Header>
-                        <TextBlock Foreground="White" FontSize="15"><Run Text="变频电源"/></TextBlock>
+                        <TextBlock Foreground="White" FontSize="{Binding FontSize}"><Run Text="变频电源"/></TextBlock>
                     </GroupBox.Header>
                     <Viewbox>
                         <Grid>
@@ -164,7 +194,7 @@
                 </GroupBox>
                 <GroupBox Grid.Column="2"  Margin="5">
                     <GroupBox.Header>
-                        <TextBlock Foreground="White" FontSize="15"><Run Text="测量通道1"/></TextBlock>
+                        <TextBlock Foreground="White" FontSize="{Binding FontSize}"><Run Text="测量通道1"/></TextBlock>
                     </GroupBox.Header>
                     <Viewbox>
                         <Grid>
@@ -199,7 +229,7 @@
                 </Grid.ColumnDefinitions>
                 <GroupBox Grid.Column="0" Margin="5">
                     <GroupBox.Header>
-                        <TextBlock Foreground="White" FontSize="15"><Run Text="测量通道2"/></TextBlock>
+                        <TextBlock Foreground="White" FontSize="{Binding FontSize}"><Run Text="测量通道2"/></TextBlock>
                     </GroupBox.Header>
                     <Viewbox>
                         <Grid>
@@ -228,7 +258,7 @@
 
                 <GroupBox Grid.Column="1" Margin="5">
                     <GroupBox.Header>
-                        <TextBlock Foreground="White" FontSize="15"><Run Text="测量通道3"/></TextBlock>
+                        <TextBlock Foreground="White" FontSize="{Binding FontSize}"><Run Text="测量通道3"/></TextBlock>
                     </GroupBox.Header>
                     <Viewbox>
                         <Grid>
@@ -256,7 +286,7 @@
                 </GroupBox>
                 <GroupBox Grid.Column="2"  Margin="5" >
                     <GroupBox.Header>
-                        <TextBlock Foreground="White" FontSize="15"><Run Text="测量通道4"/></TextBlock>
+                        <TextBlock Foreground="White" FontSize="{Binding FontSize}"><Run Text="测量通道4"/></TextBlock>
                     </GroupBox.Header>
                     <Viewbox>
                         <Grid>
@@ -314,36 +344,69 @@
                             <lvc:Axis Title="Volate"></lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                     </lvc:CartesianChart>-->
-                    <lvc:CartesianChart Grid.Row="0" Grid.Column="0"  DisableAnimations="True" Series="{Binding panel1SeriesCollection}">
+                    <lvc:CartesianChart Grid.Row="0"  Background="White"  Grid.Column="0"  DisableAnimations="True" Series="{Binding panel1SeriesCollection}">
                         <lvc:CartesianChart.AxisX  >
-                            <lvc:Axis MinValue="0"  LabelFormatter="{Binding XFormatter}"  Title="测量通道一" Foreground="Green"/>
+                            <lvc:Axis MinValue="0"  LabelFormatter="{Binding XFormatter}" Title="&#x000A;测量通道一"  Foreground="Black">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator StrokeThickness="0.5"  StrokeDashArray="10" Stroke="Red"/>
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
                         </lvc:CartesianChart.AxisX>
                         <lvc:CartesianChart.AxisY>
-                            <lvc:Axis Foreground="Green" LabelFormatter="{Binding YFormatter}" Title="介损(Tanδ)"/>
+                            <lvc:Axis Foreground="Black" LabelFormatter="{Binding YFormatter}" Title="介损(Tanδ)">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator StrokeThickness="0.5" StrokeDashArray="10" Stroke="Red"/>
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                     </lvc:CartesianChart>
-                    <lvc:CartesianChart Grid.Row="0" Grid.Column="1" DisableAnimations="True" Series="{Binding panel2SeriesCollection}">
+                    <lvc:CartesianChart Grid.Row="0"  Background="White"  Grid.Column="1" DisableAnimations="True" Series="{Binding panel2SeriesCollection}">
                         <lvc:CartesianChart.AxisX>
-                            <lvc:Axis MinValue="0" Foreground="Green" Title="测量通道二"/>
+                            <lvc:Axis MinValue="0"  LabelFormatter="{Binding XFormatter}"  Foreground="Black" Title="&#x000A;测量通道二">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator StrokeThickness="0.5" StrokeDashArray="10" Stroke="Red"/>
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
                         </lvc:CartesianChart.AxisX>
                         <lvc:CartesianChart.AxisY>
-                            <lvc:Axis Foreground="Green" Title="介损(Tanδ)"/>
+                            <lvc:Axis Foreground="Black"  LabelFormatter="{Binding YFormatter}"  Title="介损(Tanδ)">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator StrokeThickness="0.5" StrokeDashArray="10" Stroke="Red"/>
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                     </lvc:CartesianChart>
-                    <lvc:CartesianChart Grid.Row="1" Grid.Column="0" DisableAnimations="True" Series="{Binding panel3SeriesCollection}">
+                    <lvc:CartesianChart Grid.Row="1"  Background="White"  Grid.Column="0" DisableAnimations="True" Series="{Binding panel3SeriesCollection}">
                         <lvc:CartesianChart.AxisX>
-                            <lvc:Axis MinValue="0" Foreground="Green" Title="测量通道三"/>
+                            <lvc:Axis MinValue="0" Foreground="Black"  LabelFormatter="{Binding XFormatter}"  Title="&#x000A;测量通道三">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator StrokeThickness="0.5" StrokeDashArray="10" Stroke="Red"/>
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
                         </lvc:CartesianChart.AxisX>
                         <lvc:CartesianChart.AxisY>
-                            <lvc:Axis Foreground="Green" Title="介损(Tanδ)"/>
+                            <lvc:Axis Foreground="Black"  LabelFormatter="{Binding YFormatter}"  Title="介损(Tanδ)">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator StrokeThickness="0.5" StrokeDashArray="10" Stroke="Red"/>
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                     </lvc:CartesianChart>
-                    <lvc:CartesianChart Grid.Row="1" Grid.Column="1" DisableAnimations="True" Series="{Binding panel4SeriesCollection}">
+                    <lvc:CartesianChart Grid.Row="1"  Background="White"  Grid.Column="1" DisableAnimations="True" Series="{Binding panel4SeriesCollection}">
                         <lvc:CartesianChart.AxisX>
-                            <lvc:Axis  MinValue="0" Foreground="Green" Title="测量通道四"/>
+                            <lvc:Axis  MinValue="0"  LabelFormatter="{Binding XFormatter}"  Foreground="Black" Title="&#x000A;测量通道四">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator StrokeThickness="0.5" StrokeDashArray="10" Stroke="Red"/>
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
+
                         </lvc:CartesianChart.AxisX>
                         <lvc:CartesianChart.AxisY>
-                            <lvc:Axis Foreground="Green" Title="介损(Tanδ)"/>
+                            <lvc:Axis Foreground="Black"  LabelFormatter="{Binding YFormatter}"  Title="介损(Tanδ)">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator StrokeThickness="0.5" StrokeDashArray="10" Stroke="Red"/>
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                     </lvc:CartesianChart>
                 </Grid>
@@ -415,25 +478,34 @@
                             </Border>
                         </Grid>
                     </Grid>-->
-                    <DataGrid Margin="3" CanUserAddRows="False" AutoGenerateColumns="False" ItemsSource="{Binding DatagridData, UpdateSourceTrigger=PropertyChanged}" Background="Azure">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Width="1*" Header="电压"  Binding="{Binding volate, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn  Width="1*" Header="电容1"  Binding="{Binding captance1, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Width="1*"  Header="介损1"  Binding="{Binding tan1, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Width="1*" Header="电容2"  Binding="{Binding captance2, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Width="1*" Header="介损2"  Binding="{Binding tan2, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Width="1*" Header="电容3"  Binding="{Binding captance3, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Width="1*" Header="介损3"  Binding="{Binding tan3, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Width="1*" Header="电容4"  Binding="{Binding captance4, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Width="1*" Header="介损4"  Binding="{Binding tan4, UpdateSourceTrigger=PropertyChanged}"/>
+                    <DataGrid Margin="8"  CanUserAddRows="False" BorderBrush="#00a3ff"  AutoGenerateColumns="False" ItemsSource="{Binding DatagridData, UpdateSourceTrigger=PropertyChanged}" Background="White">
+                        <DataGrid.Columns >
+                            <DataGridTextColumn Width="1*" HeaderStyle="{StaticResource dataGridHeaderStyle}" Header="电压"  Binding="{Binding volate, UpdateSourceTrigger=PropertyChanged}">
+                            </DataGridTextColumn>
+                            <DataGridTextColumn  Width="1*"  Header="电容1" HeaderStyle="{StaticResource dataGridHeaderStyle}"   Binding="{Binding captance1, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Width="1*"  Header="介损1"  HeaderStyle="{StaticResource dataGridHeaderStyle}"  Binding="{Binding tan1, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Width="1*" Header="电容2"  HeaderStyle="{StaticResource dataGridHeaderStyle}"  Binding="{Binding captance2, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Width="1*" Header="介损2"  HeaderStyle="{StaticResource dataGridHeaderStyle}"  Binding="{Binding tan2, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Width="1*" Header="电容3"  HeaderStyle="{StaticResource dataGridHeaderStyle}"  Binding="{Binding captance3, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Width="1*" Header="介损3"  HeaderStyle="{StaticResource dataGridHeaderStyle}"  Binding="{Binding tan3, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Width="1*" Header="电容4"  HeaderStyle="{StaticResource dataGridHeaderStyle}"  Binding="{Binding captance4, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Width="1*" Header="介损4"  HeaderStyle="{StaticResource dataGridHeaderStyle}"  Binding="{Binding tan4, UpdateSourceTrigger=PropertyChanged}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <lvc:CartesianChart Margin="3" Series="{Binding TanEleVolate}" DisableAnimations="True" Grid.Row="1">
+                    <lvc:CartesianChart Margin="8" Series="{Binding TanEleVolate}" Background="White" DisableAnimations="True" Grid.Row="1">
                         <lvc:CartesianChart.AxisX>
-                            <lvc:Axis  MinValue="0" Foreground="Green" Title="时间"/>
+                            <lvc:Axis  MinValue="0" Foreground="Green" Title="&#x000A;时间">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator StrokeThickness="0.5" StrokeDashArray="10" Stroke="Red"/>
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
                         </lvc:CartesianChart.AxisX>
                         <lvc:CartesianChart.AxisY>
-                            <lvc:Axis Foreground="Green"  Title="电压"/>
+                            <lvc:Axis Foreground="Green"  LabelFormatter="{Binding XFormatter}"   Title="电压">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator StrokeThickness="0.5" StrokeDashArray="10" Stroke="Red"/>
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                     </lvc:CartesianChart>
                 </Grid>
@@ -493,7 +565,11 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock HorizontalAlignment="Center"  VerticalAlignment="Center" FontSize="10"><Run Text="耐压时间"/></TextBlock>
                                 <TextBox Margin="5" MaxHeight="25" TextAlignment="Right" Background="Azure" BorderThickness="1" x:Name="time" Grid.Column="1"  ToolTip="持续时间"/>
-                                <Button Grid.Column="2" MaxHeight="40" Click="SetVolate" Margin="5,8" Content="耐压电压"/>
+                                <Button Grid.Column="2" MaxHeight="40" Click="SetVolate" Margin="8" >
+                                    <Viewbox>
+                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">耐压电压</TextBlock>
+                                    </Viewbox>
+                                </Button>
                             </Grid>
                         </Grid>
                         <Grid Grid.Row="2">

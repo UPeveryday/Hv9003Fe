@@ -28,11 +28,6 @@ namespace SCEEC.Numerics
             if (symbol.EndsWith("K")) return Symbol.K;
             if (symbol.EndsWith("℃")) return Symbol._C;
             if (symbol.EndsWith("m")) return Symbol.m;
-            if (symbol.EndsWith("H")) return Symbol.H;
-            if (symbol.EndsWith("VA")) return Symbol.VA;
-            if (symbol.EndsWith("VAR")) return Symbol.VAR;
-            if (symbol.EndsWith("S")) return Symbol.S;
-            if (symbol.EndsWith("°")) return Symbol.Degree;
             return Symbol.None;
         }
     }

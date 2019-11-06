@@ -56,7 +56,7 @@ namespace HV9003TE4.Views
         {
             CnTanButton.Content = cntan;
             PhysicalVariable need = NumericsConverter.Text2Value(cntan);
-             (this.DataContext as MainWindowModel).AGn = need;
+             Models.AutoStateStatic.SState.mv.AGn = need;
         }
 
         private void Cn_CLick(object sender, RoutedEventArgs e)
@@ -71,7 +71,7 @@ namespace HV9003TE4.Views
         {
             CnButton.Content = cn;
             PhysicalVariable need = NumericsConverter.Text2Value(cn);
-            (this.DataContext as MainWindowModel).Cn = need;
+            Models.AutoStateStatic.SState.mv.Cn = need;
         }
     }
 }

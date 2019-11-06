@@ -27,11 +27,12 @@ namespace HV9003TE4.Views
     {
         public ProjectManagement()
         {
+            
             InitializeComponent();
-            (this.DataContext as MainWindowModel).TimeSources.Clear();
+           (this.DataContext as MainWindowModel).TimeSources.Clear();
             for (int i = 0; i < 100; i++)
             {
-                (this.DataContext as MainWindowModel).TimeSources.Add(i);
+               (this.DataContext as MainWindowModel).TimeSources.Add(i);
             }
             Timecombobox.SelectedIndex = 60;
             InitPeoject(@"C:\PeojectIni");
@@ -80,28 +81,29 @@ namespace HV9003TE4.Views
             {
                 if (!ISHAVEVOLATE)
                 {
-                    string[] a = (this.DataContext as MainWindowModel).ProjectVolate.ToArray();
-                    (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 1);
+                    string[] a =(this.DataContext as MainWindowModel).ProjectVolate.ToArray();
+                   (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 1);
                     PhysicalVariable need = NumericsConverter.Text2Value(cn);
-                    (this.DataContext as MainWindowModel).ProjectVolate.Add("待测电压  :" + need);
-                    (this.DataContext as MainWindowModel).ProjectVolate.Add(a[a.Length - 1]);
+                   (this.DataContext as MainWindowModel).ProjectVolate.Add("待测电压  :" + need);
+                   (this.DataContext as MainWindowModel).ProjectVolate.Add(a[a.Length - 1]);
+                    
                 }
                 else
                 {
-                    string[] a = (this.DataContext as MainWindowModel).ProjectVolate.ToArray();
-                    (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 1);
-                    (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 1);
+                    string[] a =(this.DataContext as MainWindowModel).ProjectVolate.ToArray();
+                   (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 1);
+                   (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 1);
                     PhysicalVariable need = NumericsConverter.Text2Value(cn);
-                    (this.DataContext as MainWindowModel).ProjectVolate.Add("待测电压  :" + need);
-                    (this.DataContext as MainWindowModel).ProjectVolate.Add(a[a.Length - 2]);
-                    (this.DataContext as MainWindowModel).ProjectVolate.Add(a[a.Length - 1]);
+                   (this.DataContext as MainWindowModel).ProjectVolate.Add("待测电压  :" + need);
+                   (this.DataContext as MainWindowModel).ProjectVolate.Add(a[a.Length - 2]);
+                   (this.DataContext as MainWindowModel).ProjectVolate.Add(a[a.Length - 1]);
                 }
 
             }
             else
             {
                 PhysicalVariable need = NumericsConverter.Text2Value(cn);
-                (this.DataContext as MainWindowModel).ProjectVolate.Add("待测电压  :" + need);
+               (this.DataContext as MainWindowModel).ProjectVolate.Add("待测电压  :" + need);
             }
 
         }
@@ -114,7 +116,7 @@ namespace HV9003TE4.Views
             {
                 if ((this.DataContext as MainWindowModel).ProjectVolate.Count > 1)
                 {
-                    (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 2);
+                   (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 2);
 
                 }
             }
@@ -122,7 +124,7 @@ namespace HV9003TE4.Views
             {
                 if ((this.DataContext as MainWindowModel).ProjectVolate.Count > 2)
                 {
-                    (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 3);
+                   (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 3);
                 }
             }
 
@@ -142,25 +144,25 @@ namespace HV9003TE4.Views
             {
 
                 PhysicalVariable need = NumericsConverter.Text2Value(cn);
-                (this.DataContext as MainWindowModel).ProjectVolate.Add("待测电晕  :" + need);
+               (this.DataContext as MainWindowModel).ProjectVolate.Add("待测电晕  :" + need);
                 ISHAVEDY = true;
             }
             else
             {
                 if (ISHAVEVOLATE)
                 {
-                    string[] b = (this.DataContext as MainWindowModel).ProjectVolate.ToArray();
-                    (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 1);
-                    (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 1);
+                    string[] b =(this.DataContext as MainWindowModel).ProjectVolate.ToArray();
+                   (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 1);
+                   (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 1);
                     PhysicalVariable need = NumericsConverter.Text2Value(cn);
-                    (this.DataContext as MainWindowModel).ProjectVolate.Add("待测电晕  :" + need);
-                    (this.DataContext as MainWindowModel).ProjectVolate.Add(b[b.Length - 1]);
+                   (this.DataContext as MainWindowModel).ProjectVolate.Add("待测电晕  :" + need);
+                   (this.DataContext as MainWindowModel).ProjectVolate.Add(b[b.Length - 1]);
                 }
                 else
                 {
-                    (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 1);
+                   (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 1);
                     PhysicalVariable need = NumericsConverter.Text2Value(cn);
-                    (this.DataContext as MainWindowModel).ProjectVolate.Add("待测电晕  :" + need);
+                   (this.DataContext as MainWindowModel).ProjectVolate.Add("待测电晕  :" + need);
                 }
             }
         }
@@ -181,15 +183,15 @@ namespace HV9003TE4.Views
                 {
 
                     PhysicalVariable need = NumericsConverter.Text2Value(cn);
-                    (this.DataContext as MainWindowModel).ProjectVolate.Add("持续时间:" + Timecombobox.SelectedIndex.ToString() + ":" + "  耐 压:" + need);
+                   (this.DataContext as MainWindowModel).ProjectVolate.Add("持续时间:" + Timecombobox.SelectedIndex.ToString() + ":" + "  耐 压:" + need);
                     ISHAVEVOLATE = true;
                 }
                 else
                 {
 
-                    (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 1);
+                   (this.DataContext as MainWindowModel).ProjectVolate.RemoveAt((this.DataContext as MainWindowModel).ProjectVolate.Count - 1);
                     PhysicalVariable need = NumericsConverter.Text2Value(cn);
-                    (this.DataContext as MainWindowModel).ProjectVolate.Add("持续时间:" + Timecombobox.SelectedIndex.ToString() + ":" + "耐 压 :" + need);
+                   (this.DataContext as MainWindowModel).ProjectVolate.Add("持续时间:" + Timecombobox.SelectedIndex.ToString() + ":" + "耐 压 :" + need);
                 }
             }
         }
@@ -213,7 +215,7 @@ namespace HV9003TE4.Views
                             {
                                 Models.WriteDataToFile.DeelDirectoryInfo("C:\\PeojectIni", Models.Mode.Create);
                                 GetInidata("C:\\PeojectIni\\" + projecttextbox.Text + ".ini", Models.StaticClass.GetSys((this.DataContext as MainWindowModel).ProjectVolate));
-                                (this.DataContext as MainWindowModel).projiectnames.Add(projecttextbox.Text);
+                               (this.DataContext as MainWindowModel).projiectnames.Add(projecttextbox.Text);
                                 IsHavePname = true;
                             }
                             else
@@ -228,13 +230,13 @@ namespace HV9003TE4.Views
                 }
                 else
                 {
-                    (this.DataContext as MainWindowModel).ShowHide("请设置电晕电压");
+                   (this.DataContext as MainWindowModel).ShowHide("请设置电晕电压");
                 }
 
             }
             else
             {
-                (this.DataContext as MainWindowModel).ShowHide("请设置耐压电压");
+               (this.DataContext as MainWindowModel).ShowHide("请设置耐压电压");
             }
 
         }
@@ -245,7 +247,7 @@ namespace HV9003TE4.Views
             ISHAVEDY = false;
             projecttextbox.Text = "";
             ISHAVEVOLATE = false;
-            (this.DataContext as MainWindowModel).ProjectVolate.Clear();
+           (this.DataContext as MainWindowModel).ProjectVolate.Clear();
         }
         /// <summary>
         /// 存储数据到ini文件
@@ -348,7 +350,7 @@ namespace HV9003TE4.Views
             //{
 
             //}
-            (this.DataContext as MainWindowModel).Projectdataui = uia;
+           (this.DataContext as MainWindowModel).Projectdataui = uia;
 
         }
 
@@ -417,7 +419,7 @@ namespace HV9003TE4.Views
                 foreach (var a in Inis)
                 {
                     var b = a.Split('\\');
-                    (this.DataContext as MainWindowModel).projiectnames.Add(b[b.Length - 1].Replace(".ini", ""));
+                   (this.DataContext as MainWindowModel).projiectnames.Add(b[b.Length - 1].Replace(".ini", ""));
                 }
             }
             else
@@ -487,7 +489,7 @@ namespace HV9003TE4.Views
             try
             {
                 Models.WriteDataToFile.FileBaseDeel("C:\\" + "PeojectIni\\" + ProjiectListBox.SelectedValue.ToString() + ".ini", Models.MyFileMode.Delete);
-                (this.DataContext as MainWindowModel).projiectnames.Remove(ProjiectListBox.SelectedValue.ToString());
+               (this.DataContext as MainWindowModel).projiectnames.Remove(ProjiectListBox.SelectedValue.ToString());
                 ProjiectListBox.SelectedIndex = 0;
                 Addui(ReadIniFile("C:\\PeojectIni\\" + ProjiectListBox.SelectedValue.ToString() + ".ini"));
             }
@@ -509,12 +511,12 @@ namespace HV9003TE4.Views
                 {
                     Application.Current.Dispatcher.Invoke((Action)(() =>
                     {
-                        (this.DataContext as MainWindowModel).SysProject = ReadIniFile("C:\\PeojectIni\\" + a.ToString() + ".ini");
+                       (this.DataContext as MainWindowModel).SysProject = ReadIniFile("C:\\PeojectIni\\" + a.ToString() + ".ini");
                         AllAutoTest at = new AllAutoTest(ReadIniFile("C:\\PeojectIni\\" + a.ToString() + ".ini"))
                         {
                             WindowState = WindowState.Maximized
                         };
-                        at.ShowDialog();
+                        at.Show();
                     }));
                 }
                 else
@@ -527,6 +529,8 @@ namespace HV9003TE4.Views
                 }
 
             }
+
+            this.Close();
         }
     }
 }
