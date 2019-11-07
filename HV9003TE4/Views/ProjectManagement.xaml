@@ -7,7 +7,7 @@
         xmlns:local1="clr-namespace:HV9003TE4"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="ProjectManagement" Height="450" Width="800" >
+        Title="ProjectManagement"  Height="450" Width="800" >
     <Window.DataContext>
         <local1:MainWindowModel/>
     </Window.DataContext>
@@ -150,18 +150,24 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1.5*"></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition Width="0.6*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
                     <ColumnDefinition ></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Viewbox Grid.Column="1" Margin="10,3">
-                    <Button  Click="Saveproject" >确认修改并保存方案</Button>
-                </Viewbox>
-                <Viewbox  Grid.Column="2">
-                    <Button Margin="3" Click="DeletePeoject" >删除方案</Button>
-                </Viewbox>
-                <Viewbox  Grid.Column="3" Margin="3">
-                    <Button Click="StartTest_Click">启动自动测量</Button>
-                </Viewbox>
+                <Button Grid.Column="1" Margin="10,5" Click="Saveproject" Background="#00a3ff">
+                    <Viewbox>
+                        <TextBlock HorizontalAlignment="Center" Foreground="White" VerticalAlignment="Center">确认修改并保存方案</TextBlock>
+                    </Viewbox>
+                    </Button>
+                <Button  Background="#00a3ff" Grid.Column="2" Margin="10,5" Click="DeletePeoject" >
+                        <Viewbox>
+                        <TextBlock HorizontalAlignment="Center" Foreground="White" VerticalAlignment="Center">删除方案</TextBlock>
+                        </Viewbox>
+                    </Button>
+                <Button Background="#00a3ff" Grid.Column="3" Margin="10,5" Click="StartTest_Click">
+                        <Viewbox>
+                        <TextBlock HorizontalAlignment="Center" Foreground="White" VerticalAlignment="Center">确认方案</TextBlock>
+                        </Viewbox>
+                    </Button>
             </Grid>
             
             

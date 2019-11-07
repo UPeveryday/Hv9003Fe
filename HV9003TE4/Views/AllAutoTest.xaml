@@ -522,9 +522,9 @@
                             <RowDefinition  Height="0.5*"/>
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="3" >
-                            <Button Margin="10,2" MinWidth="80"  Background="Green" Click="StartTest_click" Foreground="White">
+                            <Button Margin="10,2" MinWidth="80" IsEnabled="{Binding VolateState}"  Background="Green" Click="StartTest_click" Foreground="White">
                                 <Viewbox>
-                                    <TextBlock  x:Name="StartTestTextBox"><Run Text="开始测量"/></TextBlock>
+                                        <TextBlock  x:Name="StartTestTextBox"><Run Text="开始测量"/></TextBlock>
                                 </Viewbox>
                             </Button>
                         </Grid>

@@ -471,6 +471,7 @@ namespace HV9003TE4
         public bool VolateState { get; set; } = false;
         private void Power(object sender, RoutedEventArgs e)
         {
+            mv.TimerSecond = 2;
             NeedVolate = 0;
             NeedVolateText.Text = "0";
             if (PowerState.IsChecked != false)
@@ -482,37 +483,14 @@ namespace HV9003TE4
             {
                 mv.ClosePower();
             }
-            #region enable
-            if (PowerState.IsChecked == false)
-            {
-                b1.IsEnabled = false;
-                b2.IsEnabled = false;
-                b3.IsEnabled = false;
-                b4.IsEnabled = false;
-                b5.IsEnabled = false;
-                b6.IsEnabled = false;
-                b7.IsEnabled = false;
-                b8.IsEnabled = false;
-                FreGroupBox.IsEnabled = false;
-            }
-            else
-            {
-                b1.IsEnabled = true;
-                b2.IsEnabled = true;
-                b3.IsEnabled = true;
-                b4.IsEnabled = true;
-                b5.IsEnabled = true;
-                b6.IsEnabled = true;
-                b7.IsEnabled = true;
-                b8.IsEnabled = true;
-                FreGroupBox.IsEnabled = true;
-            }
-            #endregion
+
+           
         }
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             DownVolate();
+            mv.ClosePower();
         }
 
         private void Add_10K__Val_Click(object sender, RoutedEventArgs e)

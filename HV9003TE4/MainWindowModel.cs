@@ -322,6 +322,9 @@ namespace HV9003TE4
         }
         public void StartAuto()
         {
+            tokenSource = new CancellationTokenSource();
+            token = tokenSource.Token;
+            resetEvent = new ManualResetEvent(true);
             task = new Task(StartTestTask, token);
             task.Start();
         }
@@ -447,57 +450,6 @@ namespace HV9003TE4
             #endregion
         }
 
-        //public void StartVolate()
-        //{
-        //    Models.SysAutoTestResult sys = new SysAutoTestResult();
-        //    if (Models.StaticClass.IsTcpTestting)
-        //        sys = StaticClass.GetDataForTcpAutoTest(SysData);
-        //    else
-        //    {
-        //        sys = GetSys();
-        //    }
-        //    Thread.Sleep(3000);
-        //    SetVolate(sys.EleVolate);
-        //    if (UpvolateIsOk())
-        //    {
-        //        AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
-        //        Application.Current.Dispatcher.Invoke(async () =>
-        //        {
-        //            //AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
-        //            for (int i = 0; i < sys.HideTime; i++)
-        //            {
-        //                await Task.Delay(1000);
-        //            }
-        //            AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
-        //            SetVolate(0);
-        //            bool IsEnd = false;
-        //            for (int i = 0; i < 20; i++)
-        //            {
-        //                if (IsEnable != true)
-        //                {
-        //                    await Task.Delay(1000);
-        //                    //  Thread.Sleep(1000);
-
-        //                    IsEnd = true;
-        //                }
-        //                else
-        //                {
-        //                    IsEnd = false;
-        //                    break;
-        //                }
-        //            }
-        //            if (!IsEnd)
-        //            {
-        //                await Task.Delay(10000);
-        //                AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
-        //            }
-        //        });
-
-
-        //        #region 
-        //    }
-        //    #endregion
-        //}
         private Models.SysAutoTestResult GetSys()
         {
             //  Models.AutoStateStatic.SState.Clear();
@@ -619,7 +571,7 @@ namespace HV9003TE4
         {
             double tan = Math.Tan(pnv(AGx.value) + pnv(AGn.value));
             if ((tan < 1e24) && (tan > -1e24))
-                return NumericsConverter.Value2Text(tan, 4, -5, "", "", percentage: true,usePrefix:false).Trim();
+                return NumericsConverter.Value2Text(tan, 4, -5, "", "", percentage: true, usePrefix: false).Trim();
             else
                 return "NaN";
 
@@ -686,9 +638,10 @@ namespace HV9003TE4
         public string OneStata { get; set; }
         private double TestFre;
         public float Volate { get; set; }
+        public int TimerSecond { get; set; } = 2;
         private void WorkTest_OutTestResult(byte[] result)
         {
-            
+
             Task.Factory.StartNew(() =>
             {
                 ViewSources vs = new ViewSources(result);
@@ -756,73 +709,126 @@ namespace HV9003TE4
                     Power2 = power2;
                     Power3 = power3;
                     Power4 = power4;
-                }); 
+                });
             });
+            StateControls(result);
+            AlarmLock(result);
+            TestRes = result;
+        }
+
+
+        public void StateControls(byte[] result)
+        {
+            if (TimerSecond > 0)
+            {
+                TimerSecond--;
+            }
+            else
+            {
+                if (TimerSecond == 0)
+                {
+                    if (result[59] == 1)
+                        VolateState = true;
+                    else
+                        VolateState = false;
+                }
+            }
+
+
             if (result[58] == 9)
             {
                 IsEnable = false;//对升压状态的处理
             }
-            else if (result[58] == 0)
+            if (result[58] == 0)
             {
                 IsEnable = true;
             }
-            AlarmLock(result);
-            TestRes = result;
-
         }
         private void AlarmLock(byte[] data)
         {
 
             if (data[58] == 1)
             {
-                MessageBox.Show("升压失败", "警告", MessageBoxButton.OK, MessageBoxImage.Information);
                 TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = true;
-                REset();
-                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+                TestResult.WorkTest.LocalPrecision._seriaPort.DiscardInBuffer();
+                if (MessageBox.Show("升压失败", "警告", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                {
+                    REset();
+                    Thread.Sleep(2000);
+                    TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+                }
             }
             if (data[58] == 2)
             {
-                MessageBox.Show("变频电源通讯失败", "警告", MessageBoxButton.OK, MessageBoxImage.Information);
                 TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = true;
-                REset();
-                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
-
+                TestResult.WorkTest.LocalPrecision._seriaPort.DiscardInBuffer();
+                if (MessageBox.Show("变频电源通讯失败", "警告", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                {
+                    REset();
+                    Thread.Sleep(2000);
+                    TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+                }
             }
             if (data[58] == 3)
             {
-                MessageBox.Show("变频电源过流", "警告", MessageBoxButton.OK, MessageBoxImage.Information);
                 TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = true;
-                REset();
-                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+                TestResult.WorkTest.LocalPrecision._seriaPort.DiscardInBuffer();
+                if (MessageBox.Show("变频电源过流", "警告", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                {
+                    REset();
+                    Thread.Sleep(2000);
+                    TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+                }
+              
             }
             if (data[58] == 4)
             {
-                MessageBox.Show("变频电源开启或者输出失败", "警告", MessageBoxButton.OK, MessageBoxImage.Information);
                 TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = true;
-                REset();
-                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+                TestResult.WorkTest.LocalPrecision._seriaPort.DiscardInBuffer();
+                if (MessageBox.Show("变频电源开启或者输出失败", "警告", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                {
+                    REset();
+                    Thread.Sleep(2000);
+                    TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+                }
+               
             }
             if (data[58] == 6)
             {
-                MessageBox.Show("标容侧无信号", "警告", MessageBoxButton.OK, MessageBoxImage.Information);
                 TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = true;
-                REset();
-                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+                TestResult.WorkTest.LocalPrecision._seriaPort.DiscardInBuffer();
+                if (MessageBox.Show("标容侧无信号", "警告", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                {
+                    REset();
+                    Thread.Sleep(2000);
+                    TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+                }
 
             }
+
             if (data[58] == 7)
             {
-                MessageBox.Show("被试侧过流", "警告", MessageBoxButton.OK, MessageBoxImage.Information);
                 TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = true;
-                REset();
-                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+                TestResult.WorkTest.LocalPrecision._seriaPort.DiscardInBuffer();
+                if (MessageBox.Show("被试侧过流", "警告", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                {
+                    REset();
+                    Thread.Sleep(2000);
+                    TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+                }
+             
             }
             if (data[58] == 8)
             {
-                MessageBox.Show("心跳丢失", "警告", MessageBoxButton.OK, MessageBoxImage.Information);
                 TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = true;
-                REset();
-                TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+                TestResult.WorkTest.LocalPrecision._seriaPort.DiscardInBuffer();
+                if (MessageBox.Show("心跳丢失", "警告", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                {
+                    REset();
+                    Thread.Sleep(2000);
+                    TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
+                }
+              
             }
 
         }

@@ -12,7 +12,7 @@ namespace SCEEC.MI.High_Precision
     public class SerialClass
     {
 
-        SerialPort _seriaPort = null;
+        public SerialPort _seriaPort = null;
         //定义委托
         public delegate void SerialPortDataReceiveEventArgs(object sender, SerialDataReceivedEventArgs e, byte[] bits);
         //定义接收数据事件

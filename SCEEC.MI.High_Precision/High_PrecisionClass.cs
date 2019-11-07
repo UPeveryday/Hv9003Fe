@@ -101,7 +101,7 @@ namespace SCEEC.MI.High_Precision
 
         private void LocalPrecision_DataReceived(object sender, SerialDataReceivedEventArgs e, byte[] bits)
         {
-            if (bits.Length == 60)
+            if (bits.Length == 61)
                 OutTestResult(bits);
 
         }

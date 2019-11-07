@@ -259,7 +259,6 @@ namespace HV9003TE4.Views
         }
         private void StartTest_click(object sender, RoutedEventArgs e)
         {
-            // Expander.IsExpanded = false;
             if (ISHAVEDY)
             {
                 if (ISHAVEVOLATE)
@@ -355,8 +354,8 @@ namespace HV9003TE4.Views
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             mv.DownVolate();
-            //mv.ResetTest();
-            //mv.CancerTest();
+            mv.ResetTest();
+            mv.CancerTest();
         }
 
         private void NumericUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<decimal> e)
