@@ -58,9 +58,25 @@ namespace HV9003TE4
         public PhysicalVariable SourcePower { get; set; } = "1.000 kW";
         public PhysicalVariable HVFrequency { get; set; } = "50.0 Hz";
         public PhysicalVariable HVVoltage { get; set; } = "100.0 kV";
-        public PhysicalVariable Cn { get; set; } = "99.868pF";
+        // public PhysicalVariable Cn { get; set; }
+
+        private PhysicalVariable myVar;
+
+        public PhysicalVariable Cn
+        {
+            get => Models.AutoStateStatic.SState.Cn;
+            set { myVar = value; }
+        }
+
         public PhysicalVariable In { get; set; } = "10.00 uA";
-        public PhysicalVariable AGn { get; set; } = "0.000001";
+        // public PhysicalVariable AGn { get; set; } = "0.000001";
+        private PhysicalVariable agnvalue;
+        public PhysicalVariable AGn
+        {
+            get { return Models.AutoStateStatic.SState.AGn; }
+            set { agnvalue = value; }
+        }
+
         public PhysicalVariable Ix1 { get; set; } = "2.000 mA";
         public PhysicalVariable AG1 { get; set; } = "0.000001";
         public PhysicalVariable Ix2 { get; set; } = "2.000 mA";
@@ -227,7 +243,7 @@ namespace HV9003TE4
                         await Task.Delay(2000);
                         DatagridData.Add(new TestResultDataGrid
                         {
-                            volate = HVVoltage,
+                            volate = HVVoltage.ToString(),
                             captance1 = Capacitance1,
                             captance2 = Capacitance2,
                             captance3 = Capacitance3,
@@ -378,7 +394,7 @@ namespace HV9003TE4
             {
                 sys = GetSys();
             }
-            Thread.Sleep(8000);
+            // Thread.Sleep(8000);
             SetVolate(sys.EleY);
             if (UpvolateIsOk())
             {
@@ -556,6 +572,7 @@ namespace HV9003TE4
         }
         public void StartRecCom()
         {
+
             TestResult.WorkTest.StartTest();
             TestResult.WorkTest.OutTestResult += WorkTest_OutTestResult;
         }
@@ -602,7 +619,7 @@ namespace HV9003TE4
         {
             double tan = Math.Tan(pnv(AGx.value) + pnv(AGn.value));
             if ((tan < 1e24) && (tan > -1e24))
-                return NumericsConverter.Value2Text(tan, 4, -5, "", "", percentage: true, usePrefix: false).Trim();
+                return NumericsConverter.Value2Text(tan, 4, -5, "", "", percentage: true,usePrefix:false).Trim();
             else
                 return "NaN";
 
@@ -638,14 +655,26 @@ namespace HV9003TE4
         public string StandardCapacitance { get; set; }
         public string StandardCapacitanceDissipationFactor { get; set; }
         public string Capacitance1 { get; set; }
-        public string Capacitance2 { get; set; }
+        public string Capacitance2
+        {
+            get;
+            set;
+        }
         public string Capacitance3 { get; set; }
-        public string Capacitance4 { get; set; }
+        public string Capacitance4
+        {
+            get;
+            set;
+        }
         public string Current1 { get; set; }
         public string Current2 { get; set; }
         public string Current3 { get; set; }
         public string Current4 { get; set; }
-        public string DissipationFactor1 { get; set; }
+        public string DissipationFactor1
+        {
+            get;
+            set;
+        }
         public string DissipationFactor2 { get; set; }
         public string DissipationFactor3 { get; set; }
         public string DissipationFactor4 { get; set; }
@@ -659,8 +688,8 @@ namespace HV9003TE4
         public float Volate { get; set; }
         private void WorkTest_OutTestResult(byte[] result)
         {
-            AlarmLock(result);
-            if (result[58] == 0x09 || result[58] == 0x00)
+            
+            Task.Factory.StartNew(() =>
             {
                 ViewSources vs = new ViewSources(result);
                 this.TestFre = vs.TestFre;
@@ -676,40 +705,70 @@ namespace HV9003TE4
                 this.OneStata = NumericsConverter.Value2Text(vs.OneVolate, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Voltage);
                 this.Alarm = vs.AlarmStata.ToString();
                 this.Volate = (float)vs.OneVolate;
-                SourceFrequency = NumericsConverter.Value2Text(vs.TestFre, 4, -3, "", SCEEC.Numerics.Quantities.QuantityName.Frequency);
-                SourceCurrent = NumericsConverter.Value2Text(vs.TestCurrent * 10, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Current);
-                SourcePower = NumericsConverter.Value2Text(vs.TestPower, 4, 0, "", SCEEC.Numerics.Quantities.QuantityName.Power);
-                SourceVoltage = OneStata;
-                StandardCapacitance = Cn.ToString();
-                StandardCapacitanceDissipationFactor = NumericsConverter.Value2Text(Math.Tan(pnv(AGn.value)), 4, -5, "", SCEEC.Numerics.Quantities.QuantityName.None, percentage: true).Trim();
-                HVFrequency = NumericsConverter.Value2Text(vs.TestFre, 4, -3, "", SCEEC.Numerics.Quantities.QuantityName.Frequency);
-                HVVoltage = calcVolt(HVFrequency, Cn, In);
-                Capacitance1 = calcCap(Ix1, AG1).ToString();
-                Capacitance2 = calcCap(Ix2, AG2).ToString();
-                Capacitance3 = calcCap(Ix3, AG3).ToString();
-                Capacitance4 = calcCap(Ix4, AG4).ToString();
-                Current1 = Ix1.ToString();
-                Current2 = Ix2.ToString();
-                Current3 = Ix3.ToString();
-                Current4 = Ix4.ToString();
-                DissipationFactor1 = calcDF(AG1);
-                DissipationFactor2 = calcDF(AG2);
-                DissipationFactor3 = calcDF(AG3);
-                DissipationFactor4 = calcDF(AG4);
-                Power1 = calcPower(Ix1, AG1);
-                Power2 = calcPower(Ix2, AG2);
-                Power3 = calcPower(Ix3, AG3);
-                Power4 = calcPower(Ix4, AG4);
-                TestRes = result;
-                if (result[58] == 9)
+                string sourceFrequency = NumericsConverter.Value2Text(vs.TestFre, 4, -3, "", SCEEC.Numerics.Quantities.QuantityName.Frequency);
+                string sourceCurrent = NumericsConverter.Value2Text(vs.TestCurrent * 10, 4, -13, "", SCEEC.Numerics.Quantities.QuantityName.Current);
+                string sourcePower = NumericsConverter.Value2Text(vs.TestPower, 4, 0, "", SCEEC.Numerics.Quantities.QuantityName.Power);
+                string sourceVoltage = OneStata;
+                string standardCapacitance = Cn.ToString();
+                string standardCapacitanceDissipationFactor = NumericsConverter.Value2Text(Math.Tan(pnv(AGn.value)), 4, -5, "", SCEEC.Numerics.Quantities.QuantityName.None, percentage: true).Trim();
+                string hVFrequency = NumericsConverter.Value2Text(vs.TestFre, 4, -3, "", SCEEC.Numerics.Quantities.QuantityName.Frequency);
+                string hVVoltage = calcVolt(HVFrequency, Cn, In);
+                string capacitance1 = calcCap(Ix1, AG1).ToString();
+                string capacitance2 = calcCap(Ix2, AG2).ToString();
+                string capacitance3 = calcCap(Ix3, AG3).ToString();
+                string capacitance4 = calcCap(Ix4, AG4).ToString();
+                string current1 = Ix1.ToString();
+                string current2 = Ix2.ToString();
+                string current3 = Ix3.ToString();
+                string current4 = Ix4.ToString();
+                string dissipationFactor1 = calcDF(AG1);
+                string dissipationFactor2 = calcDF(AG2);
+                string dissipationFactor3 = calcDF(AG3);
+                string dissipationFactor4 = calcDF(AG4);
+                string power1 = calcPower(Ix1, AG1);
+                string power2 = calcPower(Ix2, AG2);
+                string power3 = calcPower(Ix3, AG3);
+                string power4 = calcPower(Ix4, AG4);
+
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    IsEnable = false;//对升压状态的处理
-                }
-                else if (result[58] == 0)
-                {
-                    IsEnable = true;
-                }
+                    SourceFrequency = sourceFrequency;
+                    SourceCurrent = sourceCurrent;
+                    SourcePower = sourcePower;
+                    SourceVoltage = sourceVoltage;
+                    StandardCapacitance = standardCapacitance;
+                    StandardCapacitanceDissipationFactor = standardCapacitanceDissipationFactor;
+                    HVFrequency = hVFrequency;
+                    HVVoltage = hVVoltage;
+                    Capacitance1 = capacitance1;
+                    Capacitance2 = capacitance2;
+                    Capacitance3 = capacitance3;
+                    Capacitance4 = capacitance4;
+                    Current1 = current1;
+                    Current2 = current2;
+                    Current3 = current3;
+                    Current4 = current4;
+                    DissipationFactor1 = dissipationFactor1;
+                    DissipationFactor2 = dissipationFactor2;
+                    DissipationFactor3 = dissipationFactor3;
+                    DissipationFactor4 = dissipationFactor4;
+                    Power1 = power1;
+                    Power2 = power2;
+                    Power3 = power3;
+                    Power4 = power4;
+                }); 
+            });
+            if (result[58] == 9)
+            {
+                IsEnable = false;//对升压状态的处理
             }
+            else if (result[58] == 0)
+            {
+                IsEnable = true;
+            }
+            AlarmLock(result);
+            TestRes = result;
+
         }
         private void AlarmLock(byte[] data)
         {
@@ -766,7 +825,6 @@ namespace HV9003TE4
                 TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
             }
 
-            Thread.Sleep(1000);
         }
 
 

@@ -31,7 +31,7 @@ namespace SCEEC.Numerics
         Y = 24
     }
 
-    
+
 
     /// <summary>
     /// SI词头转换器
@@ -92,7 +92,8 @@ namespace SCEEC.Numerics
                 case 24:
                     return "Y";
                 default:
-                    throw new Exception("值大小过大或过小。");
+                    return "y";
+                    //throw new Exception("值大小过大或过小。");
             }
         }
 
@@ -226,10 +227,14 @@ namespace SCEEC.Numerics
         {
             string rtn = string.Empty;
             int el = effectiveLength;
-            if (effectiveLength < 1) { throw new Exception("有效位数需要为正整数。"); }
+            if (effectiveLength < 3)
+            {
+                effectiveLength = 3;
+                //throw new Exception("有效位数需要为正整数。");
+            }
             if (double.IsNaN(value)) return "NaN";
             if (double.IsInfinity(value)) return "Infinity";
-            if (Math.Abs(value) < 1e-24)
+            if (Math.Log10(Math.Abs(value)) < noiseLevel)
             {
                 if (percentage)
                     if (noiseLevel < -2)
@@ -274,9 +279,9 @@ namespace SCEEC.Numerics
                     if (usePrefix)
                     {
                         prefix = PrefixsConverter.dec2prefixString(noiseLevel + el - 1);
-                        return ((0.0).ToString("F" + (PrefixsConverter.prefixString2dec(prefix) - noiseLevel).ToString()) + " " + prefix + quantity);
+                        return ((0.0).ToString("F" + Math.Max(PrefixsConverter.prefixString2dec(prefix) - noiseLevel, 0).ToString()) + " " + prefix + quantity);
                     }
-                    return value.ToString("F" + (-noiseLevel).ToString()) + quantity;
+                    return value.ToString("F" + (Math.Max(-noiseLevel, 0)).ToString()) + quantity;
                 }
                 string format;
                 if (value >= 1)

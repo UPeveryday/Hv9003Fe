@@ -331,7 +331,7 @@ namespace SCEEC.MI.High_Precision
                 catch (Exception ex)
                 {
                     ReceiveEventFlag = false;
-                     throw ex;
+                    throw ex;
                 }
             }
             return -1;

@@ -28,28 +28,30 @@ namespace HV9003TE4
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-      //  MainWindowModel mv;
+        MainWindowModel mv;
         public MainWindow()
         {
-            
+
             InitializeComponent();
-            AutoStateStatic.SState.mv = new MainWindowModel();
-            this.DataContext = AutoStateStatic.SState.mv;
-            AutoStateStatic.SState.mv.StartTcp();
+            mv = new MainWindowModel();
+            mv.StartTcp();
             try
             {
-                AutoStateStatic.SState.mv.StartRecCom();
-                AutoStateStatic.SState.mv.SetFre(50);
-                AutoStateStatic.SState.mv.T1.IsBackground = true;
-                AutoStateStatic.SState.mv.T1.Start();
+                mv.StartRecCom();
+                mv.SetFre(50);
+                mv.T1.IsBackground = true;
+                mv.T1.Start();
                 InitChart();
             }
             catch
             {
-                AutoStateStatic.SState.mv.ShowHide("初始化程序发生错误" + "\r\n" + "请检查串口及仪器连接");
+                mv.ShowHide("初始化程序发生错误" + "\r\n" + "请检查串口及仪器连接");
                 //this.Close();
             }
-            AutoStateStatic.SState.mv.OpenAutoTest += MainWindow_OpenAutoTest;
+            mv.OpenAutoTest += MainWindow_OpenAutoTest;
+            this.DataContext = null;
+            this.DataContext = mv;
+
         }
         private void MainWindow_OpenAutoTest(byte[] ISopen)
         {
@@ -67,7 +69,7 @@ namespace HV9003TE4
 
         }
 
-       
+
         private void MainWindow_OutTestResult(byte[] data)
         {
 
@@ -116,43 +118,43 @@ namespace HV9003TE4
 
         private void Mul_01__Fre_Click(object sender, RoutedEventArgs e)
         {
-            AutoStateStatic.SState.mv.MulFre(0.1);
+            mv.MulFre(0.1);
         }
 
         private void Mul_1_Fre_Click(object sender, RoutedEventArgs e)
         {
-            AutoStateStatic.SState.mv.MulFre(1);
+            mv.MulFre(1);
 
         }
 
         private void Mul_10_Fre_Click(object sender, RoutedEventArgs e)
         {
-            AutoStateStatic.SState.mv.MulFre(10);
+            mv.MulFre(10);
         }
 
         private void Mul_50_Fre_Click(object sender, RoutedEventArgs e)
         {
-            AutoStateStatic.SState.mv.MulFre(50);
+            mv.MulFre(50);
         }
 
         private void Add_01__Fre_Click(object sender, RoutedEventArgs e)
         {
-            AutoStateStatic.SState.mv.AddFre(0.1);
+            mv.AddFre(0.1);
         }
 
         private void Add_1_Fre_Click(object sender, RoutedEventArgs e)
         {
-            AutoStateStatic.SState.mv.AddFre(1);
+            mv.AddFre(1);
         }
 
         private void Add_10_Fre_Click(object sender, RoutedEventArgs e)
         {
-            AutoStateStatic.SState.mv.AddFre(10);
+            mv.AddFre(10);
         }
 
         private void Add_50_Fre_Click(object sender, RoutedEventArgs e)
         {
-            AutoStateStatic.SState.mv.AddFre(50);
+            mv.AddFre(50);
         }
         public List<string> XVolate { get; set; } = new List<string>();
         public List<double> YVolateAndCn { get; set; } = new List<double>();
@@ -202,7 +204,7 @@ namespace HV9003TE4
             {
                 if (AutoStateStatic.SState.mv.HVVoltage.ToString() != "NaN")
                 {
-                    Volate = AutoStateStatic.SState.mv.HVVoltage.ToString();
+                    Volate = mv.HVVoltage.ToString();
                     PhysicalVariable a = NumericsConverter.Text2Value(Volate);
                     VolateD = (double)a.value;
                 }
@@ -211,7 +213,7 @@ namespace HV9003TE4
             {
 
             }
-            var Fre = AutoStateStatic.SState.mv.HVFrequency.ToString();
+            var Fre = mv.HVFrequency.ToString();
             var Time = DateTime.Now.ToString();
 
             float Cn = (float)NumericsConverter.Text2Value(AutoStateStatic.SState.mv.Capacitance1).value;
@@ -240,10 +242,10 @@ namespace HV9003TE4
                     YVolateAndCn3.Add(Cn3);
                     YVolateAndCn4.Add(Cn4);
 
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn.ToArray(), XVolate, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn2.ToArray(), XVolate, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn3.ToArray(), XVolate, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn4.ToArray(), XVolate, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndCn.ToArray(), XVolate, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndCn2.ToArray(), XVolate, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndCn3.ToArray(), XVolate, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndCn4.ToArray(), XVolate, ChartPannel.Channel4);
 
                 }
                 else if (Com2.SelectedIndex == 1)
@@ -252,10 +254,10 @@ namespace HV9003TE4
                     YVolateAndCurrent2.Add((double)Current2);
                     YVolateAndCurrent3.Add((double)Current3);
                     YVolateAndCurrent4.Add((double)Current4);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent.ToArray(), XVolate, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent2.ToArray(), XVolate, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent3.ToArray(), XVolate, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent4.ToArray(), XVolate, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndCurrent.ToArray(), XVolate, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndCurrent2.ToArray(), XVolate, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndCurrent3.ToArray(), XVolate, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndCurrent4.ToArray(), XVolate, ChartPannel.Channel4);
 
                 }
                 else if (Com2.SelectedIndex == 2)
@@ -264,10 +266,10 @@ namespace HV9003TE4
                     YVolateAndTan2.Add((double)Tan2);
                     YVolateAndTan3.Add((double)Tan3);
                     YVolateAndTan4.Add((double)Tan4);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan.ToArray(), XVolate, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan2.ToArray(), XVolate, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan3.ToArray(), XVolate, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan4.ToArray(), XVolate, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndTan.ToArray(), XVolate, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndTan2.ToArray(), XVolate, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndTan3.ToArray(), XVolate, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndTan4.ToArray(), XVolate, ChartPannel.Channel4);
 
                 }
 
@@ -281,10 +283,10 @@ namespace HV9003TE4
                     YVolateAndCn2.Add((double)Cn2);
                     YVolateAndCn3.Add((double)Cn3);
                     YVolateAndCn4.Add((double)Cn4);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn.ToArray(), XFre, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn2.ToArray(), XFre, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn3.ToArray(), XFre, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn4.ToArray(), XFre, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndCn.ToArray(), XFre, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndCn2.ToArray(), XFre, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndCn3.ToArray(), XFre, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndCn4.ToArray(), XFre, ChartPannel.Channel4);
 
                 }
                 else if (Com2.SelectedIndex == 1)
@@ -293,10 +295,10 @@ namespace HV9003TE4
                     YVolateAndCurrent2.Add((double)Current2);
                     YVolateAndCurrent3.Add((double)Current3);
                     YVolateAndCurrent4.Add((double)Current4);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent.ToArray(), XFre, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent2.ToArray(), XFre, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent3.ToArray(), XFre, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent4.ToArray(), XFre, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndCurrent.ToArray(), XFre, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndCurrent2.ToArray(), XFre, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndCurrent3.ToArray(), XFre, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndCurrent4.ToArray(), XFre, ChartPannel.Channel4);
 
                 }
                 else
@@ -305,10 +307,10 @@ namespace HV9003TE4
                     YVolateAndTan2.Add((double)Tan2);
                     YVolateAndTan3.Add((double)Tan3);
                     YVolateAndTan4.Add((double)Tan4);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan.ToArray(), XFre, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan2.ToArray(), XFre, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan3.ToArray(), XFre, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan4.ToArray(), XFre, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndTan.ToArray(), XFre, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndTan2.ToArray(), XFre, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndTan3.ToArray(), XFre, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndTan4.ToArray(), XFre, ChartPannel.Channel4);
 
                 }
             }
@@ -321,10 +323,10 @@ namespace HV9003TE4
                     YVolateAndCn2.Add((double)VolateD);
                     YVolateAndCn3.Add((double)VolateD);
                     YVolateAndCn4.Add((double)VolateD);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn.ToArray(), XTime, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn2.ToArray(), XTime, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn3.ToArray(), XTime, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn4.ToArray(), XTime, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndCn.ToArray(), XTime, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndCn2.ToArray(), XTime, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndCn3.ToArray(), XTime, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndCn4.ToArray(), XTime, ChartPannel.Channel4);
 
                 }
                 else if (Com2.SelectedIndex == 1)
@@ -333,10 +335,10 @@ namespace HV9003TE4
                     YVolateAndCurrent2.Add((double)Current2);
                     YVolateAndCurrent3.Add((double)Current3);
                     YVolateAndCurrent4.Add((double)Current4);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent.ToArray(), XTime, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent2.ToArray(), XTime, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent3.ToArray(), XTime, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent4.ToArray(), XTime, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndCurrent.ToArray(), XTime, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndCurrent2.ToArray(), XTime, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndCurrent3.ToArray(), XTime, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndCurrent4.ToArray(), XTime, ChartPannel.Channel4);
 
                 }
                 else
@@ -345,10 +347,10 @@ namespace HV9003TE4
                     YVolateAndTan2.Add((double)Tan2);
                     YVolateAndTan3.Add((double)Tan3);
                     YVolateAndTan4.Add((double)Tan4);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan.ToArray(), XTime, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan2.ToArray(), XTime, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan3.ToArray(), XTime, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan4.ToArray(), XTime, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndTan.ToArray(), XTime, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndTan2.ToArray(), XTime, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndTan3.ToArray(), XTime, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndTan4.ToArray(), XTime, ChartPannel.Channel4);
 
                 }
             }
@@ -384,26 +386,26 @@ namespace HV9003TE4
 
                 if (Com2.SelectedIndex == 0)
                 {
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn.ToArray(), XVolate, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn2.ToArray(), XVolate, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn3.ToArray(), XVolate, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn4.ToArray(), XVolate, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndCn.ToArray(), XVolate, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndCn2.ToArray(), XVolate, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndCn3.ToArray(), XVolate, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndCn4.ToArray(), XVolate, ChartPannel.Channel4);
 
                 }
                 else if (Com2.SelectedIndex == 1)
                 {
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent.ToArray(), XVolate, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent2.ToArray(), XVolate, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent3.ToArray(), XVolate, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent4.ToArray(), XVolate, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndCurrent.ToArray(), XVolate, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndCurrent2.ToArray(), XVolate, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndCurrent3.ToArray(), XVolate, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndCurrent4.ToArray(), XVolate, ChartPannel.Channel4);
 
                 }
                 else if (Com2.SelectedIndex == 2)
                 {
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan.ToArray(), XVolate, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan2.ToArray(), XVolate, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan3.ToArray(), XVolate, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan4.ToArray(), XVolate, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndTan.ToArray(), XVolate, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndTan2.ToArray(), XVolate, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndTan3.ToArray(), XVolate, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndTan4.ToArray(), XVolate, ChartPannel.Channel4);
 
                 }
 
@@ -412,26 +414,26 @@ namespace HV9003TE4
             {
                 if (Com2.SelectedIndex == 0)
                 {
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn.ToArray(), XFre, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn2.ToArray(), XFre, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn3.ToArray(), XFre, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn4.ToArray(), XFre, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndCn.ToArray(), XFre, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndCn2.ToArray(), XFre, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndCn3.ToArray(), XFre, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndCn4.ToArray(), XFre, ChartPannel.Channel4);
 
                 }
                 else if (Com2.SelectedIndex == 1)
                 {
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent.ToArray(), XFre, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent2.ToArray(), XFre, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent3.ToArray(), XFre, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent4.ToArray(), XFre, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndCurrent.ToArray(), XFre, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndCurrent2.ToArray(), XFre, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndCurrent3.ToArray(), XFre, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndCurrent4.ToArray(), XFre, ChartPannel.Channel4);
 
                 }
                 else
                 {
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan.ToArray(), XFre, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan2.ToArray(), XFre, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan3.ToArray(), XFre, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan4.ToArray(), XFre, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndTan.ToArray(), XFre, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndTan2.ToArray(), XFre, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndTan3.ToArray(), XFre, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndTan4.ToArray(), XFre, ChartPannel.Channel4);
 
                 }
             }
@@ -439,26 +441,26 @@ namespace HV9003TE4
             {
                 if (Com2.SelectedIndex == 0)
                 {
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn.ToArray(), XTime, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn2.ToArray(), XTime, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn3.ToArray(), XTime, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCn4.ToArray(), XTime, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndCn.ToArray(), XTime, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndCn2.ToArray(), XTime, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndCn3.ToArray(), XTime, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndCn4.ToArray(), XTime, ChartPannel.Channel4);
 
                 }
                 else if (Com2.SelectedIndex == 1)
                 {
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent.ToArray(), XTime, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent2.ToArray(), XTime, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent3.ToArray(), XTime, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndCurrent4.ToArray(), XTime, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndCurrent.ToArray(), XTime, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndCurrent2.ToArray(), XTime, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndCurrent3.ToArray(), XTime, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndCurrent4.ToArray(), XTime, ChartPannel.Channel4);
 
                 }
                 else
                 {
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan.ToArray(), XTime, ChartPannel.Channel1);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan2.ToArray(), XTime, ChartPannel.Channel2);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan3.ToArray(), XTime, ChartPannel.Channel3);
-                    AutoStateStatic.SState.mv.SetChartObserver(YVolateAndTan4.ToArray(), XTime, ChartPannel.Channel4);
+                    mv.SetChartObserver(YVolateAndTan.ToArray(), XTime, ChartPannel.Channel1);
+                    mv.SetChartObserver(YVolateAndTan2.ToArray(), XTime, ChartPannel.Channel2);
+                    mv.SetChartObserver(YVolateAndTan3.ToArray(), XTime, ChartPannel.Channel3);
+                    mv.SetChartObserver(YVolateAndTan4.ToArray(), XTime, ChartPannel.Channel4);
 
                 }
             }
@@ -473,12 +475,12 @@ namespace HV9003TE4
             NeedVolateText.Text = "0";
             if (PowerState.IsChecked != false)
             {
-                AutoStateStatic.SState.mv.StartPower();
-                AutoStateStatic.SState.mv.IsEnable = true;
+                mv.StartPower();
+                mv.IsEnable = true;
             }
             else
             {
-                AutoStateStatic.SState.mv.ClosePower();
+                mv.ClosePower();
             }
             #region enable
             if (PowerState.IsChecked == false)
@@ -585,10 +587,10 @@ namespace HV9003TE4
         {
 
             NeedVolate += addbum;
-            AutoStateStatic.SState.mv.SetBaseVolate(NeedVolate, (float)AutoStateStatic.SState.mv.VolateSpeed);
+            mv.SetBaseVolate(NeedVolate, (float)AutoStateStatic.SState.mv.VolateSpeed);
             NeedVolateText.Text = NeedVolate.ToString();
             Thread.Sleep(300);
-            AutoStateStatic.SState.mv.UpVolate();
+            mv.UpVolate();
         }
         private void MulVolate(float addbum)
         {
@@ -597,26 +599,26 @@ namespace HV9003TE4
             if (NeedVolate >= addbum)
             {
                 NeedVolate -= addbum;
-                AutoStateStatic.SState.mv.SetBaseVolate(NeedVolate, (float)AutoStateStatic.SState.mv.VolateSpeed);
+                mv.SetBaseVolate(NeedVolate, (float)AutoStateStatic.SState.mv.VolateSpeed);
                 NeedVolateText.Text = NeedVolate.ToString();
 
                 Thread.Sleep(300);
-                AutoStateStatic.SState.mv.UpVolate();
+                mv.UpVolate();
             }
             else
             {
                 NeedVolate = 0;
-                AutoStateStatic.SState.mv.SetBaseVolate(NeedVolate, (float)AutoStateStatic.SState.mv.VolateSpeed);
+                mv.SetBaseVolate(NeedVolate, (float)AutoStateStatic.SState.mv.VolateSpeed);
                 NeedVolateText.Text = NeedVolate.ToString(); ;
                 Thread.Sleep(300);
-                AutoStateStatic.SState.mv.UpVolate();
+                mv.UpVolate();
             }
 
         }
 
         private void DownVolate()
         {
-            AutoStateStatic.SState.mv.DownVolate();
+            mv.DownVolate();
         }
         private void Down_Click(object sender, RoutedEventArgs e)
         {
@@ -706,11 +708,11 @@ namespace HV9003TE4
             try
             {
                 if (Com2.SelectedIndex == 0)
-                    AutoStateStatic.SState.mv.YPopu = "Volate";
+                    mv.YPopu = "Volate";
                 if (Com2.SelectedIndex == 1)
-                    AutoStateStatic.SState.mv.YPopu = "Captance";
+                    mv.YPopu = "Captance";
                 if (Com2.SelectedIndex == 2)
-                    AutoStateStatic.SState.mv.YPopu = "Tan";
+                    mv.YPopu = "Tan";
                 UpdataWaveForm();
             }
             catch
@@ -723,11 +725,11 @@ namespace HV9003TE4
             try
             {
                 if (Com2.SelectedIndex == 0)
-                    AutoStateStatic.SState.mv.YPopu = "Volate";
+                    mv.YPopu = "Volate";
                 if (Com2.SelectedIndex == 1)
-                    AutoStateStatic.SState.mv.YPopu = "Captance";
+                    mv.YPopu = "Captance";
                 if (Com2.SelectedIndex == 2)
-                    AutoStateStatic.SState.mv.YPopu = "Tan";
+                    mv.YPopu = "Tan";
                 UpdataWaveForm();
             }
             catch
@@ -767,7 +769,7 @@ namespace HV9003TE4
 
         private void Reset(object sender, RoutedEventArgs e)
         {
-            AutoStateStatic.SState.mv.REset();
+            mv.REset();
 
         }
 

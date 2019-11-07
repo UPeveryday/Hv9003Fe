@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SCEEC.Numerics;
 
 namespace HV9003TE4.Models
 {
@@ -41,6 +42,10 @@ namespace HV9003TE4.Models
         public double VolateSpeed { get; set; } = 2;
 
         public MainWindowModel mv { get; set; } = new MainWindowModel();
+
+        public PhysicalVariable Cn { get; set; } = "99.868pF";
+        public PhysicalVariable AGn { get; set; } = "0.000001";
+
     }
 
     public static class AutoStateStatic

@@ -75,6 +75,7 @@ namespace SCEEC.MI.High_Precision
             }
             catch 
             {
+                throw new Exception();
             }
             //TestCx1 = TestIx1 / (2 * Math.PI * TestU0);
             //TestCx2 = TestIx2 / (2 * Math.PI * TestU0);

@@ -10,7 +10,7 @@
         xmlns:talex="http://schemas.talex-soft.com/2010/xaml/presentation" x:Class="HV9003TE4.Views.AllAutoTest"
         mc:Ignorable="d"
         Title="Automatic Measurement" Height="600" Width="1000" 
-        WindowStyle="None"  Background="#e8e8e8" WindowState="Maximized"
+        WindowStyle="None"  Background="White" WindowState="Maximized"
                       Loaded="all_load" Unloaded="Undload"
                       Closed="MetroWindow_Closed" WindowStartupLocation="CenterScreen"
                       Closing="MetroWindow_Closing" SizeChanged="MetroWindow_SizeChanged" 
@@ -135,13 +135,13 @@
                         </Grid>
                     </Viewbox>
                 </GroupBox>-->
-                <GroupBox Grid.Column="0"  Margin="5">
+                <GroupBox Grid.Column="0"  Margin="5" >
                     <GroupBox.Header>
                         <TextBlock Foreground="White" ><Run FontSize="{Binding FontSize}" Text="高压参数"/></TextBlock>
                     </GroupBox.Header>
                     <Viewbox >
 
-                        <Grid>
+                        <Grid Background="White">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
@@ -170,7 +170,7 @@
                         <TextBlock Foreground="White" FontSize="{Binding FontSize}"><Run Text="变频电源"/></TextBlock>
                     </GroupBox.Header>
                     <Viewbox>
-                        <Grid>
+                        <Grid Background="White">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
@@ -191,13 +191,13 @@
                             <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding SourcePower, UpdateSourceTrigger=PropertyChanged}" Margin="5" TextAlignment="Right"/>
                         </Grid>
                     </Viewbox>
-                </GroupBox>
-                <GroupBox Grid.Column="2"  Margin="5">
+                </GroupBox> 
+                <GroupBox Grid.Column="2"  Margin="5" >
                     <GroupBox.Header>
                         <TextBlock Foreground="White" FontSize="{Binding FontSize}"><Run Text="测量通道1"/></TextBlock>
                     </GroupBox.Header>
-                    <Viewbox>
-                        <Grid>
+                    <Viewbox >
+                        <Grid >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
@@ -511,7 +511,7 @@
                 </Grid>
             </Grid>
 
-            <Grid  Grid.Column="2" Grid.RowSpan="2" Background="#e8e8e8">
+            <Grid  Grid.Column="2" Grid.RowSpan="2" Background="White">
                 <Grid />
                 <Grid x:Name="Expander"  Margin="3,3,0,3">
                     <Grid >

@@ -52,6 +52,7 @@ namespace SCEEC.MI.High_Precision
                 }
                 string[] cpd = Comp.ToArray();
                 this.ComPort = cpd[cpd.Length - 1];
+
                 OpenPort();
             }
         }
@@ -100,7 +101,8 @@ namespace SCEEC.MI.High_Precision
 
         private void LocalPrecision_DataReceived(object sender, SerialDataReceivedEventArgs e, byte[] bits)
         {
-            OutTestResult(bits);
+            if (bits.Length == 60)
+                OutTestResult(bits);
 
         }
 
@@ -165,10 +167,7 @@ namespace SCEEC.MI.High_Precision
         {
             return bits;
         }
-        public void DataReceive(object sender, SerialDataReceivedEventArgs e, byte[] bits)
-        {
-            OutTestResult(bits);
-        }
+      
 
         public byte StartTest()
         {
