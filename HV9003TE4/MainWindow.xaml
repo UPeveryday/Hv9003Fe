@@ -497,6 +497,7 @@
 
             <!--<Button x:Name="button" Command="{Binding UpdateName}" Grid.ColumnSpan="2" Content="Button" HorizontalAlignment="Left" Margin="331,133,0,0" VerticalAlignment="Top" Width="75"/>-->
         </Grid>
-
     </Grid>
+    
+
 </Controls:MetroWindow>

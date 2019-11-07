@@ -26,6 +26,7 @@ namespace HV9003TE4
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
+
     public partial class MainWindow : MetroWindow
     {
         MainWindowModel mv;
@@ -49,6 +50,8 @@ namespace HV9003TE4
                 //this.Close();
             }
             mv.OpenAutoTest += MainWindow_OpenAutoTest;
+
+
             this.DataContext = null;
             this.DataContext = mv;
 
@@ -484,7 +487,7 @@ namespace HV9003TE4
                 mv.ClosePower();
             }
 
-           
+
         }
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -761,5 +764,6 @@ namespace HV9003TE4
         {
             Models.AutoStateStatic.SState.mv.FontSize = (ushort)(ActualHeight / 600 * 15);
         }
+
     }
 }

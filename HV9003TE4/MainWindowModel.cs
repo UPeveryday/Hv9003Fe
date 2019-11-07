@@ -26,7 +26,6 @@ namespace HV9003TE4
     {
         TestMesseages TestMesseagesNull = new TestMesseages();
         public volatile byte[] TestRes;
-        public List<string> TaskList { get; set; }
         public bool IsEnable { get; set; } = false;
         public string YPopu { get; set; }
         public bool ISREMOTE { get; set; } = true;
@@ -34,11 +33,6 @@ namespace HV9003TE4
         public bool VolateState { get; set; } = false;
         public bool ISZERO { get; set; } = true;
         public ObservableCollection<string> ListboxItemsources { get; set; } = new ObservableCollection<string>();
-        public Models.SysAutoTestResult MyTestList { get; set; }
-        public Visibility Vs { get; set; } = Visibility.Visible;
-        public ObservableCollection<string> TestResultMeassge { get; set; } = new ObservableCollection<string>();//测量过程信息
-        public string Process { get; set; }//
-        public int ProcesNum { get; set; }
         public ushort FontSize { get; set; } = 15;
 
         public double VolateSpeed { get; set; } = 2;
@@ -46,12 +40,8 @@ namespace HV9003TE4
 
         public ObservableCollection<string> ProjectVolate { get; set; } = new ObservableCollection<string>();//添加的方案数据
         public List<int> TimeSources { get; set; } = new List<int>();
-        public bool IsCompleteVolateTest { get; set; } = true;
         public Visibility QuqlityIsOk { get; set; } = Visibility.Collapsed;
         public ObservableCollection<UIElement> Projectdataui { get; set; }
-
-        public double YMaxValue { get; set; }
-
         public PhysicalVariable SourceFrequency { get; set; } = "50.0 Hz";
         public PhysicalVariable SourceVoltage { get; set; } = "100.0 V";
         public PhysicalVariable SourceCurrent { get; set; } = "10 A";
@@ -86,6 +76,8 @@ namespace HV9003TE4
         public PhysicalVariable Ix4 { get; set; } = "2.000 mA";
         public PhysicalVariable AG4 { get; set; } = "0.000004";
 
+        public string TimeMul { get; set; } = "60";
+        public MeasureResult PanelMeasureResult { get; set; }
 
         public void StartTcp()
         {
@@ -111,24 +103,6 @@ namespace HV9003TE4
             ConnectStateControl = 1f;
         }
         public float ConnectStateControl { get; set; } = 0.6f;
-
-        public bool Pane1Enable { get; set; } = false;
-        public bool Pane2Enable { get; set; } = false;
-        public bool Pane3Enable { get; set; } = false;
-        public bool Pane4Enable { get; set; } = false;
-        public bool AllAutoTestIsOpen { get; set; } = false;
-
-        public void OpenNewTestWindow()
-        {
-            while (AllAutoTestIsOpen == true)
-            {
-                App.Current.Dispatcher.Invoke((Action)(() =>
-                {
-                    new Views.AllAutoTest().ShowDialog();
-                    AllAutoTestIsOpen = false;
-                }));
-            }
-        }
         public event AllAutoTestFlag OpenAutoTest;
         public bool MyPAllAutoTestOrOrdeTestroperty { get; set; } = false;
         private void TcpServer_DataReceived(object sender, AsyncEventArgs e)
@@ -150,7 +124,7 @@ namespace HV9003TE4
                 {
                     StartPower();
                     Thread.Sleep(500);
-                    byte[] array1 = System.Text.Encoding.ASCII.GetBytes("OK");
+                    byte[] array1 = Encoding.ASCII.GetBytes("OK");
                     TestClass.QueryTestResult(TcpTask.TcpServer, null, array1);
                     Models.StaticClass.IsTcpTestting = true;
                     SysData = Temp;
@@ -209,16 +183,59 @@ namespace HV9003TE4
 
         }
         #region AUTO
-        public bool ISELEY { get; set; } = false;
-        public bool ISELEVOLATE { get; set; } = false;
-        public bool TestByProject { get; set; } = false;
+
+        public void AddCnResult()
+        {
+            VolateDataKind vd1 = new VolateDataKind { Cn = Capacitance1, CnTan = DissipationFactor1, Volate = HVVoltage };
+            VolateDataKind vd2 = new VolateDataKind { Cn = Capacitance2, CnTan = DissipationFactor2, Volate = HVVoltage };
+            VolateDataKind vd3 = new VolateDataKind { Cn = Capacitance3, CnTan = DissipationFactor3, Volate = HVVoltage };
+            VolateDataKind vd4 = new VolateDataKind { Cn = Capacitance4, CnTan = DissipationFactor4, Volate = HVVoltage };
+            PanelMeasureResult.PanelResultOne.Volatepointresult.Add(vd1);
+            PanelMeasureResult.PanelResultTwo.Volatepointresult.Add(vd2);
+            PanelMeasureResult.PanelResultThree.Volatepointresult.Add(vd3);
+            PanelMeasureResult.PanelResultFour.Volatepointresult.Add(vd4);
+
+        }
+        public void AddEley(bool Quality)
+        {
+            PanelMeasureResult.PanelResultOne.DYVolate = HVVoltage;
+            PanelMeasureResult.PanelResultOne.DyQuatity = Quality;
+            PanelMeasureResult.PanelResultOne.ImagDyId = 1;
+            PanelMeasureResult.PanelResultTwo.DYVolate = HVVoltage;
+            PanelMeasureResult.PanelResultTwo.DyQuatity = Quality;
+            PanelMeasureResult.PanelResultTwo.ImagDyId = 1;
+            PanelMeasureResult.PanelResultThree.DYVolate = HVVoltage;
+            PanelMeasureResult.PanelResultThree.DyQuatity = Quality;
+            PanelMeasureResult.PanelResultThree.ImagDyId = 1;
+            PanelMeasureResult.PanelResultFour.DYVolate = HVVoltage;
+            PanelMeasureResult.PanelResultFour.DyQuatity = Quality;
+            PanelMeasureResult.PanelResultFour.ImagDyId = 1;
+        }
+        public void AddVolatedata(int hodetime)
+        {
+            PanelMeasureResult.PanelResultOne.KeepVolated = HVVoltage;
+            PanelMeasureResult.PanelResultOne.KeepTimed = hodetime;
+            PanelMeasureResult.PanelResultOne.ImagKeepVolateIdd = 2;
+            PanelMeasureResult.PanelResultTwo.KeepVolated = HVVoltage;
+            PanelMeasureResult.PanelResultTwo.KeepTimed = hodetime;
+            PanelMeasureResult.PanelResultTwo.ImagKeepVolateIdd = 2;
+            PanelMeasureResult.PanelResultThree.KeepVolated = HVVoltage;
+            PanelMeasureResult.PanelResultThree.KeepTimed = hodetime;
+            PanelMeasureResult.PanelResultThree.ImagKeepVolateIdd = 2;
+            PanelMeasureResult.PanelResultFour.KeepVolated = HVVoltage;
+            PanelMeasureResult.PanelResultFour.KeepTimed = hodetime;
+            PanelMeasureResult.PanelResultFour.ImagKeepVolateIdd = 2;
+        }
 
         public DateTime StartTime { get; set; }
 
-        //  public FourTestResult AllTestResult { get; set; } = new FourTestResult();
+        public FourTestResult AllTestResult { get; set; } = new FourTestResult();
         public void StartAutoTestAsync(Models.SysAutoTestResult sys)
         {
             StartTime = DateTime.Now;
+            PanelMeasureResult = new MeasureResult();//TCP需要测量结果
+            //PanelMeasureResult.TestSpeed=
+            //    PanelMeasureResult.Fre =
             DatagridData = new ObservableCollection<TestResultDataGrid>(); //创建介损的datagrid
             if (Models.StaticClass.IsTcpTestting)
                 sys = StaticClass.GetDataForTcpAutoTest(SysData);
@@ -261,19 +278,12 @@ namespace HV9003TE4
                         AddFourPanelData(ChartPannel.Channel4, (double)HVVoltage.value, (double)NumericsConverter.Text2Value(DissipationFactor4).value);
                         AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
                     });
-                    StaticClass.AllTestResult = StaticClass.ReturntestTestData(StaticClass.AllTestResult, Capacitance1, Capacitance2, Capacitance3, Capacitance4, DissipationFactor1, DissipationFactor2,
-                          DissipationFactor3, DissipationFactor4, true);
+                    AddCnResult();
                 }
             }
             AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
             #endregion
             DownVolate();
-            if (token.IsCancellationRequested)
-            {
-                return;
-            }
-            resetEvent.WaitOne();
-
             if (UpvolateIsOk())
             {
                 if (sys.IsEleY)
@@ -330,6 +340,9 @@ namespace HV9003TE4
         }
         public void StartAutobytcp()
         {
+            tokenSource = new CancellationTokenSource();
+            token = tokenSource.Token;
+            resetEvent = new ManualResetEvent(true);
             taskTcp = new Task(StartTestTaskByTcp, token);
             taskTcp.Start();
         }
@@ -409,6 +422,7 @@ namespace HV9003TE4
                 {
                     if (AutoStateStatic.SState.IsPress)
                     {
+                        AddEley(AutoStateStatic.SState.Quality);
                         if (MessageBox.Show("是否开始耐压实验？", "通知", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
                         {
                             StartVolate();
@@ -423,6 +437,7 @@ namespace HV9003TE4
             }
 
         }
+        public Visibility TimeIsEnAble { get; set; } = Visibility.Hidden;
         public void StartVolate()
         {
             Models.SysAutoTestResult sys = new SysAutoTestResult();
@@ -436,11 +451,15 @@ namespace HV9003TE4
             if (UpvolateIsOk())
             {
                 AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
+                TimeIsEnAble = Visibility.Visible;
                 for (int i = 0; i < sys.HideTime; i++)
                 {
+                    TimeMul = (sys.HideTime - i).ToString();
                     Thread.Sleep(1000);
                 }
+                TimeIsEnAble = Visibility.Hidden;
                 AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
+                AddVolatedata(sys.HideTime);
                 SetVolate(0);
                 Thread.Sleep(100);
                 if (UpvolateIsOk())
@@ -639,6 +658,8 @@ namespace HV9003TE4
         private double TestFre;
         public float Volate { get; set; }
         public int TimerSecond { get; set; } = 2;
+
+
         private void WorkTest_OutTestResult(byte[] result)
         {
 
@@ -779,7 +800,7 @@ namespace HV9003TE4
                     Thread.Sleep(2000);
                     TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
                 }
-              
+
             }
             if (data[58] == 4)
             {
@@ -791,7 +812,7 @@ namespace HV9003TE4
                     Thread.Sleep(2000);
                     TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
                 }
-               
+
             }
             if (data[58] == 6)
             {
@@ -816,7 +837,7 @@ namespace HV9003TE4
                     Thread.Sleep(2000);
                     TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
                 }
-             
+
             }
             if (data[58] == 8)
             {
@@ -828,7 +849,7 @@ namespace HV9003TE4
                     Thread.Sleep(2000);
                     TestResult.WorkTest.LocalPrecision.ReceiveEventFlag = false;
                 }
-              
+
             }
 
         }
@@ -840,8 +861,6 @@ namespace HV9003TE4
             if (this.PropertyChanged != null)
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
-
-
         #region Command
 
 
