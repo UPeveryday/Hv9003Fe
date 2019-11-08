@@ -14,6 +14,7 @@
                       Loaded="all_load" Unloaded="Undload"
                       Closed="MetroWindow_Closed" WindowStartupLocation="CenterScreen"
                       Closing="MetroWindow_Closing" SizeChanged="MetroWindow_SizeChanged" 
+   
     >
     <Controls:MetroWindow.Resources>
         <Style x:Key="FileListBoxItem" TargetType="{x:Type ListBoxItem}">
@@ -463,7 +464,7 @@
                             </Border>
                         </Grid>
                     </Grid>-->
-                    <DataGrid Margin="8"  CanUserAddRows="False" BorderBrush="#00a3ff"  AutoGenerateColumns="False" ItemsSource="{Binding DatagridData, UpdateSourceTrigger=PropertyChanged}" Background="White">
+                    <DataGrid Margin="8" IsReadOnly="True"  CanUserAddRows="False" BorderBrush="#00a3ff"  AutoGenerateColumns="False" ItemsSource="{Binding DatagridData, UpdateSourceTrigger=PropertyChanged}" Background="White">
                         <DataGrid.Columns >
                             <DataGridTextColumn Width="1*" HeaderStyle="{StaticResource dataGridHeaderStyle}" Header="电压"  Binding="{Binding volate, UpdateSourceTrigger=PropertyChanged}">
                             </DataGridTextColumn>
@@ -524,7 +525,7 @@
                         <Grid Grid.Row="3" >
                             <Button Margin="10,2" MinWidth="80" IsEnabled="{Binding VolateState}"  Background="Green" Click="StartTest_click" Foreground="White">
                                 <Viewbox>
-                                        <TextBlock  x:Name="StartTestTextBox"><Run Text="开始测量"/></TextBlock>
+                                        <TextBlock  x:Name="StartTestTextBox" ><Run Text="开始测量"/></TextBlock>
                                 </Viewbox>
                             </Button>
                         </Grid>

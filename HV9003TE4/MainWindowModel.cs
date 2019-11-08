@@ -48,7 +48,8 @@ namespace HV9003TE4
         public PhysicalVariable SourcePower { get; set; } = "1.000 kW";
         public PhysicalVariable HVFrequency { get; set; } = "50.0 Hz";
         public PhysicalVariable HVVoltage { get; set; } = "100.0 kV";
-        // public PhysicalVariable Cn { get; set; }
+
+        public byte Fre { get; set; }
 
         private PhysicalVariable myVar;
 
@@ -170,11 +171,7 @@ namespace HV9003TE4
             }
 
         }
-
         public bool WindowIsEnable { get; set; } = true;
-
-        public bool IsSavedWaveImage { get; set; } = false;
-
         private void SetVolate(float volate)
         {
             SetBaseVolate(volate, (float)VolateSpeed);
@@ -226,16 +223,13 @@ namespace HV9003TE4
             PanelMeasureResult.PanelResultFour.KeepTimed = hodetime;
             PanelMeasureResult.PanelResultFour.ImagKeepVolateIdd = 2;
         }
-
         public DateTime StartTime { get; set; }
-
-        public FourTestResult AllTestResult { get; set; } = new FourTestResult();
         public void StartAutoTestAsync(Models.SysAutoTestResult sys)
         {
             StartTime = DateTime.Now;
             PanelMeasureResult = new MeasureResult();//TCP需要测量结果
-            //PanelMeasureResult.TestSpeed=
-            //    PanelMeasureResult.Fre =
+            PanelMeasureResult.TestSpeed = (float)VolateSpeed * 2000f;
+            PanelMeasureResult.Fre = Fre;
             DatagridData = new ObservableCollection<TestResultDataGrid>(); //创建介损的datagrid
             if (Models.StaticClass.IsTcpTestting)
                 sys = StaticClass.GetDataForTcpAutoTest(SysData);
@@ -335,7 +329,7 @@ namespace HV9003TE4
             tokenSource = new CancellationTokenSource();
             token = tokenSource.Token;
             resetEvent = new ManualResetEvent(true);
-            task = new Task(StartTestTask, token);
+            task = new Task(StartTestTask, token,TaskCreationOptions.LongRunning);
             task.Start();
         }
         public void StartAutobytcp()
@@ -544,12 +538,6 @@ namespace HV9003TE4
         public void StartRecCom()
         {
 
-            TestResult.WorkTest.StartTest();
-            TestResult.WorkTest.OutTestResult += WorkTest_OutTestResult;
-        }
-        public void StartRecCom1()
-        {
-            TestResult.WorkTest.IsTestting = false;
             TestResult.WorkTest.StartTest();
             TestResult.WorkTest.OutTestResult += WorkTest_OutTestResult;
         }
@@ -982,6 +970,7 @@ namespace HV9003TE4
 
         public void SetFre(float fre)
         {
+            Fre = (byte)fre;
             TestResult.WorkTest.ChangeFre(fre);
 
         }

@@ -471,7 +471,6 @@ namespace HV9003TE4
             // Recor_Click(null, null);
         }
 
-        public bool VolateState { get; set; } = false;
         private void Power(object sender, RoutedEventArgs e)
         {
             mv.TimerSecond = 2;
@@ -522,46 +521,36 @@ namespace HV9003TE4
         private void Add_1K__Val_Click(object sender, RoutedEventArgs e)
         {
             AddVolate(1000);
-            // IsFasle(VolateGroupBox, 2000);
-
         }
 
         private void Add_100__Val_Click(object sender, RoutedEventArgs e)
         {
             AddVolate(300);
-            // IsFasle(VolateGroupBox, 2000);
-
         }
 
         private void Add_10__Val_Click(object sender, RoutedEventArgs e)
         {
             AddVolate(100);
-            //IsFasle(VolateGroupBox, 2000);v
-
         }
 
         private void Mul_10K_Vol_CLick(object sender, RoutedEventArgs e)
         {
             MulVolate(10000);
-            // IsFasle(VolateGroupBox, 2000);
         }
 
         private void Mul_1K_Vol_CLick(object sender, RoutedEventArgs e)
         {
             MulVolate(1000);
-            // IsFasle(VolateGroupBox, 2000);
         }
 
         private void Mul_100_Vol_CLick(object sender, RoutedEventArgs e)
         {
             MulVolate(300);
-            //IsFasle(VolateGroupBox, 2000);
         }
 
         private void Mul_10_Vol_CLick(object sender, RoutedEventArgs e)
         {
             MulVolate(100);
-            // IsFasle(VolateGroupBox, 2000);
         }
 
         private void AddVolate(float addbum)
@@ -575,8 +564,6 @@ namespace HV9003TE4
         }
         private void MulVolate(float addbum)
         {
-            //  var tempdata = NumericsConverter.Text2Value(AutoStateStatic.SState.mv.HVVoltage.ToString());
-            // var tempdata = NumericsConverter.Text2Value("100kV");
             if (NeedVolate >= addbum)
             {
                 NeedVolate -= addbum;
@@ -649,14 +636,6 @@ namespace HV9003TE4
             {
                 return false;
             }
-        }
-        private void Keyb_OutCnData(string cn)
-        {
-            //CnTbx.Text = cn;
-            //CnButton.Content = cn;
-            //PhysicalVariable need = NumericsConverter.Text2Value(cn);
-            //AutoStateStatic.SState.mv.Cn = need;//原 不转换为need
-
         }
 
         private void Cn_Click(object sender, RoutedEventArgs e)

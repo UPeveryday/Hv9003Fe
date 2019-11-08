@@ -56,7 +56,7 @@ namespace HV9003TE4.Views
         {
             CnTanButton.Content = cntan;
             PhysicalVariable need = NumericsConverter.Text2Value(cntan);
-             Models.AutoStateStatic.SState.mv.AGn = need;
+             Models.AutoStateStatic.SState.AGn = need;
             
         }
 

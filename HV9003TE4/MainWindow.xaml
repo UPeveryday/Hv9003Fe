@@ -19,7 +19,6 @@
                       IsEnabled="{Binding WindowIsEnable,UpdateSourceTrigger=PropertyChanged}"
                       IsEnabledChanged="MetroWindow_IsEnabledChanged"
                       SizeChanged="MetroWindow_SizeChanged"
-                      
     >
     <!--Background="#FF252525"-->
 
@@ -386,7 +385,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="频率调节"></TextBlock>
                         <TextBlock  HorizontalAlignment="Right" VerticalAlignment="Center"   Grid.Column="1"  Text="目标频率："></TextBlock>
-                        <TextBlock   x:Name="NeedFre" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="2" Foreground="Red">Volate</TextBlock>
+                        <TextBlock   x:Name="NeedFre" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="2" Foreground="Red"></TextBlock>
                     </Grid>
                 </GroupBox.Header>
                 <Viewbox>
@@ -443,7 +442,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="电压调节"></TextBlock>
                         <TextBlock  HorizontalAlignment="Right" VerticalAlignment="Center"   Grid.Column="1"  Text="目标电压："></TextBlock>
-                        <TextBlock   HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="2" Foreground="Red" x:Name="NeedVolateText">Volate</TextBlock>
+                        <TextBlock   HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="2" Foreground="Red" x:Name="NeedVolateText"></TextBlock>
                     </Grid>
                 </Expander.Header>
                 <Viewbox>
