@@ -30,15 +30,11 @@ namespace HV9003TE4.Views
         {
             InitializeComponent();
             mv = new MainWindowModel();
-            this.DataContext = mv;
             mv.MyPAllAutoTestOrOrdeTestroperty = true;//只提供回复测量结果功能
             mv.StartTcp();
             try
             {
                 mv.StartRecCom();
-                // mv.SetFre(50);
-                mv.T1.IsBackground = true;
-                mv.T1.Start();
                 mv.CreateFourTan();//实例化对象，临时
                 mv.CreateTanEleVolate();//实例化对象，临时
             }
@@ -46,6 +42,7 @@ namespace HV9003TE4.Views
             {
                 mv.ShowHide("初始化程序发生错误" + "\r\n" + "请检查串口及仪器连接");
             }
+            this.DataContext = mv;
         }
         public AllAutoTest(byte[] temp)
         {
@@ -118,7 +115,6 @@ namespace HV9003TE4.Views
             ISHAVEVOLATE = true;
             ISHAVEDY = true;
             time.Text = sys.HideTime.ToString();
-            //Expander.IsExpanded = true;
         }
         private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

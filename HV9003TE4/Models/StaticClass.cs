@@ -102,14 +102,12 @@ namespace HV9003TE4.Models
         {
             if (data.Length > 9)
             {
-
-
                 SysAutoTestResult sys = new SysAutoTestResult();
                 byte NeedTestVolate = data[6];
 
                 for (int i = 0; i < NeedTestVolate; i++)
                 {
-                    sys.NeedTestList.Add(BitConverter.ToSingle(data, 9 + i * 4)*1000);
+                    sys.NeedTestList.Add(BitConverter.ToSingle(data, 9 + i * 4) * 1000);
                 }
                 if (data[7] == 1)
                 {
@@ -126,7 +124,8 @@ namespace HV9003TE4.Models
                 }
                 else
                     sys.IsVolate = false;
-
+                sys.Fre = data[data.Length - 6];
+                sys.TestSpeed = BitConverter.ToSingle(data, data.Length - 5);
                 return sys;
             }
             else
@@ -292,6 +291,110 @@ namespace HV9003TE4.Models
                 AllTestResult.Panel4EleYAndVolate.HodeTime = h4;
             }
         }
+        public static byte TrueOrFalse(bool a)
+        {
+            if (a)
+                return 0x01;
+            else
+                return 0x00;
+        }
+        public static byte[] GetTcpResult(MeasureResult result)
+        {
+            List<byte> rel = new List<byte>();
+            rel.AddRange(new byte[] { 0xdd, 0x0a, (byte)result.TestNum });
+            if (result.PanelOneEnable)
+            {
+                foreach (var item in result.PanelResultOne.Volatepointresult)
+                {
+                    PhysicalVariable cn = item.Cn;
+                    PhysicalVariable cnTan = item.CnTan;
+                    PhysicalVariable cnVolate = item.Volate;
+                    byte[] cnf = BitConverter.GetBytes((float)cn.value);
+                    byte[] cntf = BitConverter.GetBytes((float)cnTan.value);
+                    byte[] cntv = BitConverter.GetBytes((float)cnVolate.value);
+                    rel.AddRange(cnf);
+                    rel.AddRange(cntf);
+                    rel.AddRange(cntv);
+                }
+                rel.AddRange(BitConverter.GetBytes((float)result.PanelResultOne.DYVolate.value));
+                rel.Add(TrueOrFalse(result.PanelResultOne.DyQuatity));
+                rel.Add(0x01);
+
+                rel.AddRange(BitConverter.GetBytes((float)result.PanelResultOne.KeepVolated.value));
+                rel.Add((byte)result.PanelResultOne.KeepTimed);
+                rel.Add(0x02);
+            }
+            if (result.PanelTwoEnable)
+            {
+                foreach (var item in result.PanelResultTwo.Volatepointresult)
+                {
+                    PhysicalVariable cn = item.Cn;
+                    PhysicalVariable cnTan = item.CnTan;
+                    PhysicalVariable cnVolate = item.Volate;
+                    byte[] cnf = BitConverter.GetBytes((float)cn.value);
+                    byte[] cntf = BitConverter.GetBytes((float)cnTan.value);
+                    byte[] cntv = BitConverter.GetBytes((float)cnVolate.value);
+                    rel.AddRange(cnf);
+                    rel.AddRange(cntf);
+                    rel.AddRange(cntv);
+                }
+                rel.AddRange(BitConverter.GetBytes((float)result.PanelResultTwo.DYVolate.value));
+                rel.Add(TrueOrFalse(result.PanelResultTwo.DyQuatity));
+                rel.Add(0x01);
+
+                rel.AddRange(BitConverter.GetBytes((float)result.PanelResultTwo.KeepVolated.value));
+                rel.Add((byte)result.PanelResultTwo.KeepTimed);
+                rel.Add(0x02);
+            }
+            if (result.PanelThreeEnable)
+            {
+                foreach (var item in result.PanelResultThree.Volatepointresult)
+                {
+                    PhysicalVariable cn = item.Cn;
+                    PhysicalVariable cnTan = item.CnTan;
+                    PhysicalVariable cnVolate = item.Volate;
+                    byte[] cnf = BitConverter.GetBytes((float)cn.value);
+                    byte[] cntf = BitConverter.GetBytes((float)cnTan.value);
+                    byte[] cntv = BitConverter.GetBytes((float)cnVolate.value);
+                    rel.AddRange(cnf);
+                    rel.AddRange(cntf);
+                    rel.AddRange(cntv);
+                }
+                rel.AddRange(BitConverter.GetBytes((float)result.PanelResultThree.DYVolate.value));
+                rel.Add(TrueOrFalse(result.PanelResultThree.DyQuatity));
+                rel.Add(0x01);
+
+                rel.AddRange(BitConverter.GetBytes((float)result.PanelResultThree.KeepVolated.value));
+                rel.Add((byte)result.PanelResultThree.KeepTimed);
+                rel.Add(0x02);
+            }
+            if (result.PanelFourEnable)
+            {
+                foreach (var item in result.PanelResultFour.Volatepointresult)
+                {
+                    PhysicalVariable cn = item.Cn;
+                    PhysicalVariable cnTan = item.CnTan;
+                    PhysicalVariable cnVolate = item.Volate;
+                    byte[] cnf = BitConverter.GetBytes((float)cn.value);
+                    byte[] cntf = BitConverter.GetBytes((float)cnTan.value);
+                    byte[] cntv = BitConverter.GetBytes((float)cnVolate.value);
+                    rel.AddRange(cnf);
+                    rel.AddRange(cntf);
+                    rel.AddRange(cntv);
+                }
+                rel.AddRange(BitConverter.GetBytes((float)result.PanelResultFour.DYVolate.value));
+                rel.Add(TrueOrFalse(result.PanelResultFour.DyQuatity));
+                rel.Add(0x01);
+
+                rel.AddRange(BitConverter.GetBytes((float)result.PanelResultFour.KeepVolated.value));
+                rel.Add((byte)result.PanelResultFour.KeepTimed);
+                rel.Add(0x02);
+            }
+            //rel.Add(result.Fre);
+            //rel.AddRange(BitConverter.GetBytes(result.TestSpeed));
+            return rel.ToArray();
+        }
+
 
 
         public static byte[] Getbytesdata(FourTestResult fs, Int16 ImageID)
@@ -516,6 +619,9 @@ namespace HV9003TE4.Models
 
         public bool IsEleY { get; set; } = false;
         public bool IsVolate { get; set; } = false;
+
+        public byte Fre { get; set; }
+        public float TestSpeed { get; set; }
 
         public void Clear()
         {

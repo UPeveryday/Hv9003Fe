@@ -733,11 +733,7 @@ namespace HV9003TE4
 
         }
 
-        private void MetroWindow_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            System.Windows.Forms.Application.Restart();
-            Application.Current.Shutdown();
-        }
+      
 
         private void MetroWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {

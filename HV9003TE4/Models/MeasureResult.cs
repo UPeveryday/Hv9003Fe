@@ -16,6 +16,11 @@ namespace HV9003TE4.Models
         public TaskPanelResult PanelResultFour { get; set; } = new TaskPanelResult();
         public byte Fre { get; set; }
         public float TestSpeed { get; set; }
+        public bool PanelOneEnable { get; set; }
+        public bool PanelTwoEnable { get; set; }
+        public bool PanelThreeEnable { get; set; }
+        public bool PanelFourEnable { get; set; }
+        public int TestNum { get; set; }
     }
     public class TaskPanelResult
     {
