@@ -399,6 +399,21 @@ namespace HV9003TE4.Views
             mv.FontSize = (ushort)(ActualHeight / 600 * 15);
         }
 
+        private void Time_KeyDown(object sender, KeyEventArgs e)
+        {
+            
+            //if(e.Key==Key.D0|| e.Key == Key.D1 || e.Key == Key.D2 || e.Key == Key.D3 || e.Key == Key.D4 || 
+            //    e.Key == Key.D5 || e.Key == Key.D6 || e.Key == Key.D7 || e.Key == Key.D8 || e.Key == Key.D9||
+            //    e.Key == Key.NumPad0 || e.Key == Key.NumPad1 || e.Key == Key.NumPad2 || e.Key == Key.NumPad3 || e.Key == Key.NumPad4 ||
+            //    e.Key == Key.NumPad5 || e.Key == Key.NumPad6 || e.Key == Key.NumPad7 || e.Key == Key.NumPad8 || e.Key == Key.NumPad9)
+            //{
 
+            //}
+            //else
+            //{
+            //    time.Text = "";
+            //    MessageBox.Show("必须为正整数");
+            //}
+        }
     }
 }

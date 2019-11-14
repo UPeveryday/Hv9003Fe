@@ -565,7 +565,7 @@
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock HorizontalAlignment="Center"  VerticalAlignment="Center" FontSize="10"><Run Text="耐压时间"/></TextBlock>
-                                <TextBox Margin="5" MaxHeight="25" TextAlignment="Right" Background="Azure" BorderThickness="1" x:Name="time" Grid.Column="1"  ToolTip="持续时间"/>
+                                <TextBox Margin="5" MaxHeight="25" KeyDown="Time_KeyDown" TextAlignment="Right" Background="Azure" BorderThickness="1" x:Name="time" Grid.Column="1"  ToolTip="持续时间"/>
                                 <Button Grid.Column="2" MaxHeight="40" Click="SetVolate" Margin="8" >
                                     <Viewbox>
                                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">耐压电压</TextBlock>
