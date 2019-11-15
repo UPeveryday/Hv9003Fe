@@ -479,9 +479,11 @@ namespace HV9003TE4.Views
         }
         private void ShowHide(string Text)
         {
-            Alarm alarm = new Alarm(Text);
-            alarm.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            alarm.ShowDialog();
+            MessageBox.Show(Text, "警告", MessageBoxButton.OK);
+
+            //Alarm alarm = new Alarm(Text);
+            //alarm.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            //alarm.ShowDialog();
         }
 
         private void DeletePeoject(object sender, RoutedEventArgs e)

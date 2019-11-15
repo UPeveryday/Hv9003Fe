@@ -221,7 +221,14 @@ namespace SCEEC.NET.TCPSERVER
                     RaiseDataReceived(state);
 
                     // continue listening for tcp datagram packets
-                    stream.BeginRead(state.Buffer, 0, state.Buffer.Length, HandleDataReceived, state);
+                    try
+                    {
+                        stream.BeginRead(state.Buffer, 0, state.Buffer.Length, HandleDataReceived, state);
+
+                    }
+                    catch 
+                    {
+                    }
                 }
             }
         }
@@ -255,7 +262,13 @@ namespace SCEEC.NET.TCPSERVER
 
             if (data == null)
                 throw new ArgumentNullException("data");
-            client.GetStream().BeginWrite(data, 0, data.Length, SendDataEnd, client);
+            try
+            {
+                client.GetStream().BeginWrite(data, 0, data.Length, SendDataEnd, client);
+            }
+            catch 
+            {
+            }
         }
 
         /// <summary>
@@ -264,8 +277,15 @@ namespace SCEEC.NET.TCPSERVER
         /// <param name="ar">目标客户端Socket</param>
         private void SendDataEnd(IAsyncResult ar)
         {
-            ((TcpClient)ar.AsyncState).GetStream().EndWrite(ar);
-            RaiseCompletedSend(null);
+            try
+            {
+                ((TcpClient)ar.AsyncState).GetStream().EndWrite(ar);
+                RaiseCompletedSend(null);
+            }
+            catch 
+            {
+            }
+          
         }
         #endregion
 
@@ -409,12 +429,19 @@ namespace SCEEC.NET.TCPSERVER
         /// </summary>
         public void CloseAllClient()
         {
-            foreach (TCPClientState client in _clients)
+            try
             {
-                Close(client);
+                foreach (TCPClientState client in _clients)
+                {
+                    Close(client);
+                }
+                _clientCount = 0;
+                _clients.Clear();
             }
-            _clientCount = 0;
-            _clients.Clear();
+            catch 
+            {
+            }
+          
         }
         #endregion
 
@@ -463,5 +490,6 @@ namespace SCEEC.NET.TCPSERVER
     public static class TcpTask
     {
         public static AsyncTCPServer TcpServer = new AsyncTCPServer(55555);
+        
     }
 }

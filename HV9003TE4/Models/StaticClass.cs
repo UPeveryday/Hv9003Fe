@@ -125,6 +125,7 @@ namespace HV9003TE4.Models
                 else
                     sys.IsVolate = false;
                 sys.Fre = data[data.Length - 6];
+                
                 sys.TestSpeed = BitConverter.ToSingle(data, data.Length - 5);
                 return sys;
             }
@@ -567,9 +568,10 @@ namespace HV9003TE4.Models
 
         public static void ShowHide(string Text)
         {
-            Views.Alarm alarm = new Views.Alarm(Text);
-            alarm.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            alarm.ShowDialog();
+            MessageBox.Show(Text, "警告", MessageBoxButton.OK);
+            //Views.Alarm alarm = new Views.Alarm(Text);
+            //alarm.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            //alarm.ShowDialog();
         }
 
         public static void SaveImageRemote(string imagePath, string imagename, Control control)

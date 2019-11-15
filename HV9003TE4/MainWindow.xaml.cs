@@ -26,16 +26,18 @@ namespace HV9003TE4
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-
     public partial class MainWindow : MetroWindow
     {
         MainWindowModel mv;
         public MainWindow()
         {
-
             InitializeComponent();
-            mv = new MainWindowModel();
-            mv.StartTcp();
+            mv = AutoStateStatic.SState.vm;
+            if (!AutoStateStatic.SState.MainTcpState)
+            {
+                mv.StartTcp();
+            }
+            AutoStateStatic.SState.MainTcpState = true;
             try
             {
                 mv.StartRecCom();
@@ -51,10 +53,8 @@ namespace HV9003TE4
             }
             mv.OpenAutoTest += MainWindow_OpenAutoTest;
 
-
             this.DataContext = null;
             this.DataContext = mv;
-
         }
         private void MainWindow_OpenAutoTest(byte[] ISopen)
         {
@@ -73,48 +73,7 @@ namespace HV9003TE4
         }
 
 
-        private void MainWindow_OutTestResult(byte[] data)
-        {
-
-            if (data[58] == 1)
-            {
-                Views.Alarm a1 = new Views.Alarm("电压或频率设置失败");
-                a1.ShowDialog();
-            }
-            if (data[58] == 2)
-            {
-                Views.Alarm a1 = new Views.Alarm("读取电流或者功率失败");
-                a1.ShowDialog();
-            }
-            if (data[58] == 3)
-            {
-                Views.Alarm a1 = new Views.Alarm("变频电源过流");
-                a1.ShowDialog();
-            }
-            if (data[58] == 4)
-            {
-                Views.Alarm a1 = new Views.Alarm("变频电源开启或者输出失败");
-                a1.ShowDialog();
-            }
-            if (data[58] == 6)
-            {
-                Views.Alarm a1 = new Views.Alarm("被实测无信号");
-                a1.ShowDialog();
-            }
-            if (data[58] == 7)
-            {
-                Views.Alarm a1 = new Views.Alarm("测量版档位过流");
-                a1.ShowDialog();
-            }
-            if (data[58] == 8)
-            {
-                Views.Alarm a1 = new Views.Alarm("心跳丢失");
-                a1.ShowDialog();
-            }
-            // throw new NotImplementedException();
-
-        }
-
+     
         public float NeedVolate { get; set; } = 0;
 
 

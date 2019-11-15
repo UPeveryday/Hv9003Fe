@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MahApps.Metro.Controls;
 using Microsoft.Win32;
+using SCEEC.NET.TCPSERVER;
 using SCEEC.Numerics;
 
 namespace HV9003TE4.Views
@@ -31,6 +32,8 @@ namespace HV9003TE4.Views
             InitializeComponent();
             mv = new MainWindowModel();
             mv.MyPAllAutoTestOrOrdeTestroperty = true;//只提供回复测量结果功能
+            TcpTask.TcpServer.CloseAllClient();
+            mv.MulStartTcp();
             mv.StartTcp();
             try
             {
@@ -323,7 +326,13 @@ namespace HV9003TE4.Views
         private void MetroWindow_Closed(object sender, EventArgs e)
         {
             // mv.AllAutoTestIsOpen = false;
+            Application.Current.Dispatcher.Invoke(() => {
+                mv.MulStartTcp();
+                Models.AutoStateStatic.SState.vm.StartTcp();
+            });
+
         }
+       
 
         private void all_load(object sender, RoutedEventArgs e)
         {
@@ -342,6 +351,7 @@ namespace HV9003TE4.Views
 
         ~AllAutoTest()
         {
+            
             mv.ResetTest();
             mv.CancerTest();
             GC.Collect();
@@ -349,6 +359,7 @@ namespace HV9003TE4.Views
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            Models.AutoStateStatic.SState.IsOPenAuto = false;
             mv.DownVolate();
             mv.ResetTest();
             mv.CancerTest();

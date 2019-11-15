@@ -45,6 +45,12 @@ namespace HV9003TE4.Models
 
         public PhysicalVariable Cn { get; set; } = "99.868pF";
         public PhysicalVariable AGn { get; set; } = "0.000001";
+        public bool IsOPenAuto { get; set; } = false;
+
+        public bool MainTcpState { get; set; } = false;
+
+        public MainWindowModel vm { get; set; } = new MainWindowModel();
+
 
     }
 

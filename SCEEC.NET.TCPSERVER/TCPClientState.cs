@@ -18,16 +18,18 @@ namespace SCEEC.NET.TCPSERVER
         /// 获取缓冲区
         /// </summary>
         public byte[] Buffer { get; private set; }
-        public int RecLength { get;  set; }
+        public int RecLength { get; set; }
 
         /// <summary>
         /// 获取网络流
         /// </summary>
         public NetworkStream NetworkStream
         {
-            get { return TcpClient.GetStream(); }
+            get
+            {
+                return TcpClient.GetStream();
+            }
         }
-
         public TCPClientState(TcpClient tcpClient, byte[] buffer)
         {
             if (tcpClient == null)

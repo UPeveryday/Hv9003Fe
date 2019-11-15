@@ -99,9 +99,8 @@ namespace HV9003TE4.Views
 
         public void ShowHide(string Text)
         {
-            Views.Alarm alarm = new Views.Alarm(Text);
-            alarm.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            alarm.ShowDialog();
+            MessageBox.Show(Text, "警告", MessageBoxButton.OK);
+
         }
         private void Eight_click(object sender, RoutedEventArgs e)
         {
