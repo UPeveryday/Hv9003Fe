@@ -438,10 +438,12 @@ namespace HV9003TE4
             {
                 if (UpvolateIsOk())
                 {
+                    Thread.Sleep(2000);
                     TcpTestState = "FINISH1";
                 }
             }
             Models.StaticClass.IsTcpTestting = false;
+            Models.AutoStateStatic.SState.CaptanceCompelete = true;
             TcpTestState = "FINISH1";
 
         }

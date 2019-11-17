@@ -330,7 +330,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <lvc:CartesianChart Grid.Row="0" Background="White" Visibility="{Binding Wave1Enable}" Grid.Column="0"  DisableAnimations="True" Series="{Binding panel1SeriesCollection}">
+                    <lvc:CartesianChart Grid.Row="0" Background="White" Name="chartp1" Visibility="{Binding Wave1Enable}" Grid.Column="0"  DisableAnimations="True" Series="{Binding panel1SeriesCollection}">
                         <lvc:CartesianChart.AxisX  >
                             <lvc:Axis MinValue="0"  LabelFormatter="{Binding XFormatter}" Title="&#x000A;测量通道一"  Foreground="Black">
                                 <lvc:Axis.Separator>
@@ -346,7 +346,7 @@
                             </lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                     </lvc:CartesianChart>
-                    <lvc:CartesianChart Grid.Row="0"   Visibility="{Binding Wave2Enable}" Background="White"  Grid.Column="1" DisableAnimations="True" Series="{Binding panel2SeriesCollection}">
+                    <lvc:CartesianChart Grid.Row="0"  Name="chartp2"  Visibility="{Binding Wave2Enable}" Background="White"  Grid.Column="1" DisableAnimations="True" Series="{Binding panel2SeriesCollection}">
                         <lvc:CartesianChart.AxisX>
                             <lvc:Axis MinValue="0"  LabelFormatter="{Binding XFormatter}"  Foreground="Black" Title="&#x000A;测量通道二">
                                 <lvc:Axis.Separator>
@@ -362,7 +362,7 @@
                             </lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                     </lvc:CartesianChart>
-                    <lvc:CartesianChart Grid.Row="1"  Visibility="{Binding Wave3Enable}" Background="White"  Grid.Column="0" DisableAnimations="True" Series="{Binding panel3SeriesCollection}">
+                    <lvc:CartesianChart Grid.Row="1"  Name="chartp3" Visibility="{Binding Wave3Enable}" Background="White"  Grid.Column="0" DisableAnimations="True" Series="{Binding panel3SeriesCollection}">
                         <lvc:CartesianChart.AxisX>
                             <lvc:Axis MinValue="0" Foreground="Black"  LabelFormatter="{Binding XFormatter}"  Title="&#x000A;测量通道三">
                                 <lvc:Axis.Separator>
@@ -378,7 +378,7 @@
                             </lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                     </lvc:CartesianChart>
-                    <lvc:CartesianChart Grid.Row="1"  Background="White"  Visibility="{Binding Wave4Enable}" Grid.Column="1" DisableAnimations="True" Series="{Binding panel4SeriesCollection}">
+                    <lvc:CartesianChart Grid.Row="1"  Name="chartp4" Background="White"  Visibility="{Binding Wave4Enable}" Grid.Column="1" DisableAnimations="True" Series="{Binding panel4SeriesCollection}">
                         <lvc:CartesianChart.AxisX>
                             <lvc:Axis  MinValue="0"  LabelFormatter="{Binding XFormatter}"  Foreground="Black" Title="&#x000A;测量通道四">
                                 <lvc:Axis.Separator>

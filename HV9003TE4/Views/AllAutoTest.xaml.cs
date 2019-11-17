@@ -45,6 +45,7 @@ namespace HV9003TE4.Views
             {
                 mv.ShowHide("初始化程序发生错误" + "\r\n" + "请检查串口及仪器连接");
             }
+            saveImagge();
             this.DataContext = mv;
         }
         public AllAutoTest(byte[] temp)
@@ -74,6 +75,7 @@ namespace HV9003TE4.Views
             sys1 = sys;
             Bitconvert(sys);
             mv.StartAutobytcp();
+            saveImagge();
 
         }
         public AllAutoTest(Models.SysAutoTestResult temp)
@@ -99,6 +101,7 @@ namespace HV9003TE4.Views
             sys1 = temp;
             Bitconvert(temp);
             //  mv.StartAutobyProject();
+            saveImagge();
             this.DataContext = null;
             this.DataContext = mv;
         }
@@ -314,7 +317,26 @@ namespace HV9003TE4.Views
                 Thread.Sleep(500);
             }
         }
+        public void saveImagge()
+        {
+            Task.Factory.StartNew(() =>
+            {
+                savecapatanceimage(chartp1,chartp2, chartp3, chartp4);
+            });
+        }
 
+        private void savecapatanceimage(Control control1, Control control2, Control control3, Control control4)
+        {
+            while (Models.AutoStateStatic.SState.CaptanceCompelete)
+            {
+                Models.StaticClass.SaveImageRemote("C:\\WaveImage", "1.jpg", control1);
+                Models.StaticClass.SaveImageRemote("C:\\WaveImage", "2.jpg", control2);
+                Models.StaticClass.SaveImageRemote("C:\\WaveImage", "3.jpg", control3);
+                Models.StaticClass.SaveImageRemote("C:\\WaveImage", "4.jpg", control4);
+                Models.AutoStateStatic.SState.CaptanceCompelete = false;
+                Thread.Sleep(500);
+            }
+        }
 
         private void QualityNot_Click(object sender, RoutedEventArgs e)
         {
@@ -326,13 +348,14 @@ namespace HV9003TE4.Views
         private void MetroWindow_Closed(object sender, EventArgs e)
         {
             // mv.AllAutoTestIsOpen = false;
-            Application.Current.Dispatcher.Invoke(() => {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
                 mv.MulStartTcp();
                 Models.AutoStateStatic.SState.vm.StartTcp();
             });
 
         }
-       
+
 
         private void all_load(object sender, RoutedEventArgs e)
         {
@@ -351,7 +374,7 @@ namespace HV9003TE4.Views
 
         ~AllAutoTest()
         {
-            
+
             mv.ResetTest();
             mv.CancerTest();
             GC.Collect();
@@ -408,7 +431,7 @@ namespace HV9003TE4.Views
 
         private void Time_KeyDown(object sender, KeyEventArgs e)
         {
-            
+
             //if(e.Key==Key.D0|| e.Key == Key.D1 || e.Key == Key.D2 || e.Key == Key.D3 || e.Key == Key.D4 || 
             //    e.Key == Key.D5 || e.Key == Key.D6 || e.Key == Key.D7 || e.Key == Key.D8 || e.Key == Key.D9||
             //    e.Key == Key.NumPad0 || e.Key == Key.NumPad1 || e.Key == Key.NumPad2 || e.Key == Key.NumPad3 || e.Key == Key.NumPad4 ||

@@ -52,6 +52,9 @@ namespace HV9003TE4.Models
         public MainWindowModel vm { get; set; } = new MainWindowModel();
 
 
+        public bool CaptanceCompelete { get; set; } = false;
+
+
     }
 
     public static class AutoStateStatic
