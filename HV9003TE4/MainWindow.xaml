@@ -30,7 +30,7 @@
     </Window.DataContext>
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
-            <Button Content="重启并复位"  Foreground="Red" Click="Reset" ></Button>
+            <Button Content="复位"  Foreground="Red" Click="Reset" ></Button>
             <Button Content="设置"  Click="Setting_click"/>
             <Button Content="方案管理" Click="Project_click" ></Button>
         </Controls:WindowCommands>

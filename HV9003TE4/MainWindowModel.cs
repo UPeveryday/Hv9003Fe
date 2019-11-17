@@ -49,6 +49,8 @@ namespace HV9003TE4
         public PhysicalVariable HVFrequency { get; set; } = "50.0 Hz";
         public PhysicalVariable HVVoltage { get; set; } = "100.0 kV";
 
+        public Visibility IsEleOrVolate { get; set; } = Visibility.Visible;
+
         public byte Fre { get; set; }
 
         private PhysicalVariable myVar;
@@ -78,10 +80,10 @@ namespace HV9003TE4
         public PhysicalVariable AG4 { get; set; } = "0.000004";
         public string TimeMul { get; set; } = "60";
         public MeasureResult PanelMeasureResult { get; set; } = new MeasureResult();
-        public bool Wave1Enable { get; set; } = true;
-        public bool Wave2Enable { get; set; } = true;
-        public bool Wave3Enable { get; set; } = true;
-        public bool Wave4Enable { get; set; } = true;
+        public Visibility Wave1Enable { get; set; } = Visibility.Visible;
+        public Visibility Wave2Enable { get; set; } = Visibility.Visible;
+        public Visibility Wave3Enable { get; set; } = Visibility.Visible;
+        public Visibility Wave4Enable { get; set; } = Visibility.Visible;
         public void StartTcp()
         {
             TcpTask.TcpServer.DataReceived += TcpServer_DataReceived;
@@ -122,7 +124,6 @@ namespace HV9003TE4
             int length = e._state.RecLength;
             var Temp = a.Skip(0).Take(length).ToArray();
             ControlRemoteState(Temp);
-            SysData = Temp;
             ControlTest(Temp);
         }
         public int hodetime { get; set; } = 60;
@@ -136,6 +137,8 @@ namespace HV9003TE4
         {
             if (Temp[0] == 0xdd && Temp[1] == 0x0a)
             {
+                SysData = Temp;
+                Sys = StaticClass.GetDataForTcpAutoTest(Temp);
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     CreateFourTan();//实例化对象，临时
@@ -145,30 +148,52 @@ namespace HV9003TE4
                 TestClass.QueryTestResult(TcpTask.TcpServer, null, array);
                 if (Temp[2] == 0x01)
                 {
+                    Wave1Enable = Visibility.Visible;
                     PanelMeasureResult.PanelOneEnable = true;
+                    Sys.PanelOneIsOk = true;
                 }
                 else
-                    Wave1Enable = false;
+                {
+                    Wave1Enable = Visibility.Hidden;
+                    Sys.PanelOneIsOk = false;
+                }
                 if (Temp[3] == 0x01)
                 {
+                    Wave2Enable = Visibility.Visible;
                     PanelMeasureResult.PanelTwoEnable = true;
+                    Sys.PanelTwoIsOk = true;
                 }
-                else
-                    Wave2Enable = false;
-                if (Temp[4] == 0x01)
-                    PanelMeasureResult.PanelThreeEnable = true;
                 else
                 {
-                    Wave3Enable = false;
+                    Wave2Enable = Visibility.Hidden;
+                    Sys.PanelTwoIsOk = false;
+                }
+
+                if (Temp[4] == 0x01)
+                {
+                    Wave3Enable = Visibility.Visible;
+                    PanelMeasureResult.PanelThreeEnable = true;
+                    Sys.PanelThreeIsOk = true;
+                }
+                else
+                {
+                    Wave3Enable = Visibility.Hidden;
+                    Sys.PanelThreeIsOk = false;
                 }
                 if (Temp[5] == 0x01)
+                {
+                    Wave4Enable = Visibility.Visible;
                     PanelMeasureResult.PanelFourEnable = true;
+                    Sys.PanelFourIsOk = true;
+                }
                 else
-                    Wave4Enable = false;
-                Sys = StaticClass.GetDataForTcpAutoTest(Temp);
-                PanelMeasureResult.TestNum = StaticClass.GetDataForTcpAutoTest(Temp).NeedTestList.Count();
-                VolateSpeed = StaticClass.GetDataForTcpAutoTest(Temp).TestSpeed;
-                if (StaticClass.GetDataForTcpAutoTest(Temp).Fre > 50)
+                {
+                    Wave4Enable = Visibility.Hidden;
+                    Sys.PanelFourIsOk = false;
+                }
+                PanelMeasureResult.TestNum = Sys.NeedTestList.Count();
+                VolateSpeed = Sys.TestSpeed;
+                if (Sys.Fre > 50)
                     SelectFre = 1;
                 else
                     SelectFre = 0;
@@ -178,7 +203,7 @@ namespace HV9003TE4
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         ListboxItemsources.Clear();
-                        var sys = StaticClass.GetDataForTcpAutoTest(Temp);
+                        var sys = Sys;
                         foreach (var c in sys.NeedTestList)
                         {
                             ListboxItemsources.Add("待测电压  :" + c.ToString() + "V");
@@ -257,14 +282,42 @@ namespace HV9003TE4
             PanelMeasureResult.PanelResultOne.DYVolate = HVVoltage;
             PanelMeasureResult.PanelResultOne.DyQuatity = Quality;
             PanelMeasureResult.PanelResultOne.ImagDyId = 1;
+
             PanelMeasureResult.PanelResultTwo.DYVolate = HVVoltage;
             PanelMeasureResult.PanelResultTwo.DyQuatity = Quality;
             PanelMeasureResult.PanelResultTwo.ImagDyId = 1;
+
             PanelMeasureResult.PanelResultThree.DYVolate = HVVoltage;
             PanelMeasureResult.PanelResultThree.DyQuatity = Quality;
             PanelMeasureResult.PanelResultThree.ImagDyId = 1;
+
             PanelMeasureResult.PanelResultFour.DYVolate = HVVoltage;
             PanelMeasureResult.PanelResultFour.DyQuatity = Quality;
+            PanelMeasureResult.PanelResultFour.ImagDyId = 1;
+        }
+
+        public void AddEley1(bool Quality1)
+        {
+            PanelMeasureResult.PanelResultOne.DYVolate = HVVoltage;
+            PanelMeasureResult.PanelResultOne.DyQuatity = Quality1;
+            PanelMeasureResult.PanelResultOne.ImagDyId = 1;
+        }
+        public void AddEley2(bool Quality1)
+        {
+            PanelMeasureResult.PanelResultTwo.DYVolate = HVVoltage;
+            PanelMeasureResult.PanelResultTwo.DyQuatity = Quality1;
+            PanelMeasureResult.PanelResultTwo.ImagDyId = 1;
+        }
+        public void AddEley3(bool Quality1)
+        {
+            PanelMeasureResult.PanelResultThree.DYVolate = HVVoltage;
+            PanelMeasureResult.PanelResultThree.DyQuatity = Quality1;
+            PanelMeasureResult.PanelResultThree.ImagDyId = 1;
+        }
+        public void AddEley4(bool Quality1)
+        {
+            PanelMeasureResult.PanelResultFour.DYVolate = HVVoltage;
+            PanelMeasureResult.PanelResultFour.DyQuatity = Quality1;
             PanelMeasureResult.PanelResultFour.ImagDyId = 1;
         }
         public void AddVolatedata(int hodetime)
@@ -288,19 +341,35 @@ namespace HV9003TE4
         {
             StartTime = DateTime.Now;
             // PanelMeasureResult = new MeasureResult();//TCP需要测量结果
+            if (Models.StaticClass.IsTcpTestting)
+                sys = Sys;
+            PanelMeasureResult.PanelResultOne = new TaskPanelResult();
+            PanelMeasureResult.PanelResultTwo = new TaskPanelResult();
+            PanelMeasureResult.PanelResultThree = new TaskPanelResult();
+            PanelMeasureResult.PanelResultFour = new TaskPanelResult();
             PanelMeasureResult.TestSpeed = sys.TestSpeed;
             PanelMeasureResult.Fre = sys.Fre;
-            Sys = sys;
-
+            IsEleOrVolate = Visibility.Visible;
             DatagridData = new ObservableCollection<TestResultDataGrid>(); //创建介损的datagrid
             if (Models.StaticClass.IsTcpTestting)
             {
                 // sys = StaticClass.GetDataForTcpAutoTest(SysData);
                 TcpTestState = "BUSY1";
             }
+            while (true)
+            {
+                if (!VolateState)
+                {
+                    StartPower();
+                    Thread.Sleep(3000);
+                }
+                else
+                {
+                    break;
+                }
 
-            StartPower();
-            Thread.Sleep(3000);
+            }
+
             #region 电压
             Models.AutoStateStatic.SState.Clear();
             float[] needtest = sys.NeedTestList.ToArray();
@@ -365,7 +434,13 @@ namespace HV9003TE4
                     }
                 }
             }
-
+            if (Models.StaticClass.IsTcpTestting)
+            {
+                if (UpvolateIsOk())
+                {
+                    TcpTestState = "FINISH1";
+                }
+            }
             Models.StaticClass.IsTcpTestting = false;
             TcpTestState = "FINISH1";
 
@@ -470,8 +545,9 @@ namespace HV9003TE4
             {
                 p++;
                 Thread.Sleep(1000);
-                if (p > 20)
+                if (p > 200)
                 {
+                    HVVoltage = "调压中...";
                     IsEnd = true;
                     return false;
                 }
@@ -494,43 +570,119 @@ namespace HV9003TE4
                 sys = Sys;
                 TcpTestState = "BUSY2";
             }
-
             else
             {
                 sys = GetSys();
             }
-            StartPower();
-            Thread.Sleep(3000);
+            IsEleOrVolate = Visibility.Hidden;
+            while (true)
+            {
+                if (!VolateState)
+                {
+                    StartPower();
+                    Thread.Sleep(3000);
+                }
+                else
+                    break;
+            }
+
             SetVolate(sys.EleY);
             if (UpvolateIsOk())
             {
-                QuqlityIsOk = Visibility.Visible;
                 AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
                 Thread.Sleep(2000);
                 AddTanEleVolatepoint((DateTime.Now - StartTime).TotalSeconds, (double)HVVoltage.value);
-                while (true)
+
+                if (Models.StaticClass.IsTcpTestting)
                 {
-                    if (AutoStateStatic.SState.IsPress)
+                    if (sys.PanelOneIsOk)
                     {
-                        AddEley(AutoStateStatic.SState.Quality);
-                        if (!Models.StaticClass.IsTcpTestting)
+                        QuqlityIsOk = Visibility.Visible;
+                        PanelEnableTest = "通道一电晕合格？";
+                        while (true)
                         {
+                            if (AutoStateStatic.SState.IsPress)
+                            {
+                                AddEley1(AutoStateStatic.SState.Quality);
+                                AutoStateStatic.SState.IsPress = false;
+                                Thread.Sleep(500);
+                                break;
+                            }
+                        }
+
+                    }
+
+                    if (sys.PanelTwoIsOk)
+                    {
+                        PanelEnableTest = "通道二电晕合格？";
+                        QuqlityIsOk = Visibility.Visible;
+
+                        while (true)
+                        {
+                            if (AutoStateStatic.SState.IsPress)
+                            {
+                                AddEley2(AutoStateStatic.SState.Quality);
+                                AutoStateStatic.SState.IsPress = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (sys.PanelThreeIsOk)
+                    {
+                        QuqlityIsOk = Visibility.Visible;
+                        PanelEnableTest = "通道三电晕合格？";
+                        while (true)
+                        {
+                            if (AutoStateStatic.SState.IsPress)
+                            {
+                                AddEley3(AutoStateStatic.SState.Quality);
+                                AutoStateStatic.SState.IsPress = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (sys.PanelFourIsOk)
+                    {
+                        QuqlityIsOk = Visibility.Visible;
+                        PanelEnableTest = "通道四电晕合格？";
+                        while (true)
+                        {
+                            if (AutoStateStatic.SState.IsPress)
+                            {
+                                AddEley4(AutoStateStatic.SState.Quality);
+                                AutoStateStatic.SState.IsPress = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!Models.StaticClass.IsTcpTestting)
+                {
+                    while (true)
+                    {
+                        if (AutoStateStatic.SState.IsPress)
+                        {
+                            AddEley(AutoStateStatic.SState.Quality);
+
                             if (MessageBox.Show("是否开始耐压实验？", "通知", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
                             {
                                 StartVolate();
                             }
                             else
                                 AutoStateStatic.SState.IsStartVolate = false;
+                            AutoStateStatic.SState.IsPress = false;
+                            break;
                         }
-                        AutoStateStatic.SState.IsPress = false;
-                        break;
                     }
                 }
             }
             Models.StaticClass.IsTcpTestting = false;
+            IsEleOrVolate = Visibility.Visible;
             TcpTestState = "FINISH2";
 
         }
+        public string PanelEnableTest { get; set; } = "电晕是否合格?";
         public Visibility TimeIsEnAble { get; set; } = Visibility.Hidden;
         public void StartVolate()
         {
@@ -545,7 +697,7 @@ namespace HV9003TE4
             {
                 sys = GetSys();
             }
-
+            IsEleOrVolate = Visibility.Hidden;
             StartPower();
             Thread.Sleep(3000);
 
@@ -574,6 +726,7 @@ namespace HV9003TE4
             }
             #endregion
             Models.StaticClass.IsTcpTestting = false;
+            IsEleOrVolate = Visibility.Visible;
             TcpTestState = "FINISH3";
 
         }
@@ -609,6 +762,10 @@ namespace HV9003TE4
                 ShowHide("键入的耐压保持时间格式错误" + "\t\n" + "以设置为默认60S");
 
             }
+            sys.PanelOneIsOk = true;
+            sys.PanelTwoIsOk = true;
+            sys.PanelThreeIsOk = true;
+            sys.PanelFourIsOk = true;
             sys.TestSpeed = (float)VolateSpeed;
             if (SelectFre == 0)
                 sys.Fre = 50;
@@ -679,7 +836,14 @@ namespace HV9003TE4
         {
             try
             {
+                //DownVolate();
+                //Thread.Sleep(200);
+                //if (UpvolateIsOk())
+                //    TestResult.WorkTest.Reset();
+                //else
+                //{
                 TestResult.WorkTest.Reset();
+                //}
             }
             catch
             {

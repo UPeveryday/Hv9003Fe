@@ -125,7 +125,7 @@ namespace HV9003TE4.Models
                 else
                     sys.IsVolate = false;
                 sys.Fre = data[data.Length - 6];
-                
+
                 sys.TestSpeed = BitConverter.ToSingle(data, data.Length - 5);
                 return sys;
             }
@@ -310,19 +310,49 @@ namespace HV9003TE4.Models
                     PhysicalVariable cn = item.Cn;
                     PhysicalVariable cnTan = item.CnTan;
                     PhysicalVariable cnVolate = item.Volate;
-                    byte[] cnf = BitConverter.GetBytes((float)cn.value);
-                    byte[] cntf = BitConverter.GetBytes((float)cnTan.value);
-                    byte[] cntv = BitConverter.GetBytes((float)cnVolate.value);
+                    byte[] cnf = new byte[4];
+                    byte[] cntf = new byte[4];
+                    byte[] cntv = new byte[4];
+                    if (cn == null || cn.value == null)
+                    {
+                        cnf = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+                    }
+                    else
+                        cnf = BitConverter.GetBytes((float)cn.value);
+                    if (cnTan == null || cnTan.value == null)
+                    {
+                        cntf = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+                    }
+                    else
+                        cntf = BitConverter.GetBytes((float)cnTan.value);
+
+                    if (cnVolate == null || cnVolate.value == null)
+                    {
+                        cntv = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+                    }
+                    else
+                        cntv = BitConverter.GetBytes((float)cnVolate.value);
                     rel.AddRange(cnf);
                     rel.AddRange(cntf);
                     rel.AddRange(cntv);
                 }
-                rel.AddRange(BitConverter.GetBytes((float)result.PanelResultOne.DYVolate.value));
+                if (result.PanelResultOne.DYVolate == null || result.PanelResultOne.DYVolate.value == null)
+                {
+                    rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
+                }
+                else
+                    rel.AddRange(BitConverter.GetBytes((float)result.PanelResultOne.DYVolate.value));
                 rel.Add(TrueOrFalse(result.PanelResultOne.DyQuatity));
                 rel.Add(0x01);
-
-                rel.AddRange(BitConverter.GetBytes((float)result.PanelResultOne.KeepVolated.value));
+                rel.Add(0x01);
+                if (result.PanelResultOne.KeepVolated == null || result.PanelResultOne.KeepVolated.value == null)
+                {
+                    rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
+                }
+                else
+                    rel.AddRange(BitConverter.GetBytes((float)result.PanelResultOne.KeepVolated.value));
                 rel.Add((byte)result.PanelResultOne.KeepTimed);
+                rel.Add(0x02);
                 rel.Add(0x02);
             }
             if (result.PanelTwoEnable)
@@ -332,19 +362,49 @@ namespace HV9003TE4.Models
                     PhysicalVariable cn = item.Cn;
                     PhysicalVariable cnTan = item.CnTan;
                     PhysicalVariable cnVolate = item.Volate;
-                    byte[] cnf = BitConverter.GetBytes((float)cn.value);
-                    byte[] cntf = BitConverter.GetBytes((float)cnTan.value);
-                    byte[] cntv = BitConverter.GetBytes((float)cnVolate.value);
+                    byte[] cnf = new byte[4];
+                    byte[] cntf = new byte[4];
+                    byte[] cntv = new byte[4];
+                    if (cn == null || cn.value == null)
+                    {
+                        cnf = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+                    }
+                    else
+                        cnf = BitConverter.GetBytes((float)cn.value);
+                    if (cnTan == null || cnTan.value == null)
+                    {
+                        cntf = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+                    }
+                    else
+                        cntf = BitConverter.GetBytes((float)cnTan.value);
+
+                    if (cnVolate == null || cnVolate.value == null)
+                    {
+                        cntv = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+                    }
+                    else
+                        cntv = BitConverter.GetBytes((float)cnVolate.value);
                     rel.AddRange(cnf);
                     rel.AddRange(cntf);
                     rel.AddRange(cntv);
                 }
-                rel.AddRange(BitConverter.GetBytes((float)result.PanelResultTwo.DYVolate.value));
+                if (result.PanelResultTwo.DYVolate == null || result.PanelResultTwo.DYVolate.value == null)
+                {
+                    rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
+                }
+                else
+                    rel.AddRange(BitConverter.GetBytes((float)result.PanelResultTwo.DYVolate.value));
                 rel.Add(TrueOrFalse(result.PanelResultTwo.DyQuatity));
                 rel.Add(0x01);
-
-                rel.AddRange(BitConverter.GetBytes((float)result.PanelResultTwo.KeepVolated.value));
+                rel.Add(0x01);
+                if (result.PanelResultTwo.KeepVolated == null || result.PanelResultTwo.KeepVolated.value == null)
+                {
+                    rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
+                }
+                else
+                    rel.AddRange(BitConverter.GetBytes((float)result.PanelResultTwo.KeepVolated.value));
                 rel.Add((byte)result.PanelResultTwo.KeepTimed);
+                rel.Add(0x02);
                 rel.Add(0x02);
             }
             if (result.PanelThreeEnable)
@@ -354,19 +414,50 @@ namespace HV9003TE4.Models
                     PhysicalVariable cn = item.Cn;
                     PhysicalVariable cnTan = item.CnTan;
                     PhysicalVariable cnVolate = item.Volate;
-                    byte[] cnf = BitConverter.GetBytes((float)cn.value);
-                    byte[] cntf = BitConverter.GetBytes((float)cnTan.value);
-                    byte[] cntv = BitConverter.GetBytes((float)cnVolate.value);
+                    byte[] cnf = new byte[4];
+                    byte[] cntf = new byte[4];
+                    byte[] cntv = new byte[4];
+                    if (cn == null || cn.value == null)
+                    {
+                        cnf = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+                    }
+                    else
+                        cnf = BitConverter.GetBytes((float)cn.value);
+                    if (cnTan == null || cnTan.value == null)
+                    {
+                        cntf = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+                    }
+                    else
+                        cntf = BitConverter.GetBytes((float)cnTan.value);
+
+                    if (cnVolate == null || cnVolate.value == null)
+                    {
+                        cntv = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+                    }
+                    else
+                        cntv = BitConverter.GetBytes((float)cnVolate.value);
                     rel.AddRange(cnf);
                     rel.AddRange(cntf);
                     rel.AddRange(cntv);
                 }
-                rel.AddRange(BitConverter.GetBytes((float)result.PanelResultThree.DYVolate.value));
+                if (result.PanelResultThree.DYVolate == null || result.PanelResultThree.DYVolate.value == null)
+                {
+                    rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
+                }
+                else
+                    rel.AddRange(BitConverter.GetBytes((float)result.PanelResultThree.DYVolate.value));
                 rel.Add(TrueOrFalse(result.PanelResultThree.DyQuatity));
                 rel.Add(0x01);
+                rel.Add(0x01);
 
-                rel.AddRange(BitConverter.GetBytes((float)result.PanelResultThree.KeepVolated.value));
+                if (result.PanelResultThree.KeepVolated == null || result.PanelResultThree.KeepVolated.value == null)
+                {
+                    rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
+                }
+                else
+                    rel.AddRange(BitConverter.GetBytes((float)result.PanelResultThree.KeepVolated.value));
                 rel.Add((byte)result.PanelResultThree.KeepTimed);
+                rel.Add(0x02);
                 rel.Add(0x02);
             }
             if (result.PanelFourEnable)
@@ -376,19 +467,50 @@ namespace HV9003TE4.Models
                     PhysicalVariable cn = item.Cn;
                     PhysicalVariable cnTan = item.CnTan;
                     PhysicalVariable cnVolate = item.Volate;
-                    byte[] cnf = BitConverter.GetBytes((float)cn.value);
-                    byte[] cntf = BitConverter.GetBytes((float)cnTan.value);
-                    byte[] cntv = BitConverter.GetBytes((float)cnVolate.value);
+                    byte[] cnf = new byte[4];
+                    byte[] cntf = new byte[4];
+                    byte[] cntv = new byte[4];
+                    if (cn == null || cn.value == null)
+                    {
+                        cnf = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+                    }
+                    else
+                        cnf = BitConverter.GetBytes((float)cn.value);
+                    if (cnTan == null || cnTan.value == null)
+                    {
+                        cntf = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+                    }
+                    else
+                        cntf = BitConverter.GetBytes((float)cnTan.value);
+
+                    if (cnVolate == null || cnVolate.value == null)
+                    {
+                        cntv = new byte[] { 0x00, 0x00, 0x00, 0x00 };
+                    }
+                    else
+                        cntv = BitConverter.GetBytes((float)cnVolate.value);
                     rel.AddRange(cnf);
                     rel.AddRange(cntf);
                     rel.AddRange(cntv);
                 }
-                rel.AddRange(BitConverter.GetBytes((float)result.PanelResultFour.DYVolate.value));
+                if (result.PanelResultFour.DYVolate == null || result.PanelResultFour.DYVolate.value == null)
+                {
+                    rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
+                }
+                else
+                    rel.AddRange(BitConverter.GetBytes((float)result.PanelResultFour.DYVolate.value));
                 rel.Add(TrueOrFalse(result.PanelResultFour.DyQuatity));
                 rel.Add(0x01);
+                rel.Add(0x01);
 
-                rel.AddRange(BitConverter.GetBytes((float)result.PanelResultFour.KeepVolated.value));
+                if (result.PanelResultFour.KeepVolated == null || result.PanelResultFour.KeepVolated.value == null)
+                {
+                    rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
+                }
+                else
+                    rel.AddRange(BitConverter.GetBytes((float)result.PanelResultFour.KeepVolated.value));
                 rel.Add((byte)result.PanelResultFour.KeepTimed);
+                rel.Add(0x02);
                 rel.Add(0x02);
             }
             //rel.Add(result.Fre);
@@ -624,6 +746,11 @@ namespace HV9003TE4.Models
 
         public byte Fre { get; set; }
         public float TestSpeed { get; set; }
+
+        public bool PanelOneIsOk { get; set; } = false;
+        public bool PanelTwoIsOk { get; set; } = false;
+        public bool PanelThreeIsOk { get; set; } = false;
+        public bool PanelFourIsOk { get; set; } = false;
 
         public void Clear()
         {
