@@ -25,6 +25,16 @@ namespace HV9003TE4
     public class MainWindowModel : INotifyPropertyChanged
     {
         TestMesseages TestMesseagesNull = new TestMesseages();
+        private string title;
+        public string Title
+        {
+            get
+            {
+                return XmlConfig.GetAddNodeValue("title"); ;
+            }
+            set { title = value; }
+        }
+
         public volatile byte[] TestRes;
         public bool IsEnable { get; set; } = false;
         public string YPopu { get; set; }
@@ -48,19 +58,14 @@ namespace HV9003TE4
         public PhysicalVariable SourcePower { get; set; } = "1.000 kW";
         public PhysicalVariable HVFrequency { get; set; } = "50.0 Hz";
         public PhysicalVariable HVVoltage { get; set; } = "100.0 kV";
-
         public Visibility IsEleOrVolate { get; set; } = Visibility.Visible;
-
         public byte Fre { get; set; }
-
         private PhysicalVariable myVar;
-
         public PhysicalVariable Cn
         {
             get => Models.AutoStateStatic.SState.Cn;
             set { myVar = value; }
         }
-
         public PhysicalVariable In { get; set; } = "10.00 uA";
         // public PhysicalVariable AGn { get; set; } = "0.000001";
         private PhysicalVariable agnvalue;
@@ -356,19 +361,6 @@ namespace HV9003TE4
                 // sys = StaticClass.GetDataForTcpAutoTest(SysData);
                 TcpTestState = "BUSY1";
             }
-            while (true)
-            {
-                if (!VolateState)
-                {
-                    StartPower();
-                    Thread.Sleep(3000);
-                }
-                else
-                {
-                    break;
-                }
-
-            }
 
             #region 电压
             Models.AutoStateStatic.SState.Clear();
@@ -449,6 +441,19 @@ namespace HV9003TE4
         }
         private void StartTestTask()
         {
+            REset();
+            Thread.Sleep(3000);
+
+            while (true)
+            {
+                if (!VolateState)
+                {
+                    StartPower();
+                    Thread.Sleep(5000);
+                }
+                if (VolateState)
+                    break;
+            }
             StartAutoTestAsync(GetSys());
         }
 

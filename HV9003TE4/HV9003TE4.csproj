@@ -58,6 +58,7 @@
       <HintPath>..\packages\PropertyChanged.Fody.3.1.3\lib\net40\PropertyChanged.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -89,6 +90,7 @@
     <Compile Include="Models\AutoState.cs" />
     <Compile Include="Models\AutoTestFunctions.cs" />
     <Compile Include="Models\INIFILE.cs" />
+    <Compile Include="Models\SaveConfig.cs" />
     <Compile Include="Models\StaticClass.cs" />
     <Compile Include="Models\TestResult.cs" />
     <Compile Include="Models\MeasureResult.cs" />
@@ -256,6 +258,7 @@
     <Folder Include="DLL\" />
     <Folder Include="ModelViews\" />
     <Folder Include="ProjectSources\" />
+    <Folder Include="System\" />
     <Folder Include="Theme\" />
     <Folder Include="WaveImage\" />
   </ItemGroup>
