@@ -518,9 +518,10 @@
                 </Grid>
             </Grid>
 
-            <Grid  Grid.Column="2" Grid.RowSpan="2" Background="White">
+            <Grid Grid.Column="2" Grid.RowSpan="2" Background="White">
                 <Grid />
-                <Grid x:Name="Expander"  Margin="3,3,0,3">
+                <Expander x:Name="Expander" IsExpanded="{Binding IsTcp}" MouseDoubleClick="Expander_MouseDoubleClick" ExpandDirection="Left" Margin="3,3,0,3">
+                    
                     <Grid >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="5*"/>
@@ -529,7 +530,8 @@
                             <RowDefinition  Height="0.5*"/>
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="3" >
-                            <Button Margin="10,2" MinWidth="80" IsEnabled="{Binding VolateState}"  Background="Green" Click="StartTest_click" Foreground="White">
+                            <!--IsEnabled="{Binding VolateState}"-->
+                            <Button Margin="10,2" MinWidth="80"  Background="Green" Click="StartTest_click" Foreground="White">
                                 <Viewbox>
                                     <TextBlock  x:Name="StartTestTextBox" ><Run Text="开始测量"/></TextBlock>
                                 </Viewbox>
@@ -621,8 +623,7 @@
                         </Grid>
 
                     </Grid>
-
-                </Grid>
+                </Expander>
             </Grid>
         </Grid>
         <Grid  Grid.Row="2">

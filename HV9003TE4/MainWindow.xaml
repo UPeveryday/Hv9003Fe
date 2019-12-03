@@ -14,7 +14,7 @@
                        Closing="MetroWindow_Closing" 
                       Loaded="Main_load"
                       Unloaded="unload_load"
-                      SizeChanged="MetroWindow_SizeChanged"
+                      SizeChanged="MetroWindow_SizeChanged" Icon="Resources/Icon.ico"
     >
     <!--Background="#FF252525"-->
     <!--Title="HV9003TE4 四通道电容量及介质损耗高速测量电桥"-->

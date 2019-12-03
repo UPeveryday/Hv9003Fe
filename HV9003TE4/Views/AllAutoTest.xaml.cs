@@ -228,7 +228,6 @@ namespace HV9003TE4.Views
             }
 
         }
-
         private void SetVolate(object sender, RoutedEventArgs e)
         {
             Views.AddVlate keyb = new Views.AddVlate(2);
@@ -444,6 +443,15 @@ namespace HV9003TE4.Views
             //    time.Text = "";
             //    MessageBox.Show("必须为正整数");
             //}
+        }
+
+        private void Expander_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (mv.ISREMOTE == true)
+                mv.ISREMOTE = false;
+            else
+                mv.ISREMOTE = true;
+
         }
     }
 }

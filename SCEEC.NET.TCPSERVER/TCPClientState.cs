@@ -27,7 +27,15 @@ namespace SCEEC.NET.TCPSERVER
         {
             get
             {
-                return TcpClient.GetStream();
+                try
+                {
+                    return TcpClient.GetStream();
+
+                }
+                catch 
+                {
+                    return null;
+                }
             }
         }
         public TCPClientState(TcpClient tcpClient, byte[] buffer)

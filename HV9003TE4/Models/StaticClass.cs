@@ -338,22 +338,28 @@ namespace HV9003TE4.Models
                 }
                 if (result.PanelResultOne.DYVolate == null || result.PanelResultOne.DYVolate.value == null)
                 {
-                    rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
+                   // rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
                 }
                 else
+                {
                     rel.AddRange(BitConverter.GetBytes((float)result.PanelResultOne.DYVolate.value));
-                rel.Add(TrueOrFalse(result.PanelResultOne.DyQuatity));
-                rel.Add(0x01);
-                rel.Add(0x01);
+                    rel.Add(TrueOrFalse(result.PanelResultOne.DyQuatity));
+                    rel.Add(0x01);
+                    rel.Add(0x01);
+                }
+                    
                 if (result.PanelResultOne.KeepVolated == null || result.PanelResultOne.KeepVolated.value == null)
                 {
-                    rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
+                    //rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
                 }
                 else
+                {
                     rel.AddRange(BitConverter.GetBytes((float)result.PanelResultOne.KeepVolated.value));
-                rel.Add((byte)result.PanelResultOne.KeepTimed);
-                rel.Add(0x02);
-                rel.Add(0x02);
+                    rel.Add((byte)result.PanelResultOne.KeepTimed);
+                    rel.Add(0x02);
+                    rel.Add(0x02);
+                }
+                   
             }
             if (result.PanelTwoEnable)
             {
@@ -390,22 +396,28 @@ namespace HV9003TE4.Models
                 }
                 if (result.PanelResultTwo.DYVolate == null || result.PanelResultTwo.DYVolate.value == null)
                 {
-                    rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
+                  //  rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
                 }
                 else
+                {
                     rel.AddRange(BitConverter.GetBytes((float)result.PanelResultTwo.DYVolate.value));
-                rel.Add(TrueOrFalse(result.PanelResultTwo.DyQuatity));
-                rel.Add(0x01);
-                rel.Add(0x01);
+                    rel.Add(TrueOrFalse(result.PanelResultTwo.DyQuatity));
+                    rel.Add(0x01);
+                    rel.Add(0x01);
+                }
+                   
                 if (result.PanelResultTwo.KeepVolated == null || result.PanelResultTwo.KeepVolated.value == null)
                 {
-                    rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
+                   // rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
                 }
                 else
+                {
                     rel.AddRange(BitConverter.GetBytes((float)result.PanelResultTwo.KeepVolated.value));
-                rel.Add((byte)result.PanelResultTwo.KeepTimed);
-                rel.Add(0x02);
-                rel.Add(0x02);
+                    rel.Add((byte)result.PanelResultTwo.KeepTimed);
+                    rel.Add(0x02);
+                    rel.Add(0x02);
+                }
+                   
             }
             if (result.PanelThreeEnable)
             {
@@ -442,23 +454,29 @@ namespace HV9003TE4.Models
                 }
                 if (result.PanelResultThree.DYVolate == null || result.PanelResultThree.DYVolate.value == null)
                 {
-                    rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
+                    //rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
                 }
                 else
+                {
                     rel.AddRange(BitConverter.GetBytes((float)result.PanelResultThree.DYVolate.value));
-                rel.Add(TrueOrFalse(result.PanelResultThree.DyQuatity));
-                rel.Add(0x01);
-                rel.Add(0x01);
+                    rel.Add(TrueOrFalse(result.PanelResultThree.DyQuatity));
+                    rel.Add(0x01);
+                    rel.Add(0x01);
+                }
+                   
 
                 if (result.PanelResultThree.KeepVolated == null || result.PanelResultThree.KeepVolated.value == null)
                 {
-                    rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
+                   // rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
                 }
                 else
+                {
                     rel.AddRange(BitConverter.GetBytes((float)result.PanelResultThree.KeepVolated.value));
-                rel.Add((byte)result.PanelResultThree.KeepTimed);
-                rel.Add(0x02);
-                rel.Add(0x02);
+                    rel.Add((byte)result.PanelResultThree.KeepTimed);
+                    rel.Add(0x02);
+                    rel.Add(0x02);
+                }
+                   
             }
             if (result.PanelFourEnable)
             {
@@ -495,23 +513,28 @@ namespace HV9003TE4.Models
                 }
                 if (result.PanelResultFour.DYVolate == null || result.PanelResultFour.DYVolate.value == null)
                 {
-                    rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
+                    //rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
                 }
                 else
+                {
                     rel.AddRange(BitConverter.GetBytes((float)result.PanelResultFour.DYVolate.value));
-                rel.Add(TrueOrFalse(result.PanelResultFour.DyQuatity));
-                rel.Add(0x01);
-                rel.Add(0x01);
+                    rel.Add(TrueOrFalse(result.PanelResultFour.DyQuatity));
+                    rel.Add(0x01);
+                    rel.Add(0x01);
+                }
 
                 if (result.PanelResultFour.KeepVolated == null || result.PanelResultFour.KeepVolated.value == null)
                 {
-                    rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
+                   // rel.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
                 }
                 else
+                {
                     rel.AddRange(BitConverter.GetBytes((float)result.PanelResultFour.KeepVolated.value));
-                rel.Add((byte)result.PanelResultFour.KeepTimed);
-                rel.Add(0x02);
-                rel.Add(0x02);
+                    rel.Add((byte)result.PanelResultFour.KeepTimed);
+                    rel.Add(0x02);
+                    rel.Add(0x02);
+                }
+                  
             }
             //rel.Add(result.Fre);
             //rel.AddRange(BitConverter.GetBytes(result.TestSpeed));

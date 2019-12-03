@@ -51,7 +51,7 @@ namespace HV9003TE4
                 mv.ShowHide("初始化程序发生错误" + "\r\n" + "请检查串口及仪器连接");
                 //this.Close();
             }
-            mv.OpenAutoTest += MainWindow_OpenAutoTest;
+           // mv.OpenAutoTest += MainWindow_OpenAutoTest;
 
             this.DataContext = null;
             this.DataContext = mv;
